@@ -19,18 +19,17 @@ type Scene interface {
 }
 
 var (
-	screenWidth     = 240
-	screenHeight    = 360
-	isWindowSizeSet = false
-	isInitialized   = false
+	screenWidth        = 240
+	screenHeight       = 360
+	desktopScreenScale = 2
+	isWindowSizeSet    = false
+	isInitialized      = false
 )
 
 func (g *Game) Update(screen *ebiten.Image) error {
 	if isInitialized == false {
-		if isWindowSizeSet {
-			g.buildUI()
-		}
-		return nil
+		g.buildUI()
+		isInitialized = true
 	}
 	g.viewController.Update()
 	return nil
@@ -38,7 +37,6 @@ func (g *Game) Update(screen *ebiten.Image) error {
 
 func (g *Game) SetWindowSize(width, height int) {
 	screenHeight = int(float64(screenWidth) / float64(width) * float64(height))
-	isWindowSizeSet = true
 }
 
 func (g *Game) Draw(screen *ebiten.Image) {
@@ -67,6 +65,7 @@ func (g *Game) buildUI() {
 	g.rootView = flexContainerView
 	g.viewController.SetRootView(flexContainerView)
 
+	// flex items
 	b0 := furex.NewView(furex.NewBox(100, 100, color.RGBA{0xff, 0, 0, 0xff}))
 	g.rootView.AddSubView(b0)
 
@@ -75,7 +74,7 @@ func (g *Game) buildUI() {
 }
 
 func main() {
-	windowSize := image.Point{480, 800}
+	windowSize := image.Point{screenWidth * desktopScreenScale, screenHeight * desktopScreenScale}
 	ebiten.SetWindowSize(windowSize.X, windowSize.Y)
 
 	game, err := NewGame()
