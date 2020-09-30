@@ -6,47 +6,85 @@ import (
 	"github.com/hajimehoshi/ebiten"
 )
 
-// ViewController represents UI controller
 type ViewController struct {
 	frame    image.Rectangle
-	rootView *View
+	rootView View
 }
 
-// NewViewController creates a new controller
-func NewViewController() *ViewController {
+func NewViewController(x, y, w, h int) *ViewController {
 	c := &ViewController{}
+
+	c.frame = image.Rect(x, y, x+w, y+h)
+	c.SetRootView(NewFlex(w, h))
 
 	return c
 }
 
-// SetFrame sets the frame of the view
-func (c *ViewController) SetFrame(x, y, w, h int) {
-	c.frame = image.Rect(x, y, x+w, y+h)
-	if c.rootView != nil {
-		c.rootView.SetPosition(x, y)
-		c.rootView.SetSize(w, h)
-	}
-}
-
-// SetRootView sets the frame of the view
-func (c *ViewController) SetRootView(v *View) {
-	c.rootView = v
+func (c *ViewController) SetRootView(view View) {
+	c.rootView = view
 	c.rootView.SetPosition(c.frame.Min.X, c.frame.Min.Y)
 	c.rootView.SetSize(c.frame.Size().X, c.frame.Size().Y)
-	c.rootView.Load()
+	c.rootView.OnLoad()
 }
 
-// Update updates the ui
-func (c *ViewController) Update() {
-	c.rootView.Update()
+func (c *ViewController) RootView() View {
+	return c.rootView
 }
 
-// Layout updates the layout
+func (c *ViewController) Load() {
+	var f func(v View)
+	f = func(v View) {
+		if !v.IsLoaded() {
+			v.OnLoad()
+			v.SetLoaded(true)
+		}
+		for i := 0; i < len(v.Children()); i++ {
+			child := v.Children()[i]
+			if !child.IsLoaded() {
+				child.Children()[i].OnLoad()
+				child.SetLoaded(true)
+			}
+			f(child)
+		}
+	}
+	f(c.rootView)
+}
+
 func (c *ViewController) Layout() {
-	c.rootView.Layout()
+	var f func(v View)
+	f = func(v View) {
+		v.OnLayout()
+		for i := 0; i < len(v.Children()); i++ {
+			child := v.Children()[i]
+			child.OnLayout()
+			f(child)
+		}
+	}
+	f(c.rootView)
 }
 
-// Draw draws the ui
+func (c *ViewController) Update() {
+	var f func(v View)
+	f = func(v View) {
+		v.OnUpdate()
+		for i := 0; i < len(v.Children()); i++ {
+			child := v.Children()[i]
+			child.OnUpdate()
+			f(child)
+		}
+	}
+	f(c.rootView)
+}
+
 func (c *ViewController) Draw(screen *ebiten.Image) {
-	c.rootView.Draw(screen)
+	var f func(v View)
+	f = func(v View) {
+		v.OnDraw(screen)
+		for i := 0; i < len(v.Children()); i++ {
+			child := v.Children()[i]
+			child.OnDraw(screen)
+			f(child)
+		}
+	}
+	f(c.rootView)
 }

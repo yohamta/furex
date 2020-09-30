@@ -10,7 +10,6 @@ import (
 
 type Game struct {
 	viewController *furex.ViewController
-	rootView       *furex.View
 }
 
 type Scene interface {
@@ -54,23 +53,26 @@ func NewGame() (*Game, error) {
 }
 
 func (g *Game) buildUI() {
-	g.viewController = furex.NewViewController()
-	g.viewController.SetFrame(0, 0, screenWidth, screenHeight)
+	// create view controller
+	g.viewController = furex.NewViewController(0, 0, screenWidth, screenHeight)
 
 	// root flex container
 	rootFlex := furex.NewFlex(screenWidth, screenHeight)
 	rootFlex.Direction = furex.Column
 	rootFlex.Justify = furex.JustifySpaceBetween
-	flexContainerView := furex.NewView(rootFlex)
-	g.rootView = flexContainerView
-	g.viewController.SetRootView(flexContainerView)
+
+	// set root view
+	g.viewController.SetRootView(rootFlex)
 
 	// flex items
-	b0 := furex.NewView(furex.NewBox(100, 100, color.RGBA{0xff, 0, 0, 0xff}))
-	g.rootView.AddSubView(b0)
+	b0 := furex.NewBox(100, 100, color.RGBA{0xff, 0, 0, 0xff})
+	rootFlex.AddChild(b0)
 
-	b1 := furex.NewView(furex.NewBox(100, 100, color.RGBA{0, 0xff, 0, 0xff}))
-	g.rootView.AddSubView(b1)
+	b1 := furex.NewBox(100, 100, color.RGBA{0, 0xff, 0, 0xff})
+	rootFlex.AddChild(b1)
+
+	// call layout
+	g.viewController.Layout()
 }
 
 func main() {

@@ -72,7 +72,7 @@ const (
 // Flex is a container widget that lays out its children following the
 // CSS flexbox algorithm.
 type Flex struct {
-	ViewEventHandlerFuncs
+	ViewEmbed
 
 	Direction    Direction
 	Wrap         FlexWrap
@@ -99,22 +99,21 @@ func NewFlex(width, height int) *Flex {
 	return f
 }
 
-func (f *Flex) OnLoad(v *View) {
-	v.SetSize(f.width, f.height)
+func (f *Flex) OnLoad() {
+	f.SetSize(f.width, f.height)
 }
 
-func (f *Flex) OnLayout(v *View) {
+func (f *Flex) OnLayout() {
 	var children []element
-	subViews := v.GetSubView()
-	for i := 0; i < len(subViews); i++ {
-		c := subViews[i]
+	for i := 0; i < len(f.Children()); i++ {
+		c := f.Children()[i]
 		children = append(children, element{
 			flexBaseSize: float64(f.flexBaseSize(c)),
-			n:            c,
+			node:         c,
 		})
 	}
 
-	containerMainSize := float64(f.mainSize(v.Rect().Size()))
+	containerMainSize := float64(f.mainSize(f.Size()))
 	// containerCrossSize := float64(f.crossSize(f.Rect().Size()))
 
 	var lines []flexLine
@@ -134,21 +133,21 @@ func (f *Flex) OnLayout(v *View) {
 		line := &lines[l]
 
 		// Calculate free space
-		freeSpace := float64(f.mainSize(v.Rect().Size()))
+		freeSpace := float64(f.mainSize(f.Size()))
 		for _, child := range line.child {
-			freeSpace -= float64(f.flexBaseSize(child.n))
+			freeSpace -= float64(f.flexBaseSize(child.node))
 		}
 
 		// Distribute free space
 		for _, child := range line.child {
-			child.mainSize = float64(f.flexBaseSize(child.n))
+			child.mainSize = float64(f.flexBaseSize(child.node))
 		}
 	}
 
 	// Determine cross size
 	for l := range lines {
 		for _, child := range lines[l].child {
-			child.crossSize = float64(f.crossSize(child.n.Rect().Size()))
+			child.crossSize = float64(f.crossSize(child.node.Size()))
 		}
 	}
 
@@ -156,9 +155,9 @@ func (f *Flex) OnLayout(v *View) {
 		// Single line
 		switch f.Direction {
 		case Row:
-			lines[0].crossSize = float64(v.Rect().Size().Y)
+			lines[0].crossSize = float64(f.Size().Y)
 		case Column:
-			lines[0].crossSize = float64(v.Rect().Size().X)
+			lines[0].crossSize = float64(f.Size().X)
 		}
 	} else {
 		panic("not implemented for multi line")
@@ -224,25 +223,25 @@ func (f *Flex) OnLayout(v *View) {
 		for _, child := range line.child {
 			switch f.Direction {
 			case Row:
-				child.n.SetRect(round(child.mainOffset),
+				child.node.SetBounds(round(child.mainOffset),
 					round(child.crossOffset),
 					round(child.mainOffset+child.mainSize),
 					round(child.crossOffset+child.crossSize))
 			case Column:
-				child.n.SetRect(round(child.crossOffset),
+				child.node.SetBounds(round(child.crossOffset),
 					round(child.mainOffset),
 					round(child.crossOffset+child.crossSize),
 					round(child.mainOffset+child.mainSize))
 			default:
 				panic(fmt.Sprint("flex: bad direction ", f.Direction))
 			}
-			child.n.Layout()
+			child.node.OnLayout()
 		}
 	}
 }
 
 type element struct {
-	n            *View
+	node         View
 	flexBaseSize float64
 	frozen       bool
 	unclamped    float64
@@ -281,8 +280,8 @@ func (f *Flex) crossSize(p image.Point) int {
 	}
 }
 
-func (f *Flex) flexBaseSize(v *View) int {
-	return f.mainSize(v.Rect().Size())
+func (f *Flex) flexBaseSize(v View) int {
+	return f.mainSize(v.Bounds().Size())
 }
 
 func round(f float64) int {
