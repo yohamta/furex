@@ -17,8 +17,6 @@ const (
 )
 
 // Justify aligns items along the main axis.
-//
-// https://www.w3.org/TR/css-flexbox-1/#justify-content-property
 type Justify uint8
 
 const (
@@ -140,6 +138,7 @@ func (f *Flex) layout() {
 	}
 
 	containerMainSize := float64(f.mainSize(f.Size()))
+	// TODO: flexWrap implementation
 	// containerCrossSize := float64(f.crossSize(f.Rect().Size()))
 
 	var lines []flexLine
