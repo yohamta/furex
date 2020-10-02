@@ -22,12 +22,12 @@ func (g *Game) initUI() {
 }
 
 func (g *Game) Update() {
-  // Update the flex layout and it's children
+  // Update the contaienr layout and it's children
   g.rootFlex.Update()
 }
 
 func (g *Game) Draw(screen *ebiten.Image) {
-  // Draws children in the containers
+  // Draw children in the flex containers
   g.rootFlex.Draw(screen)
 }
 ```
