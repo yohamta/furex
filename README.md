@@ -7,17 +7,17 @@ A simple flexbox-layout library for ebiten
 import "github.com/yotahamada/furex"
 
 func (g *Game) initUI() {
-	// root flex container
-	g.rootFlex := furex.NewFlex(0, 0, screenWidth, screenHeight)
-	g.rootFlex.Direction = furex.Column
-	g.rootFlex.Justify = furex.JustifySpaceBetween
+  // root flex container
+  g.rootFlex := furex.NewFlex(0, 0, screenWidth, screenHeight)
+  g.rootFlex.Direction = furex.Column
+  g.rootFlex.Justify = furex.JustifySpaceBetween
 
-	// flex item: box0
-	b0 := furex.NewBox(100, 100, color.RGBA{0xff, 0, 0, 0xff})
-	g.rootFlex.AddChild(b0)
+  // flex item: box0
+  b0 := furex.NewBox(100, 100, color.RGBA{0xff, 0, 0, 0xff})
+  g.rootFlex.AddChild(b0)
 
-	// flex item: box1
-	b1 := furex.NewBox(100, 100, color.RGBA{0, 0xff, 0, 0xff})
+  // flex item: box1
+  b1 := furex.NewBox(100, 100, color.RGBA{0, 0xff, 0, 0xff})
   g.rootFlex.AddChild(b1)
 }
 
@@ -28,6 +28,6 @@ func (g *Game) Update() {
 
 func (g *Game) Draw(screen *ebiten.Image) {
   // Draws children in the containers
-	g.rootFlex.Draw(screen)
+  g.rootFlex.Draw(screen)
 }
 ```
