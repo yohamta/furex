@@ -10,17 +10,17 @@ type Rect struct {
 	X, Y, W, H int
 }
 
-var imgRect *ebiten.Image
+var imgOfAPixel *ebiten.Image
 
 func createRectImg() *ebiten.Image {
-	if imgRect != nil {
-		return imgRect
+	if imgOfAPixel != nil {
+		return imgOfAPixel
 	}
-	imgRect, err := ebiten.NewImage(1, 1, ebiten.FilterDefault)
+	imgOfAPixel, err := ebiten.NewImage(1, 1, ebiten.FilterDefault)
 	if err != nil {
 		panic(err)
 	}
-	return imgRect
+	return imgOfAPixel
 }
 
 func FillRect(target *ebiten.Image, r Rect, clr color.Color) {
