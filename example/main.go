@@ -9,7 +9,7 @@ import (
 )
 
 type Game struct {
-	viewController *furex.ViewController
+	rootFlex *furex.Flex
 }
 
 type Scene interface {
@@ -30,7 +30,8 @@ func (g *Game) Update(screen *ebiten.Image) error {
 		g.buildUI()
 		isInitialized = true
 	}
-	g.viewController.Update()
+	// update flex container and it's children
+	g.rootFlex.Update()
 	return nil
 }
 
@@ -39,7 +40,8 @@ func (g *Game) SetWindowSize(width, height int) {
 }
 
 func (g *Game) Draw(screen *ebiten.Image) {
-	g.viewController.Draw(screen)
+	// draw flex items
+	g.rootFlex.Draw(screen)
 }
 
 func (g *Game) Layout(outsideWidth, outsideHeight int) (int, int) {
@@ -53,26 +55,18 @@ func NewGame() (*Game, error) {
 }
 
 func (g *Game) buildUI() {
-	// create view controller
-	g.viewController = furex.NewViewController(0, 0, screenWidth, screenHeight)
-
 	// root flex container
-	rootFlex := furex.NewFlex(screenWidth, screenHeight)
-	rootFlex.Direction = furex.Column
-	rootFlex.Justify = furex.JustifySpaceBetween
+	g.rootFlex = furex.NewFlex(0, 0, screenWidth, screenHeight)
+	g.rootFlex.Direction = furex.Column
+	g.rootFlex.Justify = furex.JustifySpaceBetween
 
-	// set root view
-	g.viewController.SetRootView(rootFlex)
-
-	// flex items
+	// flex item: box0
 	b0 := furex.NewBox(100, 100, color.RGBA{0xff, 0, 0, 0xff})
-	rootFlex.AddChild(b0)
+	g.rootFlex.AddChild(b0)
 
+	// flex item: box1
 	b1 := furex.NewBox(100, 100, color.RGBA{0, 0xff, 0, 0xff})
-	rootFlex.AddChild(b1)
-
-	// call layout
-	g.viewController.Layout()
+	g.rootFlex.AddChild(b1)
 }
 
 func main() {

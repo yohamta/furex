@@ -6,31 +6,24 @@ import (
 	"github.com/hajimehoshi/ebiten"
 )
 
+// View represents a view with certain bounds
 type View interface {
-	Children() []View
-	AddChild(child View)
-
+	// SetBounds sets bounds for this view
 	SetBounds(x0, y0, x1, y1 int)
-	SetPosition(x, y int)
-	SetSize(w, h int)
 
-	Bounds() image.Rectangle
-	Position() image.Point
-	Size() image.Point
+	// GetBounds returns bounds for this view
+	GetBounds() image.Rectangle
 
-	IsLoaded() bool
-	SetLoaded(loaded bool)
+	// Update updates the content
+	Update()
 
-	OnLoad()
-	OnLayout()
-	OnUpdate()
-	OnDraw(screen *ebiten.Image)
+	// Draw renders the view to the screen
+	Draw(screen *ebiten.Image)
 }
 
+// ViewEmbed is a common implementation of a View
 type ViewEmbed struct {
-	viewLoaded bool
-	bounds     image.Rectangle
-	children   []View
+	bounds image.Rectangle
 }
 
 func (v *ViewEmbed) SetPosition(x, y int) {
@@ -53,34 +46,10 @@ func (v *ViewEmbed) Position() image.Point {
 	return v.bounds.Min
 }
 
-func (v *ViewEmbed) Bounds() image.Rectangle {
+func (v *ViewEmbed) GetBounds() image.Rectangle {
 	return v.bounds
 }
 
 func (v *ViewEmbed) SetBounds(x0, y0, x1, y1 int) {
 	v.bounds = image.Rect(x0, y0, x1, y1)
 }
-
-func (v *ViewEmbed) IsLoaded() bool {
-	return v.viewLoaded
-}
-
-func (v *ViewEmbed) SetLoaded(loaded bool) {
-	v.viewLoaded = loaded
-}
-
-func (v *ViewEmbed) AddChild(child View) {
-	v.children = append(v.children, child)
-}
-
-func (v *ViewEmbed) Children() []View {
-	return v.children
-}
-
-func (v *ViewEmbed) OnLayout() {}
-
-func (v *ViewEmbed) OnLoad() {}
-
-func (v *ViewEmbed) OnUpdate() {}
-
-func (v *ViewEmbed) OnDraw(screen *ebiten.Image) {}

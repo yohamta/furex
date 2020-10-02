@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"image"
 	"math"
+
+	"github.com/hajimehoshi/ebiten"
 )
 
 // Direction is the direction in which flex items are laid out
@@ -80,11 +82,13 @@ type Flex struct {
 	AlignItems   AlignItem
 	AlignContent AlignContent
 
-	width, height int
+	children []View
+
+	isDirty bool
 }
 
 // NewFlex creates NewFlexContaienr
-func NewFlex(width, height int) *Flex {
+func NewFlex(x, y, width, height int) *Flex {
 	f := new(Flex)
 
 	f.Direction = Row
@@ -93,20 +97,42 @@ func NewFlex(width, height int) *Flex {
 	f.AlignItems = AlignItemCenter
 	f.AlignContent = AlignContentCenter
 
-	f.width = width
-	f.height = height
+	f.SetBounds(x, y, x+width, y+height)
 
 	return f
 }
 
-func (f *Flex) OnLoad() {
-	f.SetSize(f.width, f.height)
+func (f *Flex) AddChild(child View) {
+	f.children = append(f.children, child)
+	f.isDirty = true
 }
 
-func (f *Flex) OnLayout() {
+func (f *Flex) Update() {
+	if f.isDirty {
+		f.layout()
+	}
+	for i := 0; i < len(f.children); i++ {
+		child := f.children[i]
+		child.Update()
+	}
+}
+
+func (f *Flex) Draw(screen *ebiten.Image) {
+	for i := 0; i < len(f.children); i++ {
+		child := f.children[i]
+		child.Draw(screen)
+	}
+}
+
+func (f *Flex) SetBounds(x0, y0, x1, y1 int) {
+	f.ViewEmbed.SetBounds(x0, y0, x1, y1)
+	f.isDirty = true
+}
+
+func (f *Flex) layout() {
 	var children []element
-	for i := 0; i < len(f.Children()); i++ {
-		c := f.Children()[i]
+	for i := 0; i < len(f.children); i++ {
+		c := f.children[i]
 		children = append(children, element{
 			flexBaseSize: float64(f.flexBaseSize(c)),
 			node:         c,
@@ -147,7 +173,7 @@ func (f *Flex) OnLayout() {
 	// Determine cross size
 	for l := range lines {
 		for _, child := range lines[l].child {
-			child.crossSize = float64(f.crossSize(child.node.Size()))
+			child.crossSize = float64(f.crossSize(child.node.GetBounds().Size()))
 		}
 	}
 
@@ -235,9 +261,10 @@ func (f *Flex) OnLayout() {
 			default:
 				panic(fmt.Sprint("flex: bad direction ", f.Direction))
 			}
-			child.node.OnLayout()
 		}
 	}
+
+	f.isDirty = false
 }
 
 type element struct {
@@ -281,7 +308,7 @@ func (f *Flex) crossSize(p image.Point) int {
 }
 
 func (f *Flex) flexBaseSize(v View) int {
-	return f.mainSize(v.Bounds().Size())
+	return f.mainSize(v.GetBounds().Size())
 }
 
 func round(f float64) int {
