@@ -270,8 +270,6 @@ func (f *Flex) layout() {
 type element struct {
 	node         View
 	flexBaseSize float64
-	frozen       bool
-	unclamped    float64
 	mainSize     float64
 	mainOffset   float64
 	crossSize    float64
