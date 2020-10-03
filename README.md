@@ -20,10 +20,13 @@ func (g *Game) initUI() {
   // flex item: box1
   b1 := furex.NewBox(100, 100, color.RGBA{0, 0xff, 0, 0xff})
   g.rootFlex.AddChild(b1)
+
+	// layout
+	g.rootFlex.Layout()
 }
 
 func (g *Game) Update() {
-  // Update the contaienr layout and it's children
+  // Update the container's children
   g.rootFlex.Update()
 }
 

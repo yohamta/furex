@@ -63,11 +63,15 @@ func (g *Game) buildUI() {
 
 	// flex item: box0
 	b0 := furex.NewBox(100, 100, color.RGBA{0xff, 0, 0, 0xff})
+	b0.FlexGrow = 1
 	g.rootFlex.AddChild(b0)
 
 	// flex item: box1
 	b1 := furex.NewBox(100, 100, color.RGBA{0, 0xff, 0, 0xff})
 	g.rootFlex.AddChild(b1)
+
+	// layout
+	g.rootFlex.Layout()
 }
 
 func main() {

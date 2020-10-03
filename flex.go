@@ -70,6 +70,30 @@ const (
 	AlignContentSpaceAround
 )
 
+type Style struct {
+	Bounds image.Rectangle
+}
+
+func (s *Style) Size() image.Point {
+	return s.Bounds.Size()
+}
+
+func (s *Style) Position() image.Point {
+	return s.Bounds.Min
+}
+
+func (s *Style) SetPosition(x, y int) {
+	s.Bounds.Add(image.Point{
+		x - s.Bounds.Min.X,
+		y - s.Bounds.Min.Y,
+	})
+}
+
+func (s *Style) SetSize(w, h int) {
+	s.Bounds.Max.X = w + s.Bounds.Min.X
+	s.Bounds.Max.Y = h + s.Bounds.Min.Y
+}
+
 // Flex is a container widget that lays out its children following the
 // CSS flexbox algorithm.
 type Flex struct {
@@ -82,8 +106,6 @@ type Flex struct {
 	AlignContent AlignContent
 
 	children []View
-
-	isDirty bool
 }
 
 // NewFlex creates NewFlexContaienr
@@ -95,21 +117,16 @@ func NewFlex(x, y, width, height int) *Flex {
 	f.Justify = JustifyStart
 	f.AlignItems = AlignItemStretch
 	f.AlignContent = AlignContentStart
-
-	f.SetBounds(x, y, x+width, y+height)
+	f.Bounds = image.Rect(x, y, x+width, y+height)
 
 	return f
 }
 
 func (f *Flex) AddChild(child View) {
 	f.children = append(f.children, child)
-	f.isDirty = true
 }
 
 func (f *Flex) Update() {
-	if f.isDirty {
-		f.layout()
-	}
 	for i := 0; i < len(f.children); i++ {
 		child := f.children[i]
 		child.Update()
@@ -123,12 +140,9 @@ func (f *Flex) Draw(screen *ebiten.Image) {
 	}
 }
 
-func (f *Flex) SetBounds(x0, y0, x1, y1 int) {
-	f.ViewEmbed.SetBounds(x0, y0, x1, y1)
-	f.isDirty = true
-}
-
-func (f *Flex) layout() {
+// This is the main routing that implements a subset of flexbox layout
+// https://www.w3.org/TR/css-flexbox-1/#layout-algorithm
+func (f *Flex) Layout() {
 	var children []element
 	for i := 0; i < len(f.children); i++ {
 		c := f.children[i]
@@ -138,10 +152,10 @@ func (f *Flex) layout() {
 		})
 	}
 
-	containerMainSize := float64(f.mainSize(f.Size()))
-	// TODO: flexWrap implementation
-	// containerCrossSize := float64(f.crossSize(f.Rect().Size()))
+	containerMainSize := float64(f.mainSize(f.GetStyle().Size()))
+	containerCrossSize := float64(f.crossSize(f.GetStyle().Size()))
 
+	// 9.3. Main Size Determination
 	var lines []flexLine
 	if f.Wrap == NoWrap {
 		line := flexLine{child: make([]*element, len(children))}
@@ -152,7 +166,24 @@ func (f *Flex) layout() {
 		}
 		lines = []flexLine{line}
 	} else {
-		panic("not implemented")
+		var line flexLine
+		for i := range children {
+			child := &children[i]
+
+			hypotheticalMainSize := w.clampSize(child.flexBaseSize, child.n)
+
+			if line.mainSize > 0 && line.mainSize+hypotheticalMainSize > containerMainSize {
+				lines = append(lines, line)
+				line = flexLine{}
+			}
+			line.child = append(line.child, child)
+			line.mainSize += hypotheticalMainSize
+
+			if d, ok := child.n.LayoutData.(LayoutData); ok && d.BreakAfter {
+				lines = append(lines, line)
+				line = flexLine{}
+			}
+		}
 	}
 
 	for l := range lines {
@@ -173,7 +204,7 @@ func (f *Flex) layout() {
 	// Determine cross size
 	for l := range lines {
 		for _, child := range lines[l].child {
-			child.crossSize = float64(f.crossSize(child.node.GetBounds().Size()))
+			child.crossSize = float64(f.crossSize(child.node.GetStyle().Size()))
 		}
 	}
 
@@ -249,12 +280,12 @@ func (f *Flex) layout() {
 		for _, child := range line.child {
 			switch f.Direction {
 			case Row:
-				child.node.SetBounds(round(child.mainOffset),
+				child.node.GetStyle().Bounds = image.Rect(round(child.mainOffset),
 					round(child.crossOffset),
 					round(child.mainOffset+child.mainSize),
 					round(child.crossOffset+child.crossSize))
 			case Column:
-				child.node.SetBounds(round(child.crossOffset),
+				child.node.GetStyle().Bounds = image.Rect(round(child.crossOffset),
 					round(child.mainOffset),
 					round(child.crossOffset+child.crossSize),
 					round(child.mainOffset+child.mainSize))
@@ -263,8 +294,6 @@ func (f *Flex) layout() {
 			}
 		}
 	}
-
-	f.isDirty = false
 }
 
 type element struct {
@@ -306,7 +335,7 @@ func (f *Flex) crossSize(p image.Point) int {
 }
 
 func (f *Flex) flexBaseSize(v View) int {
-	return f.mainSize(v.GetBounds().Size())
+	return f.mainSize(v.GetStyle().Size())
 }
 
 func round(f float64) int {
