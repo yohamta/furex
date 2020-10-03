@@ -44,6 +44,7 @@ const (
 	AlignItemStart AlignItem = iota
 	AlignItemEnd
 	AlignItemCenter
+	AlignItemStretch
 )
 
 // FlexWrap controls whether the container is single- or multi-line,
@@ -91,9 +92,9 @@ func NewFlex(x, y, width, height int) *Flex {
 
 	f.Direction = Row
 	f.Wrap = NoWrap
-	f.Justify = JustifyCenter
-	f.AlignItems = AlignItemCenter
-	f.AlignContent = AlignContentCenter
+	f.Justify = JustifyStart
+	f.AlignItems = AlignItemStretch
+	f.AlignContent = AlignContentStart
 
 	f.SetBounds(x, y, x+width, y+height)
 

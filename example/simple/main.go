@@ -59,6 +59,7 @@ func (g *Game) buildUI() {
 	g.rootFlex = furex.NewFlex(0, 0, screenWidth, screenHeight)
 	g.rootFlex.Direction = furex.Column
 	g.rootFlex.Justify = furex.JustifySpaceBetween
+	g.rootFlex.AlignItems = furex.AlignItemCenter
 
 	// flex item: box0
 	b0 := furex.NewBox(100, 100, color.RGBA{0xff, 0, 0, 0xff})
