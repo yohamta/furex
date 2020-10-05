@@ -18,6 +18,7 @@ type Scene interface {
 }
 
 var (
+	windowRect         image.Rectangle
 	screenWidth        = 240
 	screenHeight       = 360
 	desktopScreenScale = 2
@@ -41,7 +42,7 @@ func (g *Game) SetWindowSize(width, height int) {
 
 func (g *Game) Draw(screen *ebiten.Image) {
 	// draw flex items
-	g.rootFlex.Draw(screen)
+	g.rootFlex.Draw(screen, windowRect)
 }
 
 func (g *Game) Layout(outsideWidth, outsideHeight int) (int, int) {
@@ -71,15 +72,16 @@ func (g *Game) buildUI() {
 }
 
 func main() {
-	windowSize := image.Point{screenWidth * desktopScreenScale, screenHeight * desktopScreenScale}
-	ebiten.SetWindowSize(windowSize.X, windowSize.Y)
+	windowRect = image.Rect(0, 0, screenWidth*desktopScreenScale, screenHeight*desktopScreenScale)
+	size := windowRect.Size()
+	ebiten.SetWindowSize(size.X, size.Y)
 
 	game, err := NewGame()
 	if err != nil {
 		panic(err)
 	}
 
-	game.SetWindowSize(windowSize.X, windowSize.Y)
+	game.SetWindowSize(size.X, size.Y)
 	if err := ebiten.RunGame(game); err != nil {
 		panic(err)
 	}
