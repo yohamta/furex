@@ -1,5 +1,5 @@
 # furex
-A simple flexbox-layout library for ebiten
+A simple and extensible UI library with small subset of flexbox-layout which is made to create a game with [Ebiten](https://ebiten.org/)
 
 ## Simple usage
 
