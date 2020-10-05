@@ -111,13 +111,20 @@ func NewFlex(x, y, width, height int) *Flex {
 	f.Justify = JustifyStart
 	f.AlignItems = AlignItemCenter
 	f.AlignContent = AlignContentStart
+	f.Bounds = image.Rect(x, y, x+width, y+height)
 
 	return f
 }
 
+func (f *Flex) OnUpdate() {
+	if f.isDirty {
+		f.OnLayout()
+	}
+}
+
 // This is the main routing that implements a subset of flexbox layout
 // https://www.w3.org/TR/css-flexbox-1/#layout-algorithm
-func (f *Flex) Layout() {
+func (f *Flex) OnLayout() {
 	// 9.2. Line Length Determination
 	// Determine the available main and cross space for the flex items.
 	containerMainSize := float64(f.mainSize(f.Bounds.Size()))
@@ -306,6 +313,10 @@ func (f *Flex) Layout() {
 					round(child.crossOffset+child.crossSize))
 			case Column:
 				child.node.GetStyle().Bounds = image.Rect(round(child.crossOffset),
+					round(child.mainOffset),
+					round(child.crossOffset+child.crossSize),
+					round(child.mainOffset+child.mainSize))
+				println(round(child.crossOffset),
 					round(child.mainOffset),
 					round(child.crossOffset+child.crossSize),
 					round(child.mainOffset+child.mainSize))

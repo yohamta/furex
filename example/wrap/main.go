@@ -9,7 +9,7 @@ import (
 )
 
 type Game struct {
-	rootFlex *furex.Flex
+	vc *furex.ViewController
 }
 
 type Scene interface {
@@ -32,7 +32,7 @@ func (g *Game) Update(screen *ebiten.Image) error {
 		isInitialized = true
 	}
 	// update flex container and it's children
-	g.rootFlex.Update()
+	g.vc.Update()
 	return nil
 }
 
@@ -42,7 +42,7 @@ func (g *Game) SetWindowSize(width, height int) {
 
 func (g *Game) Draw(screen *ebiten.Image) {
 	// draw flex items
-	g.rootFlex.Draw(screen, windowRect)
+	g.vc.Draw(screen, windowRect)
 }
 
 func (g *Game) Layout(outsideWidth, outsideHeight int) (int, int) {
@@ -56,12 +56,12 @@ func NewGame() (*Game, error) {
 }
 
 func (g *Game) buildUI() {
-	g.rootFlex = furex.NewFlex(0, 0, screenWidth, screenHeight)
-	g.rootFlex.Direction = furex.Row
-	g.rootFlex.Justify = furex.JustifyCenter
-	g.rootFlex.AlignItems = furex.AlignItemCenter
-	g.rootFlex.AlignContent = furex.AlignContentCenter
-	g.rootFlex.Wrap = furex.Wrap
+	rootFlex := furex.NewFlex(0, 0, screenWidth, screenHeight)
+	rootFlex.Direction = furex.Row
+	rootFlex.Justify = furex.JustifyCenter
+	rootFlex.AlignItems = furex.AlignItemCenter
+	rootFlex.AlignContent = furex.AlignContentCenter
+	rootFlex.Wrap = furex.Wrap
 
 	for i := 0; i < 20; i++ {
 		var c color.RGBA
@@ -73,8 +73,12 @@ func (g *Game) buildUI() {
 		default:
 			c = color.RGBA{0, 0, 0xff, 0xff}
 		}
-		g.rootFlex.AddChild(furex.NewBox(50, 50, c))
+		rootFlex.AddChild(furex.NewBox(50, 50, c))
 	}
+
+	// view controller
+	g.vc = furex.NewViewController()
+	g.vc.SetRootView(rootFlex)
 }
 
 func main() {
