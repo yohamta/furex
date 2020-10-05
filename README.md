@@ -21,8 +21,8 @@ func (g *Game) initUI() {
   b1 := furex.NewBox(100, 100, color.RGBA{0, 0xff, 0, 0xff})
   g.rootFlex.AddChild(b1)
 
-	// layout
-	g.rootFlex.Layout()
+  // layout
+  g.rootFlex.Layout()
 }
 
 func (g *Game) Update() {
