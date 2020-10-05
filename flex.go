@@ -44,7 +44,6 @@ const (
 	AlignItemStart AlignItem = iota
 	AlignItemEnd
 	AlignItemCenter
-	AlignItemStretch
 )
 
 // FlexWrap controls whether the container is single- or multi-line,
@@ -62,8 +61,7 @@ const (
 type AlignContent uint8
 
 const (
-	AlignContentStretch AlignContent = iota
-	AlignContentStart
+	AlignContentStart AlignContent = iota
 	AlignContentEnd
 	AlignContentCenter
 	AlignContentSpaceBetween
@@ -115,7 +113,7 @@ func NewFlex(x, y, width, height int) *Flex {
 	f.Direction = Row
 	f.Wrap = NoWrap
 	f.Justify = JustifyStart
-	f.AlignItems = AlignItemStretch
+	f.AlignItems = AlignItemCenter
 	f.AlignContent = AlignContentStart
 	f.Bounds = image.Rect(x, y, x+width, y+height)
 
@@ -143,6 +141,12 @@ func (f *Flex) Draw(screen *ebiten.Image) {
 // This is the main routing that implements a subset of flexbox layout
 // https://www.w3.org/TR/css-flexbox-1/#layout-algorithm
 func (f *Flex) Layout() {
+	// 9.2. Line Length Determination
+	// Determine the available main and cross space for the flex items.
+	containerMainSize := float64(f.mainSize(f.GetStyle().Size()))
+	containerCrossSize := float64(f.crossSize(f.GetStyle().Size()))
+
+	// Determine the flex base size and hypothetical main size of each item:
 	var children []element
 	for i := 0; i < len(f.children); i++ {
 		c := f.children[i]
@@ -152,12 +156,11 @@ func (f *Flex) Layout() {
 		})
 	}
 
-	containerMainSize := float64(f.mainSize(f.GetStyle().Size()))
-	containerCrossSize := float64(f.crossSize(f.GetStyle().Size()))
-
-	// 9.3. Main Size Determination
+	// §9.3. Main Size Determination
+	// Collect flex items into flex lines
 	var lines []flexLine
 	if f.Wrap == NoWrap {
+		// Single line
 		line := flexLine{child: make([]*element, len(children))}
 		for i := range children {
 			child := &children[i]
@@ -166,11 +169,13 @@ func (f *Flex) Layout() {
 		}
 		lines = []flexLine{line}
 	} else {
+		// Multi line
 		var line flexLine
 		for i := range children {
 			child := &children[i]
 
-			hypotheticalMainSize := w.clampSize(child.flexBaseSize, child.n)
+			// Use flexBaseSize as hypotheticalMainSize for now
+			hypotheticalMainSize := child.flexBaseSize
 
 			if line.mainSize > 0 && line.mainSize+hypotheticalMainSize > containerMainSize {
 				lines = append(lines, line)
@@ -178,11 +183,10 @@ func (f *Flex) Layout() {
 			}
 			line.child = append(line.child, child)
 			line.mainSize += hypotheticalMainSize
+		}
 
-			if d, ok := child.n.LayoutData.(LayoutData); ok && d.BreakAfter {
-				lines = append(lines, line)
-				line = flexLine{}
-			}
+		if len(line.child) > 0 || len(children) == 0 {
+			lines = append(lines, line)
 		}
 	}
 
@@ -201,23 +205,30 @@ func (f *Flex) Layout() {
 		}
 	}
 
-	// Determine cross size
+	// §9.4. Cross Size Determination
+	// Determine the hypothetical cross size of each item
 	for l := range lines {
 		for _, child := range lines[l].child {
 			child.crossSize = float64(f.crossSize(child.node.GetStyle().Size()))
 		}
 	}
 
+	// §9.4.8 Calculate the cross size of each flex line.
 	if len(lines) == 1 {
 		// Single line
-		switch f.Direction {
-		case Row:
-			lines[0].crossSize = float64(f.Size().Y)
-		case Column:
-			lines[0].crossSize = float64(f.Size().X)
-		}
+		lines[0].crossSize = containerCrossSize
 	} else {
-		panic("not implemented for multi line")
+		// Multi line
+		for l := range lines {
+			line := &lines[l]
+			max := 0.0
+			for _, child := range line.child {
+				if child.crossSize > max {
+					max = child.crossSize
+				}
+			}
+			line.crossSize = max
+		}
 	}
 
 	off := 0.0
@@ -227,7 +238,7 @@ func (f *Flex) Layout() {
 		off += line.crossSize
 	}
 
-	// Main axis alignment
+	// §9.5. Main-Axis Alignment
 	for l := range lines {
 		line := &lines[l]
 		total := 0.0
@@ -254,7 +265,7 @@ func (f *Flex) Layout() {
 		}
 	}
 
-	// Cross axis alignment
+	// §9.6. Cross axis alignment
 	for l := range lines {
 		line := &lines[l]
 		for _, child := range line.child {
@@ -274,7 +285,39 @@ func (f *Flex) Layout() {
 		}
 	}
 
-	// Layout complete. Generate child Rect values.
+	// §9.6.15 determine container cross size used
+	crossSize := lines[len(lines)-1].crossOffset + lines[len(lines)-1].crossSize
+	remFree := containerCrossSize - crossSize
+
+	// §9.6.16 align flex lines, 'align-content'.
+	if remFree > 0 {
+		spacing, off := 0.0, 0.0
+		switch f.AlignContent {
+		case AlignContentStart:
+			// already laid out correctly
+		case AlignContentEnd:
+			off = remFree
+		case AlignContentCenter:
+			off = remFree / 2
+		case AlignContentSpaceBetween:
+			spacing = remFree / float64(len(lines)-1)
+		case AlignContentSpaceAround:
+			spacing = remFree / float64(len(lines))
+			off = spacing / 2
+		}
+		if f.AlignContent != AlignContentStart {
+			for l := range lines {
+				line := &lines[l]
+				line.crossOffset += off
+				for _, child := range line.child {
+					child.crossOffset += off
+				}
+				off += spacing
+			}
+		}
+	}
+
+	// Layout complete. Update children position
 	for l := range lines {
 		line := &lines[l]
 		for _, child := range line.child {

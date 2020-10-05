@@ -55,21 +55,26 @@ func NewGame() (*Game, error) {
 }
 
 func (g *Game) buildUI() {
-	// root flex container
 	g.rootFlex = furex.NewFlex(0, 0, screenWidth, screenHeight)
-	g.rootFlex.Direction = furex.Column
-	g.rootFlex.Justify = furex.JustifySpaceBetween
+	g.rootFlex.Direction = furex.Row
+	g.rootFlex.Justify = furex.JustifyCenter
 	g.rootFlex.AlignItems = furex.AlignItemCenter
+	g.rootFlex.AlignContent = furex.AlignContentCenter
+	g.rootFlex.Wrap = furex.Wrap
 
-	// flex item: box0
-	b0 := furex.NewBox(100, 100, color.RGBA{0xff, 0, 0, 0xff})
-	g.rootFlex.AddChild(b0)
+	for i := 0; i < 20; i++ {
+		var c color.RGBA
+		switch i % 3 {
+		case 0:
+			c = color.RGBA{0xff, 0, 0, 0xff}
+		case 1:
+			c = color.RGBA{0, 0xff, 0, 0xff}
+		default:
+			c = color.RGBA{0, 0, 0xff, 0xff}
+		}
+		g.rootFlex.AddChild(furex.NewBox(50, 50, c))
+	}
 
-	// flex item: box1
-	b1 := furex.NewBox(100, 100, color.RGBA{0, 0xff, 0, 0xff})
-	g.rootFlex.AddChild(b1)
-
-	// layout
 	g.rootFlex.Layout()
 }
 
