@@ -4,8 +4,6 @@ import (
 	"fmt"
 	"image"
 	"math"
-
-	"github.com/hajimehoshi/ebiten"
 )
 
 // Direction is the direction in which flex items are laid out
@@ -102,10 +100,6 @@ type Flex struct {
 	Justify      Justify
 	AlignItems   AlignItem
 	AlignContent AlignContent
-
-	isDirty bool
-
-	children []View
 }
 
 // NewFlex creates NewFlexContaienr
@@ -117,32 +111,8 @@ func NewFlex(x, y, width, height int) *Flex {
 	f.Justify = JustifyStart
 	f.AlignItems = AlignItemCenter
 	f.AlignContent = AlignContentStart
-	f.Bounds = image.Rect(x, y, x+width, y+height)
-	f.isDirty = false
 
 	return f
-}
-
-func (f *Flex) AddChild(child View) {
-	f.children = append(f.children, child)
-	f.isDirty = true
-}
-
-func (f *Flex) Update() {
-	if f.isDirty {
-		f.Layout()
-	}
-	for i := 0; i < len(f.children); i++ {
-		child := f.children[i]
-		child.Update()
-	}
-}
-
-func (f *Flex) Draw(screen *ebiten.Image, frame image.Rectangle) {
-	for i := 0; i < len(f.children); i++ {
-		child := f.children[i]
-		child.Draw(screen, child.GetStyle().Bounds.Add(f.Bounds.Min))
-	}
 }
 
 // This is the main routing that implements a subset of flexbox layout
@@ -150,8 +120,8 @@ func (f *Flex) Draw(screen *ebiten.Image, frame image.Rectangle) {
 func (f *Flex) Layout() {
 	// 9.2. Line Length Determination
 	// Determine the available main and cross space for the flex items.
-	containerMainSize := float64(f.mainSize(f.GetStyle().Size()))
-	containerCrossSize := float64(f.crossSize(f.GetStyle().Size()))
+	containerMainSize := float64(f.mainSize(f.Bounds.Size()))
+	containerCrossSize := float64(f.crossSize(f.Bounds.Size()))
 
 	// Determine the flex base size and hypothetical main size of each item:
 	var children []element
@@ -201,7 +171,7 @@ func (f *Flex) Layout() {
 		line := &lines[l]
 
 		// Calculate free space
-		freeSpace := float64(f.mainSize(f.Size()))
+		freeSpace := float64(f.mainSize(f.GetStyle().Size()))
 		for _, child := range line.child {
 			freeSpace -= float64(f.flexBaseSize(child.node))
 		}
