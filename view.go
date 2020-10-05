@@ -1,6 +1,8 @@
 package furex
 
 import (
+	"image"
+
 	"github.com/hajimehoshi/ebiten"
 )
 
@@ -13,7 +15,7 @@ type View interface {
 	Update()
 
 	// Draw renders the view to the screen
-	Draw(screen *ebiten.Image)
+	Draw(screen *ebiten.Image, frame image.Rectangle)
 
 	// GetStyle returns style data
 	GetStyle() *Style
@@ -32,4 +34,4 @@ func (v *ViewEmbed) Layout() {}
 
 func (v *ViewEmbed) Update() {}
 
-func (v *ViewEmbed) Draw(screen *ebiten.Image) {}
+func (v *ViewEmbed) Draw(screen *ebiten.Image, frame image.Rectangle) {}

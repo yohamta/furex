@@ -1,6 +1,7 @@
 package furex
 
 import (
+	"image"
 	"image/color"
 
 	"github.com/hajimehoshi/ebiten"
@@ -21,8 +22,8 @@ func NewBox(w, h int, clr color.Color) *Box {
 
 func (box *Box) Update() {}
 
-func (box *Box) Draw(screen *ebiten.Image) {
-	pos := box.Position()
-	size := box.Size()
-	FillRect(screen, Rect{pos.X, pos.Y, size.X, size.Y}, box.color)
+func (box *Box) Draw(screen *ebiten.Image, frame image.Rectangle) {
+	p := frame.Min
+	s := frame.Size()
+	FillRect(screen, Rect{p.X, p.Y, s.X, s.Y}, box.color)
 }

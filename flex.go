@@ -103,6 +103,8 @@ type Flex struct {
 	AlignItems   AlignItem
 	AlignContent AlignContent
 
+	isDirty bool
+
 	children []View
 }
 
@@ -116,25 +118,30 @@ func NewFlex(x, y, width, height int) *Flex {
 	f.AlignItems = AlignItemCenter
 	f.AlignContent = AlignContentStart
 	f.Bounds = image.Rect(x, y, x+width, y+height)
+	f.isDirty = false
 
 	return f
 }
 
 func (f *Flex) AddChild(child View) {
 	f.children = append(f.children, child)
+	f.isDirty = true
 }
 
 func (f *Flex) Update() {
+	if f.isDirty {
+		f.Layout()
+	}
 	for i := 0; i < len(f.children); i++ {
 		child := f.children[i]
 		child.Update()
 	}
 }
 
-func (f *Flex) Draw(screen *ebiten.Image) {
+func (f *Flex) Draw(screen *ebiten.Image, frame image.Rectangle) {
 	for i := 0; i < len(f.children); i++ {
 		child := f.children[i]
-		child.Draw(screen)
+		child.Draw(screen, child.GetStyle().Bounds.Add(f.Bounds.Min))
 	}
 }
 
@@ -337,6 +344,8 @@ func (f *Flex) Layout() {
 			}
 		}
 	}
+
+	f.isDirty = false
 }
 
 type element struct {

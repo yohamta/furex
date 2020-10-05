@@ -18,6 +18,7 @@ type Scene interface {
 }
 
 var (
+	windowRect         image.Rectangle
 	screenWidth        = 240
 	screenHeight       = 360
 	desktopScreenScale = 2
@@ -41,7 +42,7 @@ func (g *Game) SetWindowSize(width, height int) {
 
 func (g *Game) Draw(screen *ebiten.Image) {
 	// draw flex items
-	g.rootFlex.Draw(screen)
+	g.rootFlex.Draw(screen, windowRect)
 }
 
 func (g *Game) Layout(outsideWidth, outsideHeight int) (int, int) {
@@ -55,37 +56,42 @@ func NewGame() (*Game, error) {
 }
 
 func (g *Game) buildUI() {
+	// root container
 	g.rootFlex = furex.NewFlex(0, 0, screenWidth, screenHeight)
-	g.rootFlex.Direction = furex.Row
-	g.rootFlex.Justify = furex.JustifyCenter
-	g.rootFlex.AlignItems = furex.AlignItemCenter
+	g.rootFlex.Direction = furex.Column
+	g.rootFlex.Justify = furex.JustifySpaceBetween
 	g.rootFlex.AlignContent = furex.AlignContentCenter
-	g.rootFlex.Wrap = furex.Wrap
 
-	for i := 0; i < 20; i++ {
-		var c color.RGBA
-		switch i % 3 {
-		case 0:
-			c = color.RGBA{0xff, 0, 0, 0xff}
-		case 1:
-			c = color.RGBA{0, 0xff, 0, 0xff}
-		default:
-			c = color.RGBA{0, 0, 0xff, 0xff}
-		}
-		g.rootFlex.AddChild(furex.NewBox(50, 50, c))
-	}
+	// top container
+	top := furex.NewFlex(0, 0, screenWidth, screenHeight/2)
+	top.Direction = furex.Row
+	top.Justify = furex.JustifyCenter
+	top.AlignItems = furex.AlignItemStart
+	top.AddChild(furex.NewBox(50, 50, color.RGBA{0xff, 0, 0, 0xff}))
+	top.AddChild(furex.NewBox(50, 50, color.RGBA{0, 0xff, 0, 0xff}))
+	g.rootFlex.AddChild(top)
+
+	// bottom container
+	bottom := furex.NewFlex(0, 0, screenWidth, screenHeight/2)
+	bottom.Direction = furex.Row
+	bottom.Justify = furex.JustifyCenter
+	bottom.AlignItems = furex.AlignItemEnd
+	bottom.AddChild(furex.NewBox(50, 50, color.RGBA{0, 0xff, 0, 0xff}))
+	bottom.AddChild(furex.NewBox(50, 50, color.RGBA{0xff, 0, 0, 0xff}))
+	g.rootFlex.AddChild(bottom)
 }
 
 func main() {
-	windowSize := image.Point{screenWidth * desktopScreenScale, screenHeight * desktopScreenScale}
-	ebiten.SetWindowSize(windowSize.X, windowSize.Y)
+	windowRect = image.Rect(0, 0, screenWidth*desktopScreenScale, screenHeight*desktopScreenScale)
+	size := windowRect.Size()
+	ebiten.SetWindowSize(size.X, size.Y)
 
 	game, err := NewGame()
 	if err != nil {
 		panic(err)
 	}
 
-	game.SetWindowSize(windowSize.X, windowSize.Y)
+	game.SetWindowSize(size.X, size.Y)
 	if err := ebiten.RunGame(game); err != nil {
 		panic(err)
 	}
