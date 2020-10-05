@@ -29,6 +29,6 @@ func (g *Game) Update() {
 
 func (g *Game) Draw(screen *ebiten.Image) {
 	// Draw children in the flex containers
-	g.rootFlex.Draw(screen)
+	g.rootFlex.Draw(screen, image.Rect(0, 0, screenWidth, screenHeight))
 }
 ```
