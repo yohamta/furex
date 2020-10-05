@@ -22,6 +22,7 @@ func (vc *ViewController) SetRootView(v View) {
 func (vc *ViewController) Update() {
 	var f func(v View)
 	f = func(v View) {
+		// TODO: handle touch if it is a button
 		v.OnUpdate()
 		for c := range v.Children() {
 			f(v.Children()[c])
