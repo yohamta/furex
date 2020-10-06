@@ -316,10 +316,6 @@ func (f *Flex) OnLayout() {
 					round(child.mainOffset),
 					round(child.crossOffset+child.crossSize),
 					round(child.mainOffset+child.mainSize))
-				println(round(child.crossOffset),
-					round(child.mainOffset),
-					round(child.crossOffset+child.crossSize),
-					round(child.mainOffset+child.mainSize))
 			default:
 				panic(fmt.Sprint("flex: bad direction ", f.Direction))
 			}
