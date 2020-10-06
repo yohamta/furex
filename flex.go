@@ -118,13 +118,13 @@ func NewFlex(x, y, width, height int) *Flex {
 
 func (f *Flex) OnUpdate() {
 	if f.isDirty {
-		f.OnLayout()
+		f.layout()
 	}
 }
 
 // This is the main routing that implements a subset of flexbox layout
 // https://www.w3.org/TR/css-flexbox-1/#layout-algorithm
-func (f *Flex) OnLayout() {
+func (f *Flex) layout() {
 	// 9.2. Line Length Determination
 	// Determine the available main and cross space for the flex items.
 	containerMainSize := float64(f.mainSize(f.Bounds.Size()))

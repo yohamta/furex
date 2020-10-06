@@ -8,9 +8,6 @@ import (
 
 // View represents a view with certain bounds
 type View interface {
-	// OnLayout layouts the content
-	OnLayout()
-
 	// OnUpdate updates the content
 	OnUpdate()
 
