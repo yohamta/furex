@@ -7,7 +7,7 @@ import (
 	"github.com/hajimehoshi/ebiten"
 )
 
-// Box display a box with filled color
+// Box displays a color filled box
 type Box struct {
 	color color.Color
 	size  image.Point
