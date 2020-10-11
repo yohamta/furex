@@ -11,11 +11,6 @@ type Game struct {
 	cont *furex.Controller
 }
 
-type Scene interface {
-	Update()
-	Draw(screen *ebiten.Image)
-}
-
 const desktopScreenScale = 2
 
 var (

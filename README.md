@@ -6,6 +6,10 @@ A simple and extensible UI library with small subset of flexbox-layout which is 
 ```go
 import "github.com/yohamta/furex"
 
+type Game struct {
+	cont *furex.Controller
+}
+
 func (g *Game) initUI() {
 	// root flex container
 	rootFlex := furex.NewFlex(0, 0, screenWidth, screenHeight)
@@ -21,9 +25,10 @@ func (g *Game) initUI() {
 	b1 := furex.NewBox(100, 100, color.RGBA{0, 0xff, 0, 0xff})
 	rootFlex.AddChild(b1)
 
-	// view controller
-	g.vc = furex.NewViewController()
-	g.vc.SetRootView(rootFlex)
+	// controller
+	g.cont = furex.NewController()
+	g.cont.Layout(0, 0, screenWidth, screenHeight)
+	g.cont.SetRootContaienr(rootFlex)
 }
 
 func (g *Game) Update() {
