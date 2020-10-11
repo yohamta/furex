@@ -65,10 +65,13 @@ func (g *Game) buildUI() {
 		rootFlex.AddChild(furex.NewBox(50, 50, c))
 	}
 
-	// view controller
+	// layer
+	layer := furex.NewLayerWithContainer(rootFlex)
+
+	// controller
 	g.cont = furex.NewController()
 	g.cont.Layout(0, 0, screenWidth, screenHeight)
-	g.cont.SetRootContaienr(rootFlex)
+	g.cont.AddLayer(layer)
 }
 
 func main() {
