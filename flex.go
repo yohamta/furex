@@ -115,6 +115,21 @@ func (f *Flex) Update() {
 	}
 }
 
+func (f *Flex) HandleTouch(touchID int) bool {
+	x, y := ebiten.TouchPosition(touchID)
+	for c := range f.children {
+		child := f.children[c]
+		touchable, ok := child.component.(Touchable)
+		if ok == false {
+			continue
+		}
+		if IsInside(child.bounds, x, y) && touchable.HandleTouch(touchID) {
+			return true
+		}
+	}
+	return false
+}
+
 func (f *Flex) Draw(screen *ebiten.Image, frame image.Rectangle) {
 	for c := range f.children {
 		child := f.children[c]
