@@ -6,38 +6,34 @@ import (
 	"github.com/hajimehoshi/ebiten"
 )
 
-type ViewController struct {
-	root View
+// import (
+// 	"image"
+
+// 	"github.com/hajimehoshi/ebiten"
+// )
+
+type Controller struct {
+	root  Container
+	frame image.Rectangle
 }
 
-func NewViewController() *ViewController {
-	vc := new(ViewController)
-	return vc
+func NewController() *Controller {
+	cont := new(Controller)
+	return cont
 }
 
-func (vc *ViewController) SetRootView(v View) {
-	vc.root = v
+func (cont *Controller) SetRootContaienr(c Container) {
+	cont.root = c
 }
 
-func (vc *ViewController) Update() {
-	var f func(v View)
-	f = func(v View) {
-		// TODO: handle touch if it is a button
-		v.OnUpdate()
-		for c := range v.Children() {
-			f(v.Children()[c])
-		}
-	}
-	f(vc.root)
+func (cont *Controller) Layout(x0, y0, x1, y1 int) {
+	cont.frame = image.Rect(x0, y0, x1, y1)
 }
 
-func (vc *ViewController) Draw(screen *ebiten.Image, frame image.Rectangle) {
-	var f func(v View, offset image.Point)
-	f = func(v View, offset image.Point) {
-		v.OnDraw(screen, v.GetStyle().Bounds.Add(offset))
-		for c := range v.Children() {
-			f(v.Children()[c], v.GetStyle().Bounds.Min)
-		}
-	}
-	f(vc.root, image.Pt(0, 0))
+func (cont *Controller) Update() {
+	cont.root.Update()
+}
+
+func (cont *Controller) Draw(screen *ebiten.Image) {
+	cont.root.Draw(screen, cont.frame)
 }

@@ -1,7 +1,6 @@
 package main
 
 import (
-	"image"
 	"image/color"
 
 	"github.com/hajimehoshi/ebiten"
@@ -9,7 +8,7 @@ import (
 )
 
 type Game struct {
-	vc *furex.ViewController
+	cont *furex.Controller
 }
 
 type Scene interface {
@@ -30,12 +29,12 @@ func (g *Game) Update(screen *ebiten.Image) error {
 		g.buildUI()
 		isInitialized = true
 	}
-	g.vc.Update()
+	g.cont.Update()
 	return nil
 }
 
 func (g *Game) Draw(screen *ebiten.Image) {
-	g.vc.Draw(screen, image.Rect(0, 0, screenWidth, screenHeight))
+	g.cont.Draw(screen)
 }
 
 func (g *Game) Layout(outsideWidth, outsideHeight int) (int, int) {
@@ -72,8 +71,9 @@ func (g *Game) buildUI() {
 	}
 
 	// view controller
-	g.vc = furex.NewViewController()
-	g.vc.SetRootView(rootFlex)
+	g.cont = furex.NewController()
+	g.cont.Layout(0, 0, screenWidth, screenHeight)
+	g.cont.SetRootContaienr(rootFlex)
 }
 
 func main() {

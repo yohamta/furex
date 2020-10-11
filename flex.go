@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"image"
 	"math"
+
+	"github.com/hajimehoshi/ebiten"
 )
 
 // Direction is the direction in which flex items are laid out
@@ -66,40 +68,23 @@ const (
 	AlignContentSpaceAround
 )
 
-type Style struct {
-	Bounds image.Rectangle
-}
-
-func (s *Style) Size() image.Point {
-	return s.Bounds.Size()
-}
-
-func (s *Style) Position() image.Point {
-	return s.Bounds.Min
-}
-
-func (s *Style) SetPosition(x, y int) {
-	s.Bounds.Add(image.Point{
-		x - s.Bounds.Min.X,
-		y - s.Bounds.Min.Y,
-	})
-}
-
-func (s *Style) SetSize(w, h int) {
-	s.Bounds.Max.X = w + s.Bounds.Min.X
-	s.Bounds.Max.Y = h + s.Bounds.Min.Y
+type FlexChild struct {
+	bounds    image.Rectangle
+	component Component
 }
 
 // Flex is a container widget that lays out its children following the
 // CSS flexbox algorithm.
 type Flex struct {
-	ViewEmbed
-
 	Direction    Direction
 	Wrap         FlexWrap
 	Justify      Justify
 	AlignItems   AlignItem
 	AlignContent AlignContent
+
+	children []*FlexChild
+	size     image.Point
+	isDirty  bool
 }
 
 // NewFlex creates NewFlexContaienr
@@ -111,15 +96,36 @@ func NewFlex(x, y, width, height int) *Flex {
 	f.Justify = JustifyStart
 	f.AlignItems = AlignItemCenter
 	f.AlignContent = AlignContentStart
-	f.Bounds = image.Rect(x, y, x+width, y+height)
+	f.size = image.Pt(x+width, y+height)
 
 	return f
 }
 
-func (f *Flex) OnUpdate() {
+func (f *Flex) GetSize() image.Point {
+	return f.size
+}
+
+func (f *Flex) Update() {
 	if f.isDirty {
 		f.layout()
+		f.isDirty = false
 	}
+	for c := range f.children {
+		f.children[c].component.Update()
+	}
+}
+
+func (f *Flex) Draw(screen *ebiten.Image, frame image.Rectangle) {
+	for c := range f.children {
+		child := f.children[c]
+		child.component.Draw(screen, child.bounds.Add(frame.Min))
+	}
+}
+
+func (f *Flex) AddChild(child Component) {
+	c := &FlexChild{component: child}
+	f.children = append(f.children, c)
+	f.isDirty = true
 }
 
 // This is the main routing that implements a subset of flexbox layout
@@ -127,8 +133,8 @@ func (f *Flex) OnUpdate() {
 func (f *Flex) layout() {
 	// 9.2. Line Length Determination
 	// Determine the available main and cross space for the flex items.
-	containerMainSize := float64(f.mainSize(f.Bounds.Size()))
-	containerCrossSize := float64(f.crossSize(f.Bounds.Size()))
+	containerMainSize := float64(f.mainSize(f.size))
+	containerCrossSize := float64(f.crossSize(f.size))
 
 	// Determine the flex base size and hypothetical main size of each item:
 	var children []element
@@ -178,7 +184,7 @@ func (f *Flex) layout() {
 		line := &lines[l]
 
 		// Calculate free space
-		freeSpace := float64(f.mainSize(f.GetStyle().Size()))
+		freeSpace := float64(f.mainSize(f.size))
 		for _, child := range line.child {
 			freeSpace -= float64(f.flexBaseSize(child.node))
 		}
@@ -193,7 +199,7 @@ func (f *Flex) layout() {
 	// Determine the hypothetical cross size of each item
 	for l := range lines {
 		for _, child := range lines[l].child {
-			child.crossSize = float64(f.crossSize(child.node.GetStyle().Size()))
+			child.crossSize = float64(f.crossSize(child.node.component.GetSize()))
 		}
 	}
 
@@ -307,12 +313,12 @@ func (f *Flex) layout() {
 		for _, child := range line.child {
 			switch f.Direction {
 			case Row:
-				child.node.GetStyle().Bounds = image.Rect(round(child.mainOffset),
+				child.node.bounds = image.Rect(round(child.mainOffset),
 					round(child.crossOffset),
 					round(child.mainOffset+child.mainSize),
 					round(child.crossOffset+child.crossSize))
 			case Column:
-				child.node.GetStyle().Bounds = image.Rect(round(child.crossOffset),
+				child.node.bounds = image.Rect(round(child.crossOffset),
 					round(child.mainOffset),
 					round(child.crossOffset+child.crossSize),
 					round(child.mainOffset+child.mainSize))
@@ -321,12 +327,10 @@ func (f *Flex) layout() {
 			}
 		}
 	}
-
-	f.isDirty = false
 }
 
 type element struct {
-	node         View
+	node         *FlexChild
 	flexBaseSize float64
 	mainSize     float64
 	mainOffset   float64
@@ -363,8 +367,8 @@ func (f *Flex) crossSize(p image.Point) int {
 	}
 }
 
-func (f *Flex) flexBaseSize(v View) int {
-	return f.mainSize(v.GetStyle().Size())
+func (f *Flex) flexBaseSize(c *FlexChild) int {
+	return f.mainSize(c.component.GetSize())
 }
 
 func round(f float64) int {

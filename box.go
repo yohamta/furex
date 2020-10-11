@@ -9,21 +9,23 @@ import (
 
 // Box display a box with filled color
 type Box struct {
-	ViewEmbed
 	color color.Color
+	size  image.Point
 }
 
 func NewBox(w, h int, clr color.Color) *Box {
 	box := new(Box)
-	box.SetSize(w, h)
+	box.size = image.Pt(w, h)
 	box.color = clr
 	return box
 }
 
-func (box *Box) OnUpdate() {}
+func (box *Box) GetSize() image.Point {
+	return box.size
+}
 
-func (box *Box) OnDraw(screen *ebiten.Image, frame image.Rectangle) {
-	p := frame.Min
-	s := frame.Size()
-	FillRect(screen, Rect{p.X, p.Y, s.X, s.Y}, box.color)
+func (box *Box) Update() {}
+
+func (box *Box) Draw(screen *ebiten.Image, frame image.Rectangle) {
+	FillRect(screen, frame, box.color)
 }
