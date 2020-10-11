@@ -36,11 +36,11 @@ func (g *Game) initUI() {
 
 func (g *Game) Update() {
 	// Update the container's children
-	g.vc.Update()
+	g.cont.Update()
 }
 
 func (g *Game) Draw(screen *ebiten.Image) {
 	// Draw children in the flex containers
-	g.vc.Draw(screen, image.Rect(0, 0, screenWidth, screenHeight))
+	g.cont.Draw(screen, image.Rect(0, 0, screenWidth, screenHeight))
 }
 ```
