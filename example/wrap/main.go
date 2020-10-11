@@ -44,7 +44,16 @@ func NewGame() (*Game, error) {
 	return game, nil
 }
 
+var (
+	colors = []color.Color{
+		color.RGBA{0xff, 0, 0, 0xff},
+		color.RGBA{0, 0xff, 0, 0xff},
+		color.RGBA{0, 0, 0xff, 0xff},
+	}
+)
+
 func (g *Game) buildUI() {
+	// root flex container
 	rootFlex := furex.NewFlex(0, 0, screenWidth, screenHeight)
 	rootFlex.Direction = furex.Row
 	rootFlex.Justify = furex.JustifyCenter
@@ -53,16 +62,7 @@ func (g *Game) buildUI() {
 	rootFlex.Wrap = furex.Wrap
 
 	for i := 0; i < 20; i++ {
-		var c color.RGBA
-		switch i % 3 {
-		case 0:
-			c = color.RGBA{0xff, 0, 0, 0xff}
-		case 1:
-			c = color.RGBA{0, 0xff, 0, 0xff}
-		default:
-			c = color.RGBA{0, 0, 0xff, 0xff}
-		}
-		rootFlex.AddChild(furex.NewBox(50, 50, c))
+		rootFlex.AddChild(furex.NewBox(50, 50, colors[i%3]))
 	}
 
 	// layer

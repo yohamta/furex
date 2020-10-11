@@ -1,7 +1,7 @@
 # furex
-A simple and extensible UI library with small subset of flexbox-layout which is made to create a game with [Ebiten](https://ebiten.org/)
+A simple UI library with a subset of flexbox layout for [Ebiten](https://ebiten.org/)
 
-## Simple usage
+## Example Usage
 
 ```go
 import "github.com/yohamta/furex"
@@ -13,17 +13,15 @@ type Game struct {
 func (g *Game) initUI() {
 	// root flex container
 	rootFlex := furex.NewFlex(0, 0, screenWidth, screenHeight)
-	rootFlex.Direction = furex.Column
-	rootFlex.Justify = furex.JustifySpaceBetween
+	rootFlex.Direction = furex.Row
+	rootFlex.Justify = furex.JustifyCenter
 	rootFlex.AlignItems = furex.AlignItemCenter
+	rootFlex.AlignContent = furex.AlignContentCenter
+	rootFlex.Wrap = furex.Wrap
 
-	// flex item: box0
-	b0 := furex.NewBox(100, 100, color.RGBA{0xff, 0, 0, 0xff})
-	rootFlex.AddChild(b0)
-
-	// flex item: box1
-	b1 := furex.NewBox(100, 100, color.RGBA{0, 0xff, 0, 0xff})
-	rootFlex.AddChild(b1)
+	for i := 0; i < 20; i++ {
+		rootFlex.AddChild(furex.NewBox(50, 50, colors[i%3]))
+	}
 
 	// layer
 	layer := furex.NewLayerWithContainer(rootFlex)
@@ -35,12 +33,15 @@ func (g *Game) initUI() {
 }
 
 func (g *Game) Update() {
-	// Update the container's children
+	// Update the UI 
 	g.cont.Update()
 }
 
 func (g *Game) Draw(screen *ebiten.Image) {
-	// Draw children in the flex containers
-	g.cont.Draw(screen, image.Rect(0, 0, screenWidth, screenHeight))
+	// Draw the UI 
+	g.cont.Draw(screen)
 }
 ```
+
+### Result
+![image](https://user-images.githubusercontent.com/1475839/95682206-0279fa80-0c1f-11eb-8dd5-03bec58325e8.png)
