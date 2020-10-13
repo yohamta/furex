@@ -68,23 +68,18 @@ const (
 	AlignContentSpaceAround
 )
 
-type FlexChild struct {
-	bounds    image.Rectangle
-	component Component
-}
-
 // Flex is a container widget that lays out its children following the
 // CSS flexbox algorithm.
 type Flex struct {
+	ContainerEmbed
+
 	Direction    Direction
 	Wrap         FlexWrap
 	Justify      Justify
 	AlignItems   AlignItem
 	AlignContent AlignContent
 
-	children []*FlexChild
-	size     image.Point
-	isDirty  bool
+	size image.Point
 }
 
 // NewFlex creates NewFlexContaienr
@@ -115,21 +110,6 @@ func (f *Flex) Update() {
 	}
 }
 
-func (f *Flex) HandleTouch(touchID int) bool {
-	x, y := ebiten.TouchPosition(touchID)
-	for c := len(f.children) - 1; c >= 0; c-- {
-		child := f.children[c]
-		touchable, ok := child.component.(TouchableComponent)
-		if ok == false {
-			continue
-		}
-		if IsInside(child.bounds, x, y) && touchable.HandleTouch(touchID) {
-			return true
-		}
-	}
-	return false
-}
-
 func (f *Flex) Draw(screen *ebiten.Image, frame image.Rectangle) {
 	for c := range f.children {
 		child := f.children[c]
@@ -138,7 +118,7 @@ func (f *Flex) Draw(screen *ebiten.Image, frame image.Rectangle) {
 }
 
 func (f *Flex) AddChild(child Component) {
-	c := &FlexChild{component: child}
+	c := &Child{component: child}
 	f.children = append(f.children, c)
 	f.isDirty = true
 }
@@ -350,7 +330,7 @@ func (f *Flex) layout() {
 }
 
 type element struct {
-	node         *FlexChild
+	node         *Child
 	flexBaseSize float64
 	mainSize     float64
 	mainOffset   float64
@@ -387,7 +367,7 @@ func (f *Flex) crossSize(p image.Point) int {
 	}
 }
 
-func (f *Flex) flexBaseSize(c *FlexChild) int {
+func (f *Flex) flexBaseSize(c *Child) int {
 	fixedSizeC, _ := c.component.(FixedSizeComponent)
 	if fixedSizeC != nil {
 		return f.mainSize(fixedSizeC.GetSize())

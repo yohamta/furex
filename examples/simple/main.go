@@ -55,6 +55,10 @@ func (g *Game) buildUI() {
 	b0 := furex.NewBox(100, 100, color.RGBA{0xff, 0, 0, 0xff})
 	rootFlex.AddChild(b0)
 
+	// flex item: button
+	button := furex.NewButton(200, 50)
+	rootFlex.AddChild(button)
+
 	// flex item: box1
 	b1 := furex.NewBox(100, 100, color.RGBA{0, 0xff, 0, 0xff})
 	rootFlex.AddChild(b1)

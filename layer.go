@@ -24,12 +24,28 @@ func (l *Layer) Update() {
 	l.cont.Update()
 }
 
-func (l *Layer) HandleTouch(touchID int) bool {
-	touchable, ok := l.cont.(TouchableComponent)
+func (l *Layer) HandleJustPressedTouchID(touchID int) bool {
+	touchable, ok := l.cont.(TouchHandler)
 	if ok == false {
 		return false
 	}
-	return touchable.HandleTouch(touchID)
+	return touchable.HandleJustPressedTouchID(touchID)
+}
+
+func (l *Layer) HandleJustReleasedTouchID(touchID int) bool {
+	touchable, ok := l.cont.(TouchHandler)
+	if ok == false {
+		return false
+	}
+	return touchable.HandleJustReleasedTouchID(touchID)
+}
+
+func (l *Layer) HandleMouse(x, y int) bool {
+	clickable, ok := l.cont.(MouseHandler)
+	if ok == false {
+		return false
+	}
+	return clickable.HandleMouse(x, y)
 }
 
 func (l *Layer) Draw(screen *ebiten.Image) {
