@@ -25,7 +25,7 @@ func (l *Layer) Update() {
 }
 
 func (l *Layer) HandleTouch(touchID int) bool {
-	touchable, ok := l.cont.(Touchable)
+	touchable, ok := l.cont.(TouchableComponent)
 	if ok == false {
 		return false
 	}

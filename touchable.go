@@ -1,5 +1,7 @@
 package furex
 
-type Touchable interface {
+type TouchableComponent interface {
+	Component
+
 	HandleTouch(touchID int) bool
 }

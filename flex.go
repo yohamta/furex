@@ -119,7 +119,7 @@ func (f *Flex) HandleTouch(touchID int) bool {
 	x, y := ebiten.TouchPosition(touchID)
 	for c := len(f.children) - 1; c >= 0; c-- {
 		child := f.children[c]
-		touchable, ok := child.component.(Touchable)
+		touchable, ok := child.component.(TouchableComponent)
 		if ok == false {
 			continue
 		}
