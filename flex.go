@@ -214,7 +214,12 @@ func (f *Flex) layout() {
 	// Determine the hypothetical cross size of each item
 	for l := range lines {
 		for _, child := range lines[l].child {
-			child.crossSize = float64(f.crossSize(child.node.component.GetSize()))
+			fixedSizeC, _ := child.node.component.(FixedSizeComponent)
+			if fixedSizeC != nil {
+				child.crossSize = float64(f.crossSize(fixedSizeC.GetSize()))
+			} else {
+				panic("flexible size is not available for now")
+			}
 		}
 	}
 
@@ -383,7 +388,11 @@ func (f *Flex) crossSize(p image.Point) int {
 }
 
 func (f *Flex) flexBaseSize(c *FlexChild) int {
-	return f.mainSize(c.component.GetSize())
+	fixedSizeC, _ := c.component.(FixedSizeComponent)
+	if fixedSizeC != nil {
+		return f.mainSize(fixedSizeC.GetSize())
+	}
+	panic("flexible size is not available for now")
 }
 
 func round(f float64) int {

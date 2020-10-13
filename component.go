@@ -11,6 +11,11 @@ type Component interface {
 	Update()
 
 	Draw(screen *ebiten.Image, frame image.Rectangle)
+}
+
+// FixedSizeComponent represents a component with fixed size
+type FixedSizeComponent interface {
+	Component
 
 	GetSize() image.Point
 }
