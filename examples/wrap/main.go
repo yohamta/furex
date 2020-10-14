@@ -75,7 +75,6 @@ func (g *Game) buildUI() {
 }
 
 func main() {
-	ebiten.SetWindowResizable(true)
 	ebiten.SetWindowSize(480, 640)
 
 	game, err := NewGame()
