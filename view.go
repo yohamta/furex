@@ -18,68 +18,68 @@ type View struct {
 }
 
 func NewView() *View {
-	cont := new(View)
+	view := new(View)
 
-	return cont
+	return view
 }
 
-func (cont *View) AddLayer(l *Layer) {
+func (view *View) AddLayer(l *Layer) {
 	child := &ChildLayer{layer: l}
-	cont.layers = append(cont.layers, child)
-	f := cont.frame
+	view.layers = append(view.layers, child)
+	f := view.frame
 	l.Layout(f.Min.X, f.Min.Y, f.Max.X, f.Max.Y)
 }
 
-func (cont *View) Layout(x0, y0, x1, y1 int) {
-	cont.frame = image.Rect(x0, y0, x1, y1)
-	for l := range cont.layers {
-		cont.layers[l].layer.Layout(x0, y0, x1, y1)
+func (view *View) Layout(x0, y0, x1, y1 int) {
+	view.frame = image.Rect(x0, y0, x1, y1)
+	for l := range view.layers {
+		view.layers[l].layer.Layout(x0, y0, x1, y1)
 	}
 }
 
-func (cont *View) Update() {
-	for l := range cont.layers {
-		cont.layers[l].layer.Update()
+func (view *View) Update() {
+	for l := range view.layers {
+		view.layers[l].layer.Update()
 	}
-	cont.handleTouch()
-	cont.handleMouse()
+	view.handleTouch()
+	view.handleMouse()
 }
 
-func (cont *View) Draw(screen *ebiten.Image) {
-	for l := range cont.layers {
-		cont.layers[l].layer.Draw(screen)
+func (view *View) Draw(screen *ebiten.Image) {
+	for l := range view.layers {
+		view.layers[l].layer.Draw(screen)
 	}
 }
 
-func (cont *View) handleTouch() {
+func (view *View) handleTouch() {
 	justPressedTouchIds := inpututil.JustPressedTouchIDs()
 
 	if justPressedTouchIds != nil {
 		for i := 0; i < len(justPressedTouchIds); i++ {
 			touchID := justPressedTouchIds[i]
-			for j := len(cont.layers) - 1; j >= 0; j-- {
-				if cont.layers[j].layer.HandleJustPressedTouchID(touchID) {
-					cont.layers[j].touchIDs = append(cont.layers[j].touchIDs, touchID)
+			for j := len(view.layers) - 1; j >= 0; j-- {
+				if view.layers[j].layer.HandleJustPressedTouchID(touchID) {
+					view.layers[j].touchIDs = append(view.layers[j].touchIDs, touchID)
 					break
 				}
 			}
 		}
-		for j := len(cont.layers) - 1; j >= 0; j-- {
-			touchIDs := cont.layers[j].touchIDs
-			for t := range touchIDs {
-				if inpututil.IsTouchJustReleased(touchIDs[t]) {
-					cont.layers[j].layer.HandleJustReleasedTouchID(touchIDs[t])
-					cont.layers[j].touchIDs = append(touchIDs[:t], touchIDs[t+1:]...)
-				}
+	}
+	for j := len(view.layers) - 1; j >= 0; j-- {
+		touchIDs := view.layers[j].touchIDs
+		for t := range touchIDs {
+			if inpututil.IsTouchJustReleased(touchIDs[t]) {
+				view.layers[j].layer.HandleJustReleasedTouchID(touchIDs[t])
+				view.layers[j].touchIDs = append(touchIDs[:t], touchIDs[t+1:]...)
 			}
 		}
 	}
 }
 
-func (cont *View) handleMouse() {
+func (view *View) handleMouse() {
 	x, y := ebiten.CursorPosition()
-	for j := len(cont.layers) - 1; j >= 0; j-- {
-		if cont.layers[j].layer.HandleMouse(x, y) {
+	for j := len(view.layers) - 1; j >= 0; j-- {
+		if view.layers[j].layer.HandleMouse(x, y) {
 			break
 		}
 	}

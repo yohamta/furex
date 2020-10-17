@@ -50,6 +50,7 @@ func (cont *ContainerEmbed) HandleJustPressedTouchID(touchID int) bool {
 				if handler.HandleJustPressedTouchID(touchID) {
 					child.handledTouchID = touchID
 					result = true
+					break
 				}
 			}
 		}
@@ -72,23 +73,20 @@ func (cont *ContainerEmbed) HandleJustPressedTouchID(touchID int) bool {
 }
 
 func (cont *ContainerEmbed) HandleJustReleasedTouchID(touchID int) {
-	x, y := ebiten.TouchPosition(touchID)
 	for c := len(cont.children) - 1; c >= 0; c-- {
 		child := cont.children[c]
 		handler, ok := child.component.(TouchHandler)
 		if ok && handler != nil {
-			if child.handledTouchID == touchID && IsInside(child.bounds, x, y) {
-				handler.HandleJustReleasedTouchID(touchID)
-			}
+			handler.HandleJustReleasedTouchID(touchID)
 		}
 
 		button, ok := child.component.(ButtonComponent)
 		if ok && button != nil {
-			if child.buttonTouchID == touchID && IsInside(child.bounds, x, y) {
+			if child.buttonTouchID == touchID {
 				if child.IsButtonPressed == true {
 					child.IsButtonPressed = false
 					child.buttonTouchID = -1
-					button.OnPressButton()
+					button.OnReleaseButton()
 				}
 			}
 		}
@@ -109,7 +107,7 @@ func (cont *ContainerEmbed) HandleMouse(x, y int) bool {
 		}
 
 		button, ok := child.component.(ButtonComponent)
-		if ok && button != nil {
+		if ok && button != nil && child.buttonTouchID == -1 {
 			if result == false && IsInside(child.bounds, x, y) {
 				if child.IsButtonPressed {
 					if ebiten.IsMouseButtonPressed(ebiten.MouseButtonLeft) == false {
