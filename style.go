@@ -3,9 +3,15 @@ package furex
 import "image"
 
 // FixedSizeComponent represents a component with fixed size
-// This interface should be implemented for flex child
 type FixedSizeComponent interface {
 	Component
 
 	GetSize() image.Point
+}
+
+// AbsolutePositionComponent represents a component with fixed size
+type AbsolutePositionComponent interface {
+	FixedSizeComponent
+
+	GetPosition() image.Point
 }

@@ -4,8 +4,6 @@ import (
 	"fmt"
 	"image"
 	"math"
-
-	"github.com/hajimehoshi/ebiten"
 )
 
 // Direction is the direction in which flex items are laid out
@@ -110,13 +108,6 @@ func (f *Flex) Update() {
 	}
 }
 
-func (f *Flex) Draw(screen *ebiten.Image, frame image.Rectangle) {
-	for c := range f.children {
-		child := f.children[c]
-		child.component.Draw(screen, child.bounds.Add(frame.Min))
-	}
-}
-
 func (f *Flex) AddChild(child Component) {
 	c := &Child{component: child}
 	f.children = append(f.children, c)
@@ -135,6 +126,13 @@ func (f *Flex) layout() {
 	var children []element
 	for i := 0; i < len(f.children); i++ {
 		c := f.children[i]
+		absolute, ok := c.component.(AbsolutePositionComponent)
+		if ok {
+			pos := absolute.GetPosition()
+			size := absolute.GetSize()
+			c.bounds = image.Rect(pos.X, pos.Y, size.X, size.Y)
+			continue
+		}
 		children = append(children, element{
 			flexBaseSize: float64(f.flexBaseSize(c)),
 			node:         c,
