@@ -7,7 +7,7 @@ import (
 )
 
 type Game struct {
-	view *furex.Controller
+	view *furex.View
 }
 
 const desktopScreenScale = 2
@@ -57,8 +57,8 @@ func (g *Game) buildUI() {
 	// layer
 	layer := furex.NewLayerWithContainer(rootFlex)
 
-	// view controller
-	g.view = furex.NewController()
+	// view
+	g.view = furex.NewView()
 	g.view.Layout(0, 0, screenWidth, screenHeight)
 	g.view.AddLayer(layer)
 }

@@ -12,32 +12,32 @@ type ChildLayer struct {
 	touchIDs []int
 }
 
-type Controller struct {
+type View struct {
 	layers []*ChildLayer
 	frame  image.Rectangle
 }
 
-func NewController() *Controller {
-	cont := new(Controller)
+func NewView() *View {
+	cont := new(View)
 
 	return cont
 }
 
-func (cont *Controller) AddLayer(l *Layer) {
+func (cont *View) AddLayer(l *Layer) {
 	child := &ChildLayer{layer: l}
 	cont.layers = append(cont.layers, child)
 	f := cont.frame
 	l.Layout(f.Min.X, f.Min.Y, f.Max.X, f.Max.Y)
 }
 
-func (cont *Controller) Layout(x0, y0, x1, y1 int) {
+func (cont *View) Layout(x0, y0, x1, y1 int) {
 	cont.frame = image.Rect(x0, y0, x1, y1)
 	for l := range cont.layers {
 		cont.layers[l].layer.Layout(x0, y0, x1, y1)
 	}
 }
 
-func (cont *Controller) Update() {
+func (cont *View) Update() {
 	for l := range cont.layers {
 		cont.layers[l].layer.Update()
 	}
@@ -45,13 +45,13 @@ func (cont *Controller) Update() {
 	cont.handleMouse()
 }
 
-func (cont *Controller) Draw(screen *ebiten.Image) {
+func (cont *View) Draw(screen *ebiten.Image) {
 	for l := range cont.layers {
 		cont.layers[l].layer.Draw(screen)
 	}
 }
 
-func (cont *Controller) handleTouch() {
+func (cont *View) handleTouch() {
 	justPressedTouchIds := inpututil.JustPressedTouchIDs()
 
 	if justPressedTouchIds != nil {
@@ -76,7 +76,7 @@ func (cont *Controller) handleTouch() {
 	}
 }
 
-func (cont *Controller) handleMouse() {
+func (cont *View) handleMouse() {
 	x, y := ebiten.CursorPosition()
 	for j := len(cont.layers) - 1; j >= 0; j-- {
 		if cont.layers[j].layer.HandleMouse(x, y) {

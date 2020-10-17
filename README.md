@@ -15,7 +15,7 @@ var (
 )
 
 type Game struct {
-	view *furex.Controller
+	view *furex.View
 }
 
 // Initialize the UI
@@ -41,12 +41,12 @@ func (g *Game) initUI() {
 	//        so you can make complex UI with multiple layers.
 	layer := furex.NewLayerWithContainer(rootFlex)
 
-	// view controller: A controller handles multiple layers of the UI
+	// View: A view handles multiple layers of the UI
 	//                  and also the UI events such as touches or mouse click.
-	g.view = furex.NewController()
+	g.view = furex.NewView()
 	g.view.Layout(0, 0, screenWidth, screenHeight)
 
-	// Add the layer to the view controller
+	// Add the layer to the view
 	g.view.AddLayer(layer)
 }
 
