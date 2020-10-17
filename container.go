@@ -124,7 +124,12 @@ func (cont *ContainerEmbed) HandleMouse(x, y int) bool {
 				}
 				result = true
 			} else {
-				child.IsButtonPressed = false
+				if child.IsButtonPressed {
+					if ebiten.IsMouseButtonPressed(ebiten.MouseButtonLeft) == false {
+						button.OnReleaseButton()
+						child.IsButtonPressed = false
+					}
+				}
 			}
 		}
 	}
