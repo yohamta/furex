@@ -5,7 +5,7 @@ type TouchHandler interface {
 	Component
 
 	HandleJustPressedTouchID(touchID int) bool
-	HandleJustReleasedTouchID(touchID int) bool
+	HandleJustReleasedTouchID(touchID int)
 }
 
 // MouseHandler represents a mouse handler

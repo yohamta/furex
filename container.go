@@ -18,6 +18,7 @@ type Child struct {
 	component       Component
 	IsButtonPressed bool
 	buttonTouchID   int
+	handledTouchID  int
 }
 
 type ContainerEmbed struct {
@@ -47,6 +48,7 @@ func (cont *ContainerEmbed) HandleJustPressedTouchID(touchID int) bool {
 		if ok && handler != nil {
 			if result == false && IsInside(child.bounds, x, y) {
 				if handler.HandleJustPressedTouchID(touchID) {
+					child.handledTouchID = touchID
 					result = true
 				}
 			}
@@ -69,17 +71,14 @@ func (cont *ContainerEmbed) HandleJustPressedTouchID(touchID int) bool {
 	return result
 }
 
-func (cont *ContainerEmbed) HandleJustReleasedTouchID(touchID int) bool {
-	result := false
+func (cont *ContainerEmbed) HandleJustReleasedTouchID(touchID int) {
 	x, y := ebiten.TouchPosition(touchID)
 	for c := len(cont.children) - 1; c >= 0; c-- {
 		child := cont.children[c]
 		handler, ok := child.component.(TouchHandler)
 		if ok && handler != nil {
-			if result == false && IsInside(child.bounds, x, y) {
-				if handler.HandleJustReleasedTouchID(touchID) {
-					result = true
-				}
+			if child.handledTouchID == touchID && IsInside(child.bounds, x, y) {
+				handler.HandleJustReleasedTouchID(touchID)
 			}
 		}
 
@@ -94,7 +93,6 @@ func (cont *ContainerEmbed) HandleJustReleasedTouchID(touchID int) bool {
 			}
 		}
 	}
-	return result
 }
 
 func (cont *ContainerEmbed) HandleMouse(x, y int) bool {

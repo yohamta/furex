@@ -32,12 +32,12 @@ func (l *Layer) HandleJustPressedTouchID(touchID int) bool {
 	return touchable.HandleJustPressedTouchID(touchID)
 }
 
-func (l *Layer) HandleJustReleasedTouchID(touchID int) bool {
+func (l *Layer) HandleJustReleasedTouchID(touchID int) {
 	touchable, ok := l.cont.(TouchHandler)
 	if ok == false {
-		return false
+		return
 	}
-	return touchable.HandleJustReleasedTouchID(touchID)
+	touchable.HandleJustReleasedTouchID(touchID)
 }
 
 func (l *Layer) HandleMouse(x, y int) bool {
