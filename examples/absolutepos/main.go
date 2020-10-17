@@ -60,8 +60,8 @@ func (g *Game) buildUI() {
 	b1 := furex.NewBox(100, 100, color.RGBA{0, 0xff, 0, 0xff})
 	rootFlex.AddChild(b1)
 
-	// absolute postion box (x=30, y=30)
-	rect := components.NewRect(30, 30, 100, 100, color.RGBA{0, 0, 0xff, 0xff})
+	// absolute postion box (x=30, y=50)
+	rect := components.NewRect(30, 50, 100, 100, color.RGBA{0, 0, 0xff, 0xff})
 	rootFlex.AddChild(rect)
 
 	// layer

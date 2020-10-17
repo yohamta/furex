@@ -130,7 +130,7 @@ func (f *Flex) layout() {
 		if ok {
 			pos := absolute.GetPosition()
 			size := absolute.GetSize()
-			c.bounds = image.Rect(pos.X, pos.Y, size.X, size.Y)
+			c.bounds = image.Rect(pos.X, pos.Y, pos.X+size.X, pos.Y+size.Y)
 			continue
 		}
 		children = append(children, element{
