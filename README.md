@@ -71,3 +71,7 @@ func (g *Game) Draw(screen *ebiten.Image) {
 
 ### Result
 <image src="https://user-images.githubusercontent.com/1475839/95682206-0279fa80-0c1f-11eb-8dd5-03bec58325e8.png" width="300px" />
+
+## Use case
+This simple game is using furex for UI interaction.
+https://github.com/yohamta/godanmaku
