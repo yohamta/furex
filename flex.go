@@ -108,12 +108,6 @@ func (f *Flex) Update() {
 	}
 }
 
-func (f *Flex) AddChild(child Component) {
-	c := &Child{component: child}
-	f.children = append(f.children, c)
-	f.isDirty = true
-}
-
 // This is the main routing that implements a subset of flexbox layout
 // https://www.w3.org/TR/css-flexbox-1/#layout-algorithm
 func (f *Flex) layout() {

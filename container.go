@@ -17,7 +17,6 @@ type Child struct {
 	bounds          image.Rectangle
 	component       Component
 	IsButtonPressed bool
-	buttonTouchID   int
 	handledTouchID  int
 }
 
@@ -34,7 +33,7 @@ func (f *Flex) Draw(screen *ebiten.Image, frame image.Rectangle) {
 }
 
 func (cont *ContainerEmbed) AddChild(child Component) {
-	c := &Child{component: child}
+	c := &Child{component: child, handledTouchID: -1}
 	cont.children = append(cont.children, c)
 	cont.isDirty = true
 }
@@ -60,12 +59,12 @@ func (cont *ContainerEmbed) HandleJustPressedTouchID(touchID int) bool {
 			if result == false && IsInside(child.bounds, x, y) {
 				if child.IsButtonPressed == false {
 					child.IsButtonPressed = true
-					child.buttonTouchID = touchID
+					child.handledTouchID = touchID
 					button.OnPressButton()
 				}
 				result = true
-			} else if child.buttonTouchID == touchID {
-				child.buttonTouchID = -1
+			} else if child.handledTouchID == touchID {
+				child.handledTouchID = -1
 			}
 		}
 	}
@@ -82,10 +81,10 @@ func (cont *ContainerEmbed) HandleJustReleasedTouchID(touchID int) {
 
 		button, ok := child.component.(ButtonComponent)
 		if ok && button != nil {
-			if child.buttonTouchID == touchID {
+			if child.handledTouchID == touchID {
 				if child.IsButtonPressed == true {
 					child.IsButtonPressed = false
-					child.buttonTouchID = -1
+					child.handledTouchID = -1
 					button.OnReleaseButton()
 				}
 			}
@@ -107,7 +106,7 @@ func (cont *ContainerEmbed) HandleMouse(x, y int) bool {
 		}
 
 		button, ok := child.component.(ButtonComponent)
-		if ok && button != nil && child.buttonTouchID == -1 {
+		if ok && button != nil && child.handledTouchID == -1 {
 			if result == false && IsInside(child.bounds, x, y) {
 				if child.IsButtonPressed {
 					if ebiten.IsMouseButtonPressed(ebiten.MouseButtonLeft) == false {
