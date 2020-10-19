@@ -1,7 +1,15 @@
 # furex
 A simple UI framework with a subset of flexbox layout for [Ebiten](https://ebiten.org/).
 
-## Example Usage
+## Features
+| Feature                 | Supported | Note                                                                                                                   |
+|-------------------------|------------------|------------------------------------------------------------------------------------------------------------------------|
+| Flexbox layout          | o                | Supports a subset of flexbox layout spec.                                                                              |
+| Button event handling   | o                | Supports both of touch and mouse. See [example](https://github.com/yohamta/furex/blob/master/examples/button/main.go). |
+| Touch handler interface | o                | Able to handle each touch ID on component.                                                                             |
+| Mouse handler           | o                | Able to handle left click on component.                                                                                |
+
+## Simple Usage
 
 ```go
 import "github.com/yohamta/furex"
