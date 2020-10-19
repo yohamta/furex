@@ -2,8 +2,8 @@ package main
 
 import (
 	"github.com/hajimehoshi/ebiten"
-	"github.com/yotahamada/furex"
-	"github.com/yotahamada/furex/examples/button/components"
+	"github.com/yohamta/furex"
+	"github.com/yohamta/furex/examples/button/components"
 )
 
 type Game struct {

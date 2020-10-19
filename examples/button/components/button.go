@@ -5,7 +5,7 @@ import (
 	"image/color"
 
 	"github.com/hajimehoshi/ebiten"
-	"github.com/yotahamada/furex"
+	"github.com/yohamta/furex"
 )
 
 type SampleButton struct {
