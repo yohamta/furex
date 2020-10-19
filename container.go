@@ -76,7 +76,10 @@ func (cont *ContainerEmbed) HandleJustReleasedTouchID(touchID int) {
 		child := cont.children[c]
 		handler, ok := child.component.(TouchHandler)
 		if ok && handler != nil {
-			handler.HandleJustReleasedTouchID(touchID)
+			if child.handledTouchID == touchID {
+				handler.HandleJustReleasedTouchID(touchID)
+				child.handledTouchID = -1
+			}
 		}
 
 		button, ok := child.component.(ButtonComponent)
