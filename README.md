@@ -38,10 +38,11 @@ func (g *Game) initUI() {
 	rootFlex.AlignContent = furex.AlignContentCenter
 	rootFlex.Wrap = furex.Wrap
 
-	// Make flex items to add on flexbox container
+	// Make flexbox items on flexbox container
 	for i := 0; i < 20; i++ {
-		// Each flex children must have fixed size (width and height) so far
-		// In this example the width is 50 and the height is 50
+		// Each flexbox item must have fixed width and height so far
+		// In this case, the width is 50, height is 50
+		// Box component is just an example of a component
 		rootFlex.AddChild(furex.NewBox(50, 50, colors[i%3]))
 	}
 
