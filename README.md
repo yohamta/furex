@@ -28,33 +28,32 @@ type Game struct {
 
 // Initialize the UI
 func (g *Game) initUI() {
-	// Create flex container
+	// Create flexbox container
 	rootFlex := furex.NewFlex(0, 0, screenWidth, screenHeight)
 
-	// Set the options for flex layout
+	// Set the options for flexbox
 	rootFlex.Direction = furex.Row
 	rootFlex.Justify = furex.JustifyCenter
 	rootFlex.AlignItems = furex.AlignItemCenter
 	rootFlex.AlignContent = furex.AlignContentCenter
 	rootFlex.Wrap = furex.Wrap
 
-	// Make flex children
+	// Make flex items to add on flexbox container
 	for i := 0; i < 20; i++ {
 		// Each flex children must have fixed size (width and height) so far
 		// In this example the width is 50 and the height is 50
 		rootFlex.AddChild(furex.NewBox(50, 50, colors[i%3]))
 	}
 
-	// Layer: A layer can be stacked on other layers
-	//        so you can make complex UI with multiple layers.
+	// Layer: A Layer can be stacked inside a View
 	layer := furex.NewLayerWithContainer(rootFlex)
 
-	// View: A view handles multiple layers of the UI
-	//                  and also the UI events such as touches or mouse click.
+	// View: A View handles multiple layers of the UI and propagate UI events 
+	//       such as touches or mouse click.
 	g.view = furex.NewView()
 	g.view.Layout(0, 0, screenWidth, screenHeight)
 
-	// Add the layer to the view
+	// Add the layer to the View
 	g.view.AddLayer(layer)
 }
 
