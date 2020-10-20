@@ -40,9 +40,9 @@ func (g *Game) initUI() {
 
 	// Make flexbox items on flexbox container
 	for i := 0; i < 20; i++ {
-		// Each flexbox item must have fixed width and height so far
-		// In this case, the width is 50, height is 50
-		// Box component is just an example of a component
+		// Each flexbox item must have fixed size so far.
+		// In this case, the width is 50, height is 50.
+		// Box component is just an example of a component.
 		rootFlex.AddChild(furex.NewBox(50, 50, colors[i%3]))
 	}
 
