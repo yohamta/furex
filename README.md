@@ -5,7 +5,7 @@ A simple UI framework with a subset of flexbox layout for [Ebiten](https://ebite
 | Feature                 | Supported | Note                                                                                                                   |
 |-------------------------|------------------|------------------------------------------------------------------------------------------------------------------------|
 | Flexbox layout          | o                | Supports a subset of flexbox layout spec.                                                                              |
-| Button event handling   | o                | Supports both of touch and mouse. See the[example](https://github.com/yohamta/furex/blob/master/examples/button/main.go). |
+| Button event handling   | o                | Supports both of touch and mouse. See the [example](https://github.com/yohamta/furex/blob/master/examples/button/main.go). |
 | Touch handler interface | o                | Able to handle touch ID on components that implements the touch handler interface.                                                                             |
 | Mouse handler           | o                | Able to handle left click on components that implements the mouse click handler interface.                                                                                |
 
