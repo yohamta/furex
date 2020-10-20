@@ -1,4 +1,4 @@
-package furex
+package shared
 
 import (
 	"image"

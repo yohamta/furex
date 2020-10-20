@@ -5,6 +5,7 @@ import (
 
 	"github.com/hajimehoshi/ebiten"
 	"github.com/yohamta/furex"
+	"github.com/yohamta/furex/examples/shared"
 )
 
 type Game struct {
@@ -62,7 +63,7 @@ func (g *Game) buildUI() {
 	rootFlex.Wrap = furex.Wrap
 
 	for i := 0; i < 20; i++ {
-		rootFlex.AddChild(furex.NewBox(50, 50, colors[i%3]))
+		rootFlex.AddChild(shared.NewBox(50, 50, colors[i%3]))
 	}
 
 	// layer

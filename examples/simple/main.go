@@ -5,6 +5,7 @@ import (
 
 	"github.com/hajimehoshi/ebiten"
 	"github.com/yohamta/furex"
+	"github.com/yohamta/furex/examples/shared"
 )
 
 type Game struct {
@@ -52,11 +53,11 @@ func (g *Game) buildUI() {
 	rootFlex.AlignItems = furex.AlignItemCenter
 
 	// flex item: box0
-	b0 := furex.NewBox(100, 100, color.RGBA{0xff, 0, 0, 0xff})
+	b0 := shared.NewBox(100, 100, color.RGBA{0xff, 0, 0, 0xff})
 	rootFlex.AddChild(b0)
 
 	// flex item: box1
-	b1 := furex.NewBox(100, 100, color.RGBA{0, 0xff, 0, 0xff})
+	b1 := shared.NewBox(100, 100, color.RGBA{0, 0xff, 0, 0xff})
 	rootFlex.AddChild(b1)
 
 	// layer

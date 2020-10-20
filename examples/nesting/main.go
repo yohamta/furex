@@ -5,6 +5,7 @@ import (
 
 	"github.com/hajimehoshi/ebiten"
 	"github.com/yohamta/furex"
+	"github.com/yohamta/furex/examples/shared"
 )
 
 type Game struct {
@@ -56,8 +57,8 @@ func (g *Game) buildUI() {
 	top.Direction = furex.Row
 	top.Justify = furex.JustifyCenter
 	top.AlignItems = furex.AlignItemStart
-	top.AddChild(furex.NewBox(50, 50, color.RGBA{0xff, 0, 0, 0xff}))
-	top.AddChild(furex.NewBox(50, 50, color.RGBA{0, 0xff, 0, 0xff}))
+	top.AddChild(shared.NewBox(50, 50, color.RGBA{0xff, 0, 0, 0xff}))
+	top.AddChild(shared.NewBox(50, 50, color.RGBA{0, 0xff, 0, 0xff}))
 	rootFlex.AddChild(top)
 
 	// bottom container
@@ -65,8 +66,8 @@ func (g *Game) buildUI() {
 	bottom.Direction = furex.Row
 	bottom.Justify = furex.JustifyCenter
 	bottom.AlignItems = furex.AlignItemEnd
-	bottom.AddChild(furex.NewBox(50, 50, color.RGBA{0, 0xff, 0, 0xff}))
-	bottom.AddChild(furex.NewBox(50, 50, color.RGBA{0xff, 0, 0, 0xff}))
+	bottom.AddChild(shared.NewBox(50, 50, color.RGBA{0, 0xff, 0, 0xff}))
+	bottom.AddChild(shared.NewBox(50, 50, color.RGBA{0xff, 0, 0, 0xff}))
 	rootFlex.AddChild(bottom)
 
 	// layer

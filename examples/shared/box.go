@@ -1,4 +1,4 @@
-package furex
+package shared
 
 import (
 	"image"
@@ -7,7 +7,6 @@ import (
 	"github.com/hajimehoshi/ebiten"
 )
 
-// Box displays a color filled box
 type Box struct {
 	color color.Color
 	size  image.Point

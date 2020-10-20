@@ -5,7 +5,7 @@ A simple UI framework with a subset of flexbox layout for [Ebiten](https://ebite
 | Feature                 | Supported | Note                                                                                                                   |
 |-------------------------|------------------|------------------------------------------------------------------------------------------------------------------------|
 | Flexbox layout          | o                | Supports a subset of flexbox layout spec.                                                                              |
-| Custom component   | o                | Supports any component that implements `Component` interface. See the [example](https://github.com/yohamta/furex/blob/master/box.go). |
+| Custom component   | o                | Supports any component that implements `Component` interface. See the [example](https://github.com/yohamta/furex/blob/master/examples/shared/box.go). |
 | Button event handling   | o                | Supports both of touch and mouse click on components that implements `ButtonComponent` interface. See the [example](https://github.com/yohamta/furex/blob/master/examples/button/main.go). |
 | Touch handler interface | o                | Able to handle touch ID on components that implements the `TouchHandler` interface.                                                                             |
 | Mouse handler           | o                | Able to handle left click on components that implements the `MouseHandler` interface.                                                                                |
@@ -44,7 +44,7 @@ func (g *Game) initUI() {
 		// Each flexbox item must have fixed size so far.
 		// In this case, the width is 50, height is 50.
 		// Box component is just an example of a component.
-		rootFlex.AddChild(furex.NewBox(50, 50, colors[i%3]))
+		rootFlex.AddChild(NewBox(50, 50, colors[i%3]))
 	}
 
 	// Layer: A Layer can be stacked inside a View
