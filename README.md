@@ -12,8 +12,8 @@ When I was making React Native apps, Flexbox layout felt useful and intuitive to
 | Button event handling   | o                | Supports both of touch and mouse click on components that implements `ButtonComponent` interface. See the [example](https://github.com/yohamta/furex/blob/master/examples/button/main.go). |
 | Touch handler interface | o                | Able to handle touch ID on components that implements the `TouchHandler` interface.                                                                             |
 | Mouse handler           | o                | Able to handle left click on components that implements the `MouseHandler` interface.                                                                                |
-| Padding           | x                | Will implement in the future when needed.                                                     |
-| Margin           | x                | Will implement in the future when needed.                                                      |
+| Padding           | x                | To be implemented when needed.                                                     |
+| Margin           | x                | To be implemented when needed.                                                      |
 
 ## Simple Usage
 
