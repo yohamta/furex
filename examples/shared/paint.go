@@ -4,7 +4,7 @@ import (
 	"image"
 	"image/color"
 
-	"github.com/hajimehoshi/ebiten"
+	"github.com/hajimehoshi/ebiten/v2"
 )
 
 var imgOfAPixel *ebiten.Image
@@ -13,10 +13,7 @@ func createRectImg() *ebiten.Image {
 	if imgOfAPixel != nil {
 		return imgOfAPixel
 	}
-	imgOfAPixel, err := ebiten.NewImage(1, 1, ebiten.FilterDefault)
-	if err != nil {
-		panic(err)
-	}
+	imgOfAPixel := ebiten.NewImage(1, 1)
 	return imgOfAPixel
 }
 

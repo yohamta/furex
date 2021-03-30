@@ -4,8 +4,8 @@ import (
 	"image"
 	"image/color"
 
-	"github.com/hajimehoshi/ebiten"
-	"github.com/yohamta/furex"
+	"github.com/hajimehoshi/ebiten/v2"
+	"github.com/yohamta/furex/examples/shared"
 )
 
 type SampleButton struct {
@@ -35,9 +35,9 @@ func (button *SampleButton) Update() {}
 
 func (button *SampleButton) Draw(screen *ebiten.Image, frame image.Rectangle) {
 	if button.isPressing {
-		furex.FillRect(screen, frame, color.RGBA{0xff, 0, 0, 0xff})
+		shared.FillRect(screen, frame, color.RGBA{0xff, 0, 0, 0xff})
 	} else {
-		furex.FillRect(screen, frame, color.RGBA{0, 0xff, 0, 0xff})
+		shared.FillRect(screen, frame, color.RGBA{0, 0xff, 0, 0xff})
 	}
-	furex.DrawRect(screen, frame, color.RGBA{0xff, 0xff, 0xff, 0xff}, 2)
+	shared.DrawRect(screen, frame, color.RGBA{0xff, 0xff, 0xff, 0xff}, 2)
 }

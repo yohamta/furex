@@ -3,13 +3,13 @@ package furex
 import (
 	"image"
 
-	"github.com/hajimehoshi/ebiten"
-	"github.com/hajimehoshi/ebiten/inpututil"
+	"github.com/hajimehoshi/ebiten/v2"
+	"github.com/hajimehoshi/ebiten/v2/inpututil"
 )
 
 type ChildLayer struct {
 	layer    *Layer
-	touchIDs []int
+	touchIDs []ebiten.TouchID
 }
 
 type View struct {

@@ -3,7 +3,7 @@ package furex
 import (
 	"image"
 
-	"github.com/hajimehoshi/ebiten"
+	"github.com/hajimehoshi/ebiten/v2"
 )
 
 type Layer struct {
@@ -24,7 +24,7 @@ func (l *Layer) Update() {
 	l.cont.Update()
 }
 
-func (l *Layer) HandleJustPressedTouchID(touchID int) bool {
+func (l *Layer) HandleJustPressedTouchID(touchID ebiten.TouchID) bool {
 	touchable, ok := l.cont.(TouchHandler)
 	if ok == false {
 		return false
@@ -32,7 +32,7 @@ func (l *Layer) HandleJustPressedTouchID(touchID int) bool {
 	return touchable.HandleJustPressedTouchID(touchID)
 }
 
-func (l *Layer) HandleJustReleasedTouchID(touchID int) {
+func (l *Layer) HandleJustReleasedTouchID(touchID ebiten.TouchID) {
 	touchable, ok := l.cont.(TouchHandler)
 	if ok == false {
 		return

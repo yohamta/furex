@@ -4,7 +4,7 @@ import (
 	"image"
 	"image/color"
 
-	"github.com/hajimehoshi/ebiten"
+	"github.com/hajimehoshi/ebiten/v2"
 )
 
 type Box struct {

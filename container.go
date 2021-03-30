@@ -3,7 +3,7 @@ package furex
 import (
 	"image"
 
-	"github.com/hajimehoshi/ebiten"
+	"github.com/hajimehoshi/ebiten/v2"
 )
 
 // Container represents a container that can have child components
@@ -17,7 +17,7 @@ type Child struct {
 	bounds          image.Rectangle
 	component       Component
 	IsButtonPressed bool
-	handledTouchID  int
+	handledTouchID  ebiten.TouchID
 }
 
 type ContainerEmbed struct {
@@ -38,7 +38,7 @@ func (cont *ContainerEmbed) AddChild(child Component) {
 	cont.isDirty = true
 }
 
-func (cont *ContainerEmbed) HandleJustPressedTouchID(touchID int) bool {
+func (cont *ContainerEmbed) HandleJustPressedTouchID(touchID ebiten.TouchID) bool {
 	result := false
 	x, y := ebiten.TouchPosition(touchID)
 	for c := len(cont.children) - 1; c >= 0; c-- {
@@ -71,7 +71,7 @@ func (cont *ContainerEmbed) HandleJustPressedTouchID(touchID int) bool {
 	return result
 }
 
-func (cont *ContainerEmbed) HandleJustReleasedTouchID(touchID int) {
+func (cont *ContainerEmbed) HandleJustReleasedTouchID(touchID ebiten.TouchID) {
 	for c := len(cont.children) - 1; c >= 0; c-- {
 		child := cont.children[c]
 		handler, ok := child.component.(TouchHandler)

@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/hajimehoshi/ebiten"
+	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/yohamta/furex"
 	"github.com/yohamta/furex/examples/button/components"
 )
@@ -18,7 +18,7 @@ var (
 	isInitialized = false
 )
 
-func (g *Game) Update(screen *ebiten.Image) error {
+func (g *Game) Update() error {
 	if isInitialized == false {
 		g.buildUI()
 		isInitialized = true
