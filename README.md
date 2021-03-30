@@ -1,8 +1,8 @@
 # furex
-A simple UI framework with a subset of flexbox layout for [Ebiten](https://ebiten.org/).
+A simple UI framework for [Ebiten](https://ebiten.org/) with a subset of flexbox layout specification.
 
 ## Motivation
-Personally I was very comfortable with flexbox layout in some ReactNative projects so I created this. I would be happy if it helps someone who has the same thoughts.
+When I was making React Native apps, Flexbox layout felt useful and intuitive to me, so I thought it would be great if I can use the same concept to build user interface in my game using Ebiten framework. I would be so happy if it helps someone who has the same thoughts. I really appreciate if anyone can make any contribution to grow the library.
 
 ## Features
 | Feature                 | Supported | Note                                                                                                                   |
@@ -12,6 +12,8 @@ Personally I was very comfortable with flexbox layout in some ReactNative projec
 | Button event handling   | o                | Supports both of touch and mouse click on components that implements `ButtonComponent` interface. See the [example](https://github.com/yohamta/furex/blob/master/examples/button/main.go). |
 | Touch handler interface | o                | Able to handle touch ID on components that implements the `TouchHandler` interface.                                                                             |
 | Mouse handler           | o                | Able to handle left click on components that implements the `MouseHandler` interface.                                                                                |
+| Padding           | x                | To be implemented when needed.                                                     |
+| Margin           | x                | To be implemented when needed.                                                      |
 
 ## Simple Usage
 
