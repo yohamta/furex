@@ -1,5 +1,6 @@
 # furex
 A simple UI framework for [Ebiten](https://ebiten.org/) with a subset of flexbox layout specification.
+[GoDoc](https://pkg.go.dev/github.com/yohamta/furex)
 
 ## Motivation
 When I was making React Native apps, Flexbox layout felt useful and intuitive to me, so I thought it would be great if I can use the same concept to build user interface in my game using Ebiten framework. I would be so happy if it helps someone who has the same thoughts. I really appreciate if anyone can make any contribution to grow the library.
