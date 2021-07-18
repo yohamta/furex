@@ -19,7 +19,7 @@ func NewBox(w, h int, clr color.Color) *Box {
 	return box
 }
 
-func (box *Box) GetSize() image.Point {
+func (box *Box) Size() image.Point {
 	return box.size
 }
 

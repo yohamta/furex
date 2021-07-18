@@ -6,12 +6,12 @@ import "image"
 type FixedSizeComponent interface {
 	Component
 
-	GetSize() image.Point
+	Size() image.Point
 }
 
 // AbsolutePositionComponent represents a component with fixed size
 type AbsolutePositionComponent interface {
 	FixedSizeComponent
 
-	GetPosition() image.Point
+	Position() image.Point
 }

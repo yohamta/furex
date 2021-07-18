@@ -19,7 +19,7 @@ func NewSampleButton(w, h int) *SampleButton {
 	return button
 }
 
-func (button *SampleButton) GetSize() image.Point {
+func (button *SampleButton) Size() image.Point {
 	return button.size
 }
 

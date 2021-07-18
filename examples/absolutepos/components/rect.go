@@ -18,6 +18,6 @@ func NewRect(x, y, w, h int, clr color.Color) *Rect {
 	return r
 }
 
-func (r *Rect) GetPosition() image.Point {
+func (r *Rect) Position() image.Point {
 	return r.pos
 }

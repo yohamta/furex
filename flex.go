@@ -94,7 +94,7 @@ func NewFlex(x, y, width, height int) *Flex {
 	return f
 }
 
-func (f *Flex) GetSize() image.Point {
+func (f *Flex) Size() image.Point {
 	return f.size
 }
 
@@ -122,8 +122,8 @@ func (f *Flex) layout() {
 		c := f.children[i]
 		absolute, ok := c.component.(AbsolutePositionComponent)
 		if ok {
-			pos := absolute.GetPosition()
-			size := absolute.GetSize()
+			pos := absolute.Position()
+			size := absolute.Size()
 			c.bounds = image.Rect(pos.X, pos.Y, pos.X+size.X, pos.Y+size.Y)
 			continue
 		}
@@ -188,7 +188,7 @@ func (f *Flex) layout() {
 		for _, child := range lines[l].child {
 			fixedSizeC, _ := child.node.component.(FixedSizeComponent)
 			if fixedSizeC != nil {
-				child.crossSize = float64(f.crossSize(fixedSizeC.GetSize()))
+				child.crossSize = float64(f.crossSize(fixedSizeC.Size()))
 			} else {
 				panic("flexible size is not available for now")
 			}
@@ -362,7 +362,7 @@ func (f *Flex) crossSize(p image.Point) int {
 func (f *Flex) flexBaseSize(c *Child) int {
 	fixedSizeC, _ := c.component.(FixedSizeComponent)
 	if fixedSizeC != nil {
-		return f.mainSize(fixedSizeC.GetSize())
+		return f.mainSize(fixedSizeC.Size())
 	}
 	panic("flexible size is not available for now")
 }
