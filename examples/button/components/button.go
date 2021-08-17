@@ -23,11 +23,12 @@ func (button *SampleButton) Size() image.Point {
 	return button.size
 }
 
-func (button *SampleButton) OnPressButton() {
+func (button *SampleButton) HandlePress(t ebiten.TouchID) {
 	button.isPressing = true
 }
 
-func (button *SampleButton) OnReleaseButton() {
+func (button *SampleButton) HandleRelease(t ebiten.TouchID, isInside bool) {
+	println("isInside: ", isInside)
 	button.isPressing = false
 }
 
