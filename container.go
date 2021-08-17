@@ -125,7 +125,7 @@ func (cont *ContainerEmbed) HandleMouse(x, y int) bool {
 			} else {
 				if child.IsButtonPressed {
 					if ebiten.IsMouseButtonPressed(ebiten.MouseButtonLeft) == false {
-						button.HandleRelease(-1, false)
+						button.HandleRelease(-1, true)
 						child.IsButtonPressed = false
 					}
 				}
