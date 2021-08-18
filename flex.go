@@ -77,7 +77,8 @@ type Flex struct {
 	AlignItems   AlignItem
 	AlignContent AlignContent
 
-	size image.Point
+	position image.Point
+	size     image.Point
 }
 
 // NewFlex creates NewFlexContaienr
@@ -89,7 +90,8 @@ func NewFlex(x, y, width, height int) *Flex {
 	f.Justify = JustifyStart
 	f.AlignItems = AlignItemCenter
 	f.AlignContent = AlignContentStart
-	f.size = image.Pt(x+width, y+height)
+	f.size = image.Pt(width, height)
+	f.position = image.Pt(x, y)
 
 	return f
 }
@@ -305,15 +307,15 @@ func (f *Flex) layout() {
 		for _, child := range line.child {
 			switch f.Direction {
 			case Row:
-				child.node.bounds = image.Rect(round(child.mainOffset),
-					round(child.crossOffset),
-					round(child.mainOffset+child.mainSize),
-					round(child.crossOffset+child.crossSize))
+				child.node.bounds = image.Rect(round(child.mainOffset)+f.position.X,
+					round(child.crossOffset)+f.position.Y,
+					round(child.mainOffset+child.mainSize)+f.position.X,
+					round(child.crossOffset+child.crossSize)+f.position.Y)
 			case Column:
-				child.node.bounds = image.Rect(round(child.crossOffset),
-					round(child.mainOffset),
-					round(child.crossOffset+child.crossSize),
-					round(child.mainOffset+child.mainSize))
+				child.node.bounds = image.Rect(round(child.crossOffset)+f.position.X,
+					round(child.mainOffset)+f.position.Y,
+					round(child.crossOffset+child.crossSize)+f.position.X,
+					round(child.mainOffset+child.mainSize)+f.position.Y)
 			default:
 				panic(fmt.Sprint("flex: bad direction ", f.Direction))
 			}
