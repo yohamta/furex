@@ -4,6 +4,7 @@ import (
 	"image"
 
 	"github.com/hajimehoshi/ebiten/v2"
+	"github.com/hajimehoshi/ebiten/v2/inpututil"
 )
 
 // Container represents a container that can have child components
@@ -72,6 +73,8 @@ func (cont *ContainerEmbed) HandleJustPressedTouchID(touchID ebiten.TouchID) boo
 }
 
 func (cont *ContainerEmbed) HandleJustReleasedTouchID(touchID ebiten.TouchID) {
+	x, y := ebiten.TouchPosition(touchID)
+
 	for c := len(cont.children) - 1; c >= 0; c-- {
 		child := cont.children[c]
 		handler, ok := child.component.(TouchHandler)
@@ -86,10 +89,13 @@ func (cont *ContainerEmbed) HandleJustReleasedTouchID(touchID ebiten.TouchID) {
 		if ok && button != nil {
 			if child.handledTouchID == touchID {
 				if child.IsButtonPressed == true {
-					x, y := ebiten.TouchPosition(touchID)
 					child.IsButtonPressed = false
 					child.handledTouchID = -1
-					button.HandleRelease(touchID, IsInside(child.bounds, x, y))
+					if x == 0 && y == 0 {
+						button.HandleRelease(touchID, true)
+					} else {
+						button.HandleRelease(touchID, IsInside(child.bounds, x, y))
+					}
 				}
 			}
 		}
@@ -113,19 +119,19 @@ func (cont *ContainerEmbed) HandleMouse(x, y int) bool {
 		if ok && button != nil && child.handledTouchID == -1 {
 			if result == false && IsInside(child.bounds, x, y) {
 				if child.IsButtonPressed {
-					if ebiten.IsMouseButtonPressed(ebiten.MouseButtonLeft) == false {
-						button.HandleRelease(-1, true)
+					if inpututil.IsMouseButtonJustReleased((ebiten.MouseButtonLeft)) {
+						button.HandleRelease(-1, IsInside(child.bounds, x, y))
 						child.IsButtonPressed = false
 					}
-				} else if ebiten.IsMouseButtonPressed(ebiten.MouseButtonLeft) {
+				} else if inpututil.IsMouseButtonJustPressed(ebiten.MouseButtonLeft) {
 					button.HandlePress(-1)
 					child.IsButtonPressed = true
 				}
 				result = true
 			} else {
 				if child.IsButtonPressed {
-					if ebiten.IsMouseButtonPressed(ebiten.MouseButtonLeft) == false {
-						button.HandleRelease(-1, true)
+					if inpututil.IsMouseButtonJustReleased(ebiten.MouseButtonLeft) {
+						button.HandleRelease(-1, IsInside(child.bounds, x, y))
 						child.IsButtonPressed = false
 					}
 				}
