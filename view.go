@@ -57,6 +57,7 @@ func (view *View) handleTouch() {
 	if justPressedTouchIds != nil {
 		for i := 0; i < len(justPressedTouchIds); i++ {
 			touchID := justPressedTouchIds[i]
+			recordTouchPosition(touchID)
 			for j := len(view.layers) - 1; j >= 0; j-- {
 				if view.layers[j].layer.HandleJustPressedTouchID(touchID) {
 					view.layers[j].touchIDs = append(view.layers[j].touchIDs, touchID)
@@ -71,6 +72,8 @@ func (view *View) handleTouch() {
 			if inpututil.IsTouchJustReleased(touchIDs[t]) {
 				view.layers[j].layer.HandleJustReleasedTouchID(touchIDs[t])
 				view.layers[j].touchIDs = append(touchIDs[:t], touchIDs[t+1:]...)
+			} else {
+				recordTouchPosition(touchIDs[t])
 			}
 		}
 	}

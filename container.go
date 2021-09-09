@@ -73,8 +73,6 @@ func (cont *ContainerEmbed) HandleJustPressedTouchID(touchID ebiten.TouchID) boo
 }
 
 func (cont *ContainerEmbed) HandleJustReleasedTouchID(touchID ebiten.TouchID) {
-	x, y := ebiten.TouchPosition(touchID)
-
 	for c := len(cont.children) - 1; c >= 0; c-- {
 		child := cont.children[c]
 		handler, ok := child.component.(TouchHandler)
@@ -91,6 +89,7 @@ func (cont *ContainerEmbed) HandleJustReleasedTouchID(touchID ebiten.TouchID) {
 				if child.IsButtonPressed == true {
 					child.IsButtonPressed = false
 					child.handledTouchID = -1
+					x, y := lastTouchPosition(touchID)
 					if x == 0 && y == 0 {
 						button.HandleRelease(touchID, true)
 					} else {
