@@ -7,7 +7,9 @@ import (
 	"github.com/hajimehoshi/ebiten/v2"
 )
 
-var imgOfAPixel *ebiten.Image
+var (
+	imgOfAPixel *ebiten.Image
+)
 
 func createRectImg() *ebiten.Image {
 	if imgOfAPixel != nil {

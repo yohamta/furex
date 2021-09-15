@@ -1,9 +1,11 @@
 package main
 
 import (
+	"image"
+
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/yohamta/furex"
-	"github.com/yohamta/furex/examples/button/components"
+	"github.com/yohamta/furex/examples/shared"
 )
 
 type Game struct {
@@ -45,22 +47,17 @@ func NewGame() (*Game, error) {
 
 func (g *Game) buildUI() {
 	// root flex container
-	rootFlex := furex.NewFlex(0, 0, screenWidth, screenHeight)
+	rootFlex := furex.NewFlex(screenWidth, screenHeight)
 	rootFlex.Direction = furex.Column
 	rootFlex.Justify = furex.JustifyCenter
 	rootFlex.AlignItems = furex.AlignItemCenter
 
 	// flex item: button
-	button := components.NewSampleButton(100, 100)
+	button := shared.NewButton(100, 100)
 	rootFlex.AddChild(button)
 
-	// layer
-	layer := furex.NewLayerWithContainer(rootFlex)
-
 	// view
-	g.view = furex.NewView()
-	g.view.Layout(0, 0, screenWidth, screenHeight)
-	g.view.AddLayer(layer)
+	g.view = furex.NewView(image.Rect(0, 0, screenWidth, screenHeight), rootFlex)
 }
 
 func main() {

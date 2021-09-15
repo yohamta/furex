@@ -23,3 +23,6 @@ Mobile.framework
 # XCode project
 UserInterfaceState.xcuserstate
 
+# work files
+scripts/
+wasm/

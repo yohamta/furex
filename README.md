@@ -16,6 +16,11 @@ When I was making React Native apps, Flexbox layout felt useful and intuitive to
 | Padding           | x                | To be implemented when needed.                                                     |
 | Margin           | x                | To be implemented when needed.                                                      |
 
+## Example
+[Source Code](https://github.com/yohamta/furex/blob/master/examples/nesting/main.go)
+
+<image src="https://user-images.githubusercontent.com/1475839/95682206-0279fa80-0c1f-11eb-8dd5-03bec58325e8.png" width="300px" />
+
 ## Simple Usage
 
 ```go

@@ -1,6 +1,7 @@
 package main
 
 import (
+	"image"
 	"image/color"
 
 	"github.com/hajimehoshi/ebiten/v2"
@@ -55,7 +56,7 @@ var (
 
 func (g *Game) buildUI() {
 	// root flex container
-	rootFlex := furex.NewFlex(0, 0, screenWidth, screenHeight)
+	rootFlex := furex.NewFlex(screenWidth, screenHeight)
 	rootFlex.Direction = furex.Row
 	rootFlex.Justify = furex.JustifyCenter
 	rootFlex.AlignItems = furex.AlignItemCenter
@@ -66,13 +67,10 @@ func (g *Game) buildUI() {
 		rootFlex.AddChild(shared.NewBox(50, 50, colors[i%3]))
 	}
 
-	// layer
-	layer := furex.NewLayerWithContainer(rootFlex)
-
 	// view
-	g.view = furex.NewView()
-	g.view.Layout(0, 0, screenWidth, screenHeight)
-	g.view.AddLayer(layer)
+	g.view = furex.NewView(image.Rect(
+		0, 0, screenWidth, screenHeight,
+	), rootFlex)
 }
 
 func main() {

@@ -5,10 +5,16 @@ import (
 	"fmt"
 	"image"
 	"math"
+
+	"github.com/hajimehoshi/ebiten/v2"
 )
 
 // Direction is the direction in which flex items are laid out
 type Direction uint8
+
+type flexComponent interface {
+	setFlexFrame(image.Rectangle)
+}
 
 const (
 	Row Direction = iota
@@ -78,12 +84,11 @@ type Flex struct {
 	AlignItems   AlignItem
 	AlignContent AlignContent
 
-	position image.Point
-	size     image.Point
+	frame image.Rectangle
 }
 
 // NewFlex creates NewFlexContaienr
-func NewFlex(x, y, width, height int) *Flex {
+func NewFlex(width, height int) *Flex {
 	f := new(Flex)
 
 	f.Direction = Row
@@ -91,14 +96,25 @@ func NewFlex(x, y, width, height int) *Flex {
 	f.Justify = JustifyStart
 	f.AlignItems = AlignItemCenter
 	f.AlignContent = AlignContentStart
-	f.size = image.Pt(width, height)
-	f.position = image.Pt(x, y)
+	f.frame = image.Rect(0, 0, width, height)
 
 	return f
 }
 
+func (f *Flex) setFlexFrame(frame image.Rectangle) {
+	f.frame = frame
+	f.isDirty = true
+}
+
+func (f *Flex) Draw(screen *ebiten.Image, _ image.Rectangle) {
+	for c := range f.children {
+		child := f.children[c]
+		child.component.Draw(screen, child.bounds)
+	}
+}
+
 func (f *Flex) Size() image.Point {
-	return f.size
+	return f.frame.Size()
 }
 
 func (f *Flex) Update() {
@@ -119,8 +135,8 @@ func (f *Flex) Update() {
 func (f *Flex) layout() {
 	// 9.2. Line Length Determination
 	// Determine the available main and cross space for the flex items.
-	containerMainSize := float64(f.mainSize(f.size))
-	containerCrossSize := float64(f.crossSize(f.size))
+	containerMainSize := float64(f.mainSize(f.frame.Size()))
+	containerCrossSize := float64(f.crossSize(f.frame.Size()))
 
 	// Determine the flex base size and hypothetical main size of each item:
 	var children []element
@@ -177,7 +193,7 @@ func (f *Flex) layout() {
 		line := &lines[l]
 
 		// Calculate free space
-		freeSpace := float64(f.mainSize(f.size))
+		freeSpace := float64(f.mainSize(f.frame.Size()))
 		for _, child := range line.child {
 			freeSpace -= float64(f.flexBaseSize(child.node))
 		}
@@ -311,15 +327,23 @@ func (f *Flex) layout() {
 		for _, child := range line.child {
 			switch f.Direction {
 			case Row:
-				child.node.bounds = image.Rect(round(child.mainOffset)+f.position.X,
-					round(child.crossOffset)+f.position.Y,
-					round(child.mainOffset+child.mainSize)+f.position.X,
-					round(child.crossOffset+child.crossSize)+f.position.Y)
+				child.node.bounds = image.Rect(round(child.mainOffset)+f.frame.Min.X,
+					round(child.crossOffset)+f.frame.Min.Y,
+					round(child.mainOffset+child.mainSize)+f.frame.Min.X,
+					round(child.crossOffset+child.crossSize)+f.frame.Min.Y)
+				f, ok := child.node.component.(flexComponent)
+				if ok {
+					f.setFlexFrame(child.node.bounds)
+				}
 			case Column:
-				child.node.bounds = image.Rect(round(child.crossOffset)+f.position.X,
-					round(child.mainOffset)+f.position.Y,
-					round(child.crossOffset+child.crossSize)+f.position.X,
-					round(child.mainOffset+child.mainSize)+f.position.Y)
+				child.node.bounds = image.Rect(round(child.crossOffset)+f.frame.Min.X,
+					round(child.mainOffset)+f.frame.Min.Y,
+					round(child.crossOffset+child.crossSize)+f.frame.Min.X,
+					round(child.mainOffset+child.mainSize)+f.frame.Min.Y)
+				f, ok := child.node.component.(flexComponent)
+				if ok {
+					f.setFlexFrame(child.node.bounds)
+				}
 			default:
 				panic(fmt.Sprint("flex: bad direction ", f.Direction))
 			}

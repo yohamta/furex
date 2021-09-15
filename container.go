@@ -26,13 +26,6 @@ type ContainerEmbed struct {
 	isDirty  bool
 }
 
-func (f *Flex) Draw(screen *ebiten.Image, frame image.Rectangle) {
-	for c := range f.children {
-		child := f.children[c]
-		child.component.Draw(screen, child.bounds.Add(frame.Min))
-	}
-}
-
 func (cont *ContainerEmbed) AddChild(child Component) {
 	c := &Child{component: child, handledTouchID: -1}
 	cont.children = append(cont.children, c)

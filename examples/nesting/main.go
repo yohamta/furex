@@ -1,6 +1,7 @@
 package main
 
 import (
+	"image"
 	"image/color"
 
 	"github.com/hajimehoshi/ebiten/v2"
@@ -47,36 +48,37 @@ func NewGame() (*Game, error) {
 
 func (g *Game) buildUI() {
 	// root container
-	rootFlex := furex.NewFlex(0, 0, screenWidth, screenHeight)
+	rootFlex := furex.NewFlex(screenWidth, screenHeight)
 	rootFlex.Direction = furex.Column
 	rootFlex.Justify = furex.JustifySpaceBetween
 	rootFlex.AlignContent = furex.AlignContentCenter
 
 	// top container
-	top := furex.NewFlex(0, 0, screenWidth, screenHeight/2)
+	top := furex.NewFlex(screenWidth-20, 70)
 	top.Direction = furex.Row
-	top.Justify = furex.JustifyCenter
-	top.AlignItems = furex.AlignItemStart
+	top.Justify = furex.JustifySpaceBetween
+	top.AlignItems = furex.AlignItemCenter
 	top.AddChild(shared.NewBox(50, 50, color.RGBA{0xff, 0, 0, 0xff}))
+	top.AddChild(shared.NewBox(100, 30, color.RGBA{0xff, 0xff, 0xff, 0xff}))
 	top.AddChild(shared.NewBox(50, 50, color.RGBA{0, 0xff, 0, 0xff}))
 	rootFlex.AddChild(top)
 
+	// center
+	rootFlex.AddChild(shared.NewButton(100, 50))
+
 	// bottom container
-	bottom := furex.NewFlex(0, 0, screenWidth, screenHeight/2)
+	bottom := furex.NewFlex(screenWidth, 70)
 	bottom.Direction = furex.Row
-	bottom.Justify = furex.JustifyCenter
+	bottom.Justify = furex.JustifySpaceAround
 	bottom.AlignItems = furex.AlignItemEnd
-	bottom.AddChild(shared.NewBox(50, 50, color.RGBA{0, 0xff, 0, 0xff}))
-	bottom.AddChild(shared.NewBox(50, 50, color.RGBA{0xff, 0, 0, 0xff}))
+	bottom.AddChild(shared.NewButton(50, 30))
+	bottom.AddChild(shared.NewButton(50, 30))
+	bottom.AddChild(shared.NewButton(50, 30))
+	bottom.AddChild(shared.NewButton(50, 30))
 	rootFlex.AddChild(bottom)
 
-	// layer
-	layer := furex.NewLayerWithContainer(rootFlex)
-
 	// view
-	g.view = furex.NewView()
-	g.view.Layout(0, 0, screenWidth, screenHeight)
-	g.view.AddLayer(layer)
+	g.view = furex.NewView(image.Rect(0, 0, screenWidth, screenHeight), rootFlex)
 }
 
 func main() {
