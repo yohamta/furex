@@ -21,6 +21,8 @@ It has very minimum and sufficient features to implement 2D game UI using Flexbo
 | Padding           | -                | To be implemented when needed.                                                     |
 | Margin           | -                | To be implemented when needed.                                                      |
 
+
+
 ## Layout Example
 
 <image src="https://user-images.githubusercontent.com/1475839/133440846-dae6cc3e-22d4-4e13-965c-7989b50ed58a.png" width="500px" />
@@ -35,6 +37,8 @@ It's easy and straight-forward to implement a button component that works for bo
 
 ## Simple Usage Example
 
+[Source code for simple usage example](https://github.com/yohamta/furex/blob/master/examples/wrap/main.go)
+
 ```go
 import "github.com/yohamta/furex"
 
@@ -46,14 +50,14 @@ var (
 	}
 )
 
-type Game struct {
+var {
 	view *furex.View
 }
 
 // Initialize the UI
 func (g *Game) initUI() {
-	// Create flexbox container
-	rootFlex := furex.NewFlex(0, 0, screenWidth, screenHeight)
+	// flexbox container
+	rootFlex := furex.NewFlex(screenWidth, screenHeight)
 
 	// Set the options for flexbox
 	rootFlex.Direction = furex.Row
@@ -62,34 +66,26 @@ func (g *Game) initUI() {
 	rootFlex.AlignContent = furex.AlignContentCenter
 	rootFlex.Wrap = furex.Wrap
 
-	// Make flexbox items on flexbox container
+	// Add items to flexbox container
 	for i := 0; i < 20; i++ {
-		// Each flexbox item must have fixed size so far.
+		// Each flexbox item must have fixed size.
 		// In this case, the width is 50, height is 50.
-		// Box component is just an example of a component.
+		// Box component is only an example custom component.
 		rootFlex.AddChild(NewBox(50, 50, colors[i%3]))
 	}
 
-	// Layer: A Layer can be stacked inside a View
-	layer := furex.NewLayerWithContainer(rootFlex)
-
-	// View: A View handles multiple layers of the UI and propagate UI events 
-	//       such as touches or mouse click.
-	g.view = furex.NewView()
-	g.view.Layout(0, 0, screenWidth, screenHeight)
-
-	// Add the layer to the View
-	g.view.AddLayer(layer)
+	// View: A View has a flex container as a root of component tree
+	view = furex.NewView(image.Rect(0, 0, screenWidth, screenHeight), rootFlex)
 }
 
 func (g *Game) Update() {
 	// Update the UI 
-	g.view.Update()
+	view.Update()
 }
 
 func (g *Game) Draw(screen *ebiten.Image) {
 	// Draw the UI 
-	g.view.Draw(screen)
+	view.Draw(screen)
 }
 ```
 
