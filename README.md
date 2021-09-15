@@ -44,9 +44,9 @@ import "github.com/yohamta/furex"
 
 var (
 	colors = []color.Color{
-		color.RGBA{0xff, 0, 0, 0xff},
-		color.RGBA{0, 0xff, 0, 0xff},
-		color.RGBA{0, 0, 0xff, 0xff},
+		color.RGBA{0xaa, 0, 0, 0xff},
+		color.RGBA{0, 0xaa, 0, 0xff},
+		color.RGBA{0, 0, 0xaa, 0xff},
 	}
 )
 
@@ -90,7 +90,7 @@ func (g *Game) Draw(screen *ebiten.Image) {
 ```
 
 ### Result
-<image src="https://user-images.githubusercontent.com/1475839/95682206-0279fa80-0c1f-11eb-8dd5-03bec58325e8.png" width="500px" />
+<image src="https://user-images.githubusercontent.com/1475839/133445715-b94b8c7f-bcd3-4aef-b7a4-b58bbb29d556.png" width="500px" />
 
 ## Use case
 This [simple game](https://github.com/yohamta/godanmaku) is using furex for UI layout and interaction.
