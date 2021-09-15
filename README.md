@@ -31,7 +31,7 @@ It has very minimum and sufficient features to implement 2D game UI using Flexbo
 
 ## Button Component Example
 
-It's easy and straight-forward to implement a button component that works for both mouse and touch in any platform that ebiten supports.
+It's easy to implement a button component that works in any platform that is supported by Ebiten.
 
 [Button component example](https://github.com/yohamta/furex/blob/master/examples/shared/button.go)
 
