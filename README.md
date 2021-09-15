@@ -1,25 +1,29 @@
 # furex
+
 A simple UI framework for [Ebiten](https://ebiten.org/) with a subset of flexbox layout specification.
 [GoDoc](https://pkg.go.dev/github.com/yohamta/furex)
 
 ## Motivation
-When I was making React Native apps, Flexbox layout felt useful and intuitive to me, so I thought it would be great if I can use the same concept to build user interface in my game using Ebiten framework. I would be so happy if it helps someone who has the same thoughts. I really appreciate if anyone can make any contribution to grow the library.
+
+Since I was working on React Native app and Flexbox layout is very intuitive to me, so I thought it would be great if I could use the same concept to build user interface for games built with Ebiten. I would be so happy if it helps someone who has the same thoughts. I really appreciate if anyone could make any contribution to add features/fix bugs in this repository.
 
 ## Features
+
 | Feature                 | Supported | Note                                                                                                                   |
 |-------------------------|------------------|------------------------------------------------------------------------------------------------------------------------|
 | Flexbox layout          | o                | Supports a subset of flexbox layout spec.                                                                              |
 | Custom component   | o                | Supports any component that implements `Component` interface. See the [example](https://github.com/yohamta/furex/blob/master/examples/shared/box.go). |
-| Button event handling   | o                | Supports both of touch and mouse click on components that implements `ButtonComponent` interface. See the [example](https://github.com/yohamta/furex/blob/master/examples/button/main.go). |
+| Button event handling   | o                | Supports both of touch and mouse click on components that implements `ButtonComponent` interface. See the [example](https://github.com/yohamta/furex/blob/master/examples/shared/button.go). |
 | Touch handler interface | o                | Able to handle touch ID on components that implements the `TouchHandler` interface.                                                                             |
 | Mouse handler           | o                | Able to handle left click on components that implements the `MouseHandler` interface.                                                                                |
-| Padding           | x                | To be implemented when needed.                                                     |
-| Margin           | x                | To be implemented when needed.                                                      |
+| Padding           | -                | To be implemented when needed.                                                     |
+| Margin           | -                | To be implemented when needed.                                                      |
 
 ## Example
+
 [Source Code](https://github.com/yohamta/furex/blob/master/examples/nesting/main.go)
 
-<image src="https://user-images.githubusercontent.com/1475839/95682206-0279fa80-0c1f-11eb-8dd5-03bec58325e8.png" width="300px" />
+<image src="https://user-images.githubusercontent.com/1475839/133440846-dae6cc3e-22d4-4e13-965c-7989b50ed58a.png" width="300px" />
 
 ## Simple Usage
 
