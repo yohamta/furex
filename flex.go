@@ -1,3 +1,4 @@
+// Referenced code: https://github.com/golang/exp/blob/master/shiny/widget/flex/flex.go
 package furex
 
 import (
