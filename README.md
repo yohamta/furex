@@ -5,7 +5,7 @@ A simple UI framework for [Ebiten](https://ebiten.org/) with a subset of flexbox
 
 ## Motivation
 
-Since I was working on React Native app and Flexbox layout is very intuitive to me, so I thought it would be great if I could use the same concept to build user interface for games built with Ebiten. I would be so happy if it helps someone who has the same thoughts. I really appreciate if anyone could make any contribution to add features/fix bugs in this repository.
+Since I was working on React Native app and Flexbox layout is very intuitive to me, so I thought it would be great if I could use the same concept to build user interface for games built with Ebiten. I would be so happy if it helps someone who has the same thoughts. I really appreciate if anyone could make any contribution to make the library more useful.
 
 ## Features
 
@@ -23,7 +23,7 @@ Since I was working on React Native app and Flexbox layout is very intuitive to 
 
 [Source Code](https://github.com/yohamta/furex/blob/master/examples/nesting/main.go)
 
-<image src="https://user-images.githubusercontent.com/1475839/133440846-dae6cc3e-22d4-4e13-965c-7989b50ed58a.png" width="300px" />
+<image src="https://user-images.githubusercontent.com/1475839/133440846-dae6cc3e-22d4-4e13-965c-7989b50ed58a.png" width="500px" />
 
 ## Simple Usage
 
@@ -86,7 +86,7 @@ func (g *Game) Draw(screen *ebiten.Image) {
 ```
 
 ### Result
-<image src="https://user-images.githubusercontent.com/1475839/95682206-0279fa80-0c1f-11eb-8dd5-03bec58325e8.png" width="300px" />
+<image src="https://user-images.githubusercontent.com/1475839/95682206-0279fa80-0c1f-11eb-8dd5-03bec58325e8.png" width="500px" />
 
 ## Use case
 This [simple game](https://github.com/yohamta/godanmaku) is using furex for UI layout and interaction.
