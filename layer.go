@@ -21,7 +21,10 @@ func (l *Layer) Layout(x0, y0, x1, y1 int) {
 }
 
 func (l *Layer) Update() {
-	l.cont.Update()
+	updatable, ok := l.cont.(UpdatableComponent)
+	if ok && updatable != nil {
+		updatable.Update()
+	}
 }
 
 func (l *Layer) HandleJustPressedTouchID(touchID ebiten.TouchID) bool {

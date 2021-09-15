@@ -106,7 +106,10 @@ func (f *Flex) Update() {
 		f.isDirty = false
 	}
 	for c := range f.children {
-		f.children[c].component.Update()
+		updatable, ok := f.children[c].component.(UpdatableComponent)
+		if ok && updatable != nil {
+			updatable.Update()
+		}
 	}
 }
 
