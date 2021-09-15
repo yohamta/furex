@@ -1,6 +1,6 @@
 # furex
 
-A simple UI framework for [Ebiten](https://ebiten.org/) with a subset of flexbox layout specification.
+A light-weight simple UI framework for [Ebiten](https://ebiten.org/) with a subset of flexbox layout specification.
 [GoDoc](https://pkg.go.dev/github.com/yohamta/furex)
 
 ## Motivation
@@ -8,6 +8,8 @@ A simple UI framework for [Ebiten](https://ebiten.org/) with a subset of flexbox
 Since I was working on React Native app and Flexbox layout is very intuitive to me, so I thought it would be great if I could use the same concept to build user interface for games built with Ebiten. I would be so happy if it helps someone who has the same thoughts. I really appreciate if anyone could make any contribution to make the library more useful.
 
 ## Features
+
+It has very minimum and sufficient features to implement 2D game UI using Flexbox layout.
 
 | Feature                 | Supported | Note                                                                                                                   |
 |-------------------------|------------------|------------------------------------------------------------------------------------------------------------------------|
@@ -19,13 +21,19 @@ Since I was working on React Native app and Flexbox layout is very intuitive to 
 | Padding           | -                | To be implemented when needed.                                                     |
 | Margin           | -                | To be implemented when needed.                                                      |
 
-## Example
-
-[Flex Layout Example using button and nesting flex layout](https://github.com/yohamta/furex/blob/master/examples/nesting/main.go)
+## Layout Example
 
 <image src="https://user-images.githubusercontent.com/1475839/133440846-dae6cc3e-22d4-4e13-965c-7989b50ed58a.png" width="500px" />
 
-## Simple Usage
+[Flex Layout Example using button and nesting flex layout](https://github.com/yohamta/furex/blob/master/examples/nesting/main.go)
+
+## Button Component Example
+
+It's easy and straight-forward to implement a button component that works for both mouse and touch in any platform that ebiten supports.
+
+[Button component example](https://github.com/yohamta/furex/blob/master/examples/shared/button.go)
+
+## Simple Usage Example
 
 ```go
 import "github.com/yohamta/furex"
