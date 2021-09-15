@@ -5,7 +5,7 @@ A light-weight simple UI framework for [Ebiten](https://ebiten.org/) with a subs
 
 ## Motivation
 
-Since I was working on React Native app and Flexbox layout is very intuitive to me, so I thought it would be great if I could use the same concept to build user interface for games built with Ebiten. I would be so happy if it helps someone who has the same thoughts. I really appreciate if anyone could make any contribution to make the library more useful.
+When I was working on React Native app, I felt Flexbox layout is very intuitive and useful to me, so I thought it would be great if I could use the same concept to build user interface for games built with Ebiten. I would be so happy if it helps someone who has the same thoughts. I really appreciate if anyone could make any contribution to make the library more useful.
 
 ## Features
 
