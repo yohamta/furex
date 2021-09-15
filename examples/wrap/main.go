@@ -48,9 +48,9 @@ func NewGame() (*Game, error) {
 
 var (
 	colors = []color.Color{
-		color.RGBA{0xff, 0, 0, 0xff},
-		color.RGBA{0, 0xff, 0, 0xff},
-		color.RGBA{0, 0, 0xff, 0xff},
+		color.RGBA{0xaa, 0, 0, 0xff},
+		color.RGBA{0, 0xaa, 0, 0xff},
+		color.RGBA{0, 0, 0xaa, 0xff},
 	}
 )
 
