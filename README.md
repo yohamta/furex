@@ -21,7 +21,7 @@ Since I was working on React Native app and Flexbox layout is very intuitive to 
 
 ## Example
 
-[Source Code](https://github.com/yohamta/furex/blob/master/examples/nesting/main.go)
+[Flex Layout Example using button and nesting flex layout](https://github.com/yohamta/furex/blob/master/examples/nesting/main.go)
 
 <image src="https://user-images.githubusercontent.com/1475839/133440846-dae6cc3e-22d4-4e13-965c-7989b50ed58a.png" width="500px" />
 
