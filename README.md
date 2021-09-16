@@ -9,7 +9,7 @@ When I was developing the React Native app, I found the Flexbox layout to be ver
 
 ## Features
 
-It has very minimum and sufficient features to implement 2D game UI using Flexbox layout.
+It provides minimum functionalities to implement user interactions such as buttons, as well as functionality to implement UI using Flexbox layout.
 
 | Feature                 | Supported | Note                                                                                                                   |
 |-------------------------|------------------|------------------------------------------------------------------------------------------------------------------------|
@@ -30,8 +30,6 @@ It has very minimum and sufficient features to implement 2D game UI using Flexbo
 [Flex Layout Example using button and nesting flex layout](https://github.com/yohamta/furex/blob/master/examples/nesting/main.go)
 
 ## Button Component Example
-
-It's easy to implement a button component that works in any platform that is supported by Ebiten.
 
 [Button component example](https://github.com/yohamta/furex/blob/master/examples/shared/button.go)
 
