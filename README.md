@@ -37,7 +37,7 @@ It's easy to implement a button component that works in any platform that is sup
 
 ## Simple Usage Example
 
-[Source code for simple usage example](https://github.com/yohamta/furex/blob/master/examples/wrap/main.go)
+[Source code of simple example](https://github.com/yohamta/furex/blob/master/examples/wrap/main.go)
 
 ```go
 import "github.com/yohamta/furex"
