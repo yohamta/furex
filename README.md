@@ -1,6 +1,6 @@
 # furex
 
-A light-weight simple UI framework for [Ebiten](https://ebiten.org/) with a subset of flexbox layout specification.
+A simple UI framework for [Ebiten](https://ebiten.org/) with a subset of flexbox layout specification.
 [GoDoc](https://pkg.go.dev/github.com/yohamta/furex)
 
 ## Motivation
