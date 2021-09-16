@@ -32,6 +32,16 @@ func (cont *ContainerEmbed) AddChild(child Component) {
 	cont.isDirty = true
 }
 
+func (cont *ContainerEmbed) ChildBounds(child Component) *image.Rectangle {
+	for i := 0; i < len(cont.children); i++ {
+		c := cont.children[i]
+		if c.component == child {
+			return &c.bounds
+		}
+	}
+	return nil
+}
+
 func (cont *ContainerEmbed) HandleJustPressedTouchID(touchID ebiten.TouchID) bool {
 	result := false
 	x, y := ebiten.TouchPosition(touchID)
