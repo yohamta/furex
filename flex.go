@@ -97,6 +97,7 @@ func NewFlex(width, height int) *Flex {
 	f.AlignItems = AlignItemCenter
 	f.AlignContent = AlignContentStart
 	f.frame = image.Rect(0, 0, width, height)
+	f.isDirty = true
 
 	return f
 }
