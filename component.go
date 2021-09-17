@@ -6,7 +6,7 @@ import (
 	"github.com/hajimehoshi/ebiten/v2"
 )
 
-// Component represents a component of the UI.
+// Component represents a UI component that can be added to a Flex container.
 type Component interface {
 	// Draw function draws the content of the component inside the frame.
 	// The frame parameter represents the location (x,y) and size (width,height) relative to the window (0,0).

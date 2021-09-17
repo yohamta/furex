@@ -67,8 +67,6 @@ func (g *Game) initUI() {
 
 	// Add items to flexbox container
 	for i := 0; i < 20; i++ {
-		// Each flexbox item must have fixed size.
-		// In this case, the size is 50x50 pixels.
 		rootFlex.AddChild(NewBox(50, 50, colors[i%3]))
 	}
 }
@@ -86,6 +84,26 @@ func (g *Game) Draw(screen *ebiten.Image) {
 
 ### Result
 <image src="https://user-images.githubusercontent.com/1475839/133445715-b94b8c7f-bcd3-4aef-b7a4-b58bbb29d556.png" width="500px" />
+
+## How to implement a custom component
+
+Please implement both Component and FixedSizeComponent interface below.
+Then the component can be added to a Flex container using Flex.AddChild() method.
+
+```go
+// Component represents a UI component that can be added to a Flex container.
+type Component interface {
+	// Draw function draws the content of the component inside the frame.
+	// The frame parameter represents the location (x,y) and size (width,height) relative to the window (0,0).
+	Draw(screen *ebiten.Image, frame image.Rectangle)
+}
+
+// FixedSizeComponent represents a component with fixed size.
+type FixedSizeComponent interface {
+	// Size returns the size(x,y) of the component.
+	Size() image.Point
+}
+```
 
 ## Use case
 This [simple game](https://github.com/yohamta/godanmaku) is using furex for UI layout and interaction.
