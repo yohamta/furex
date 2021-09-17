@@ -25,17 +25,18 @@ It provides minimum functionalities to implement user interactions such as butto
 
 ## Layout Example
 
+[Full source code of the example](https://github.com/yohamta/furex/blob/master/examples/nesting/main.go)
+
 <image src="https://user-images.githubusercontent.com/1475839/133440846-dae6cc3e-22d4-4e13-965c-7989b50ed58a.png" width="500px" />
 
-[Flex Layout Example using button and nesting flex layout](https://github.com/yohamta/furex/blob/master/examples/nesting/main.go)
 
 ## Button Component Example
 
 [Button component example](https://github.com/yohamta/furex/blob/master/examples/shared/button.go)
 
-## Simple Usage Example
+## Simple Usage
 
-[Source code of simple example](https://github.com/yohamta/furex/blob/master/examples/wrap/main.go)
+[Full source code of simple usage example](https://github.com/yohamta/furex/blob/master/examples/wrap/main.go)
 
 ```go
 import "github.com/yohamta/furex"
@@ -49,15 +50,15 @@ var (
 )
 
 var {
-	view *furex.View
+	rootFlex *furex.Flex
 }
 
 // Initialize the UI
 func (g *Game) initUI() {
-	// flexbox container
-	rootFlex := furex.NewFlex(screenWidth, screenHeight)
+	// Make a instance of root flexbox container
+	rootFlex = furex.NewFlex(screenWidth, screenHeight)
 
-	// Set the options for flexbox
+	// Set options for flexbox layout
 	rootFlex.Direction = furex.Row
 	rootFlex.Justify = furex.JustifyCenter
 	rootFlex.AlignItems = furex.AlignItemCenter
@@ -68,21 +69,17 @@ func (g *Game) initUI() {
 	for i := 0; i < 20; i++ {
 		// Each flexbox item must have fixed size.
 		// In this case, the width is 50, height is 50.
-		// Box component is only an example custom component.
 		rootFlex.AddChild(NewBox(50, 50, colors[i%3]))
 	}
-
-	// View: A View has a flex container as a root of component tree
-	view = furex.NewView(image.Rect(0, 0, screenWidth, screenHeight), rootFlex)
 }
 
 func (g *Game) Update() {
-	// Update the UI 
-	view.Update()
+	// Update the UI tree
+	rootFlex.Update()
 }
 
 func (g *Game) Draw(screen *ebiten.Image) {
-	// Draw the UI 
+	// Draw the UI tree
 	view.Draw(screen)
 }
 ```
