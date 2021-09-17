@@ -65,4 +65,10 @@ type MouseHandler interface {
 
 	// HandleMouse handles the mouch move and returns true if it handle the mouse move
 	HandleMouse(x, y int) bool
+
+	// HandleJustPressedTouchID handles the touchID just pressed and returns true if it handles the TouchID
+	HandleJustPressedMouseButtonLeft(x, y int) bool
+	// HandleJustReleasedTouchID handles the touchID just released
+	// Should be called only when it handled the TouchID when pressed
+	HandleJustReleasedMouseButtonLeft(x, y int)
 }

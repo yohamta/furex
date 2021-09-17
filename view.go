@@ -69,4 +69,10 @@ func (v *View) handleTouch() {
 func (v *View) handleMouse() {
 	x, y := ebiten.CursorPosition()
 	v.flex.HandleMouse(x, y)
+	if inpututil.IsMouseButtonJustPressed((ebiten.MouseButtonLeft)) {
+		v.flex.HandleJustPressedMouseButtonLeft(x, y)
+	}
+	if inpututil.IsMouseButtonJustReleased((ebiten.MouseButtonLeft)) {
+		v.flex.HandleJustReleasedMouseButtonLeft(x, y)
+	}
 }

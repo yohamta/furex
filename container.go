@@ -4,7 +4,6 @@ import (
 	"image"
 
 	"github.com/hajimehoshi/ebiten/v2"
-	"github.com/hajimehoshi/ebiten/v2/inpututil"
 )
 
 // Container represents a container that can have child components
@@ -20,6 +19,7 @@ type Child struct {
 	component       Component
 	isButtonPressed bool
 	handledTouchID  ebiten.TouchID
+	isMouseHandler  bool
 }
 
 type ContainerEmbed struct {
@@ -129,31 +129,65 @@ func (cont *ContainerEmbed) HandleMouse(x, y int) bool {
 				}
 			}
 		}
+	}
+	return result
+}
+
+func (cont *ContainerEmbed) HandleJustPressedMouseButtonLeft(x, y int) bool {
+	result := false
+
+	for c := len(cont.children) - 1; c >= 0; c-- {
+		child := cont.children[c]
+		childFrame := cont.childFrame(child)
+		handler, ok := child.component.(MouseHandler)
+		if ok && handler != nil {
+			if result == false && isInside(childFrame, x, y) {
+				if handler.HandleJustPressedMouseButtonLeft(x, y) {
+					result = true
+					child.isMouseHandler = true
+				}
+			}
+		}
 
 		button, ok := child.component.(Button)
-		if ok && button != nil && child.handledTouchID == -1 {
+		if ok && button != nil {
 			if result == false && isInside(childFrame, x, y) {
-				if child.isButtonPressed {
-					if inpututil.IsMouseButtonJustReleased((ebiten.MouseButtonLeft)) {
-						button.HandleRelease(isInside(childFrame, x, y))
-						child.isButtonPressed = false
-					}
-				} else if inpututil.IsMouseButtonJustPressed(ebiten.MouseButtonLeft) {
-					button.HandlePress()
+				if child.isButtonPressed == false {
 					child.isButtonPressed = true
-				}
-				result = true
-			} else {
-				if child.isButtonPressed {
-					if inpututil.IsMouseButtonJustReleased(ebiten.MouseButtonLeft) {
-						button.HandleRelease(isInside(childFrame, x, y))
-						child.isButtonPressed = false
-					}
+					child.isMouseHandler = true
+					result = true
+					button.HandlePress()
 				}
 			}
 		}
 	}
 	return result
+}
+
+func (cont *ContainerEmbed) HandleJustReleasedMouseButtonLeft(x, y int) {
+	for c := len(cont.children) - 1; c >= 0; c-- {
+		child := cont.children[c]
+		handler, ok := child.component.(MouseHandler)
+		if ok && handler != nil {
+			if child.isMouseHandler {
+				child.isMouseHandler = false
+				handler.HandleJustReleasedMouseButtonLeft(x, y)
+			}
+		}
+
+		button, ok := child.component.(Button)
+		if ok && button != nil {
+			if child.isButtonPressed == true && child.isMouseHandler {
+				child.isButtonPressed = false
+				child.isMouseHandler = false
+				if x == 0 && y == 0 {
+					button.HandleRelease(true)
+				} else {
+					button.HandleRelease(isInside(cont.childFrame(child), x, y))
+				}
+			}
+		}
+	}
 }
 
 func isInside(r *image.Rectangle, x, y int) bool {
