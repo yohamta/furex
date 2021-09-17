@@ -71,7 +71,7 @@ const (
 
 // Flex is a container widget that lays out its children following the flexbox algorithm.
 type Flex struct {
-	ContainerEmbed
+	containerEmbed
 
 	Direction    Direction
 	Wrap         FlexWrap

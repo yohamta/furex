@@ -32,7 +32,7 @@ type Container interface {
 	setParent(parent Container)
 }
 
-type ContainerEmbed struct {
+type containerEmbed struct {
 	children []*container.Child
 	isDirty  bool
 	frame    image.Rectangle
@@ -40,19 +40,19 @@ type ContainerEmbed struct {
 	touchIDs []ebiten.TouchID
 }
 
-func (cont *ContainerEmbed) processEvent() {
+func (cont *containerEmbed) processEvent() {
 	if cont.IsRoot() {
 		cont.handleTouch()
 		cont.handleMouse()
 	}
 }
 
-func (cont *ContainerEmbed) IsRoot() bool {
+func (cont *containerEmbed) IsRoot() bool {
 	return cont.parent == nil
 }
 
 // Draw draws it's children
-func (cont *ContainerEmbed) Draw(screen *ebiten.Image) {
+func (cont *containerEmbed) Draw(screen *ebiten.Image) {
 	for c := range cont.children {
 		child := cont.children[c]
 		container, ok := child.Item.(Container)
@@ -69,25 +69,25 @@ func (cont *ContainerEmbed) Draw(screen *ebiten.Image) {
 }
 
 // SetFrame sets the location (x,y) and size (width,height) relative to the window (0,0).
-func (cont *ContainerEmbed) SetFrame(frame image.Rectangle) {
+func (cont *containerEmbed) SetFrame(frame image.Rectangle) {
 	cont.frame = frame
 	cont.isDirty = true
 }
 
 // SetFramePosition sets the location (x,y) relative to the window (0,0).
-func (cont *ContainerEmbed) SetFramePosition(pos image.Point) {
+func (cont *containerEmbed) SetFramePosition(pos image.Point) {
 	cont.SetFrame(image.Rect(pos.X, pos.Y, pos.X+cont.frame.Dx(), pos.Y+cont.frame.Dy()))
 }
 
 // AddChild adds child component
-func (cont *ContainerEmbed) AddChild(child Component) {
+func (cont *containerEmbed) AddChild(child Component) {
 	c := container.NewChild(child)
 	cont.children = append(cont.children, c)
 	cont.isDirty = true
 }
 
 // AddChildContainer adds child container
-func (cont *ContainerEmbed) AddChildContainer(child Container) {
+func (cont *containerEmbed) AddChildContainer(child Container) {
 	c := container.NewChild(child)
 	cont.children = append(cont.children, c)
 	cont.isDirty = true
@@ -95,10 +95,10 @@ func (cont *ContainerEmbed) AddChildContainer(child Container) {
 }
 
 // Update updates the contaienr
-func (cont *ContainerEmbed) Update() {}
+func (cont *containerEmbed) Update() {}
 
 // SetSize sets the size of the flex container.
-func (cont *ContainerEmbed) SetSize(size image.Point) {
+func (cont *containerEmbed) SetSize(size image.Point) {
 	cont.frame = image.Rect(
 		cont.frame.Min.X,
 		cont.frame.Min.Y,
@@ -108,20 +108,20 @@ func (cont *ContainerEmbed) SetSize(size image.Point) {
 }
 
 // Size returns the size of the contaienr
-func (cont *ContainerEmbed) Size() image.Point {
+func (cont *containerEmbed) Size() image.Point {
 	return cont.frame.Size()
 }
 
-func (cont *ContainerEmbed) setParent(parent Container) {
+func (cont *containerEmbed) setParent(parent Container) {
 	cont.parent = parent
 }
 
-func (cont *ContainerEmbed) childFrame(c *container.Child) *image.Rectangle {
+func (cont *containerEmbed) childFrame(c *container.Child) *image.Rectangle {
 	r := c.Bounds.Add(cont.frame.Min)
 	return &r
 }
 
-func (cont *ContainerEmbed) HandleJustPressedTouchID(touchID ebiten.TouchID, x, y int) bool {
+func (cont *containerEmbed) HandleJustPressedTouchID(touchID ebiten.TouchID, x, y int) bool {
 	result := false
 	for c := len(cont.children) - 1; c >= 0; c-- {
 		child := cont.children[c]
@@ -154,7 +154,7 @@ func (cont *ContainerEmbed) HandleJustPressedTouchID(touchID ebiten.TouchID, x, 
 	return result
 }
 
-func (cont *ContainerEmbed) HandleJustReleasedTouchID(touchID ebiten.TouchID, x, y int) {
+func (cont *containerEmbed) HandleJustReleasedTouchID(touchID ebiten.TouchID, x, y int) {
 	for c := len(cont.children) - 1; c >= 0; c-- {
 		child := cont.children[c]
 		touchHandler, ok := child.Item.(TouchHandler)
@@ -182,7 +182,7 @@ func (cont *ContainerEmbed) HandleJustReleasedTouchID(touchID ebiten.TouchID, x,
 	}
 }
 
-func (cont *ContainerEmbed) HandleMouse(x, y int) bool {
+func (cont *containerEmbed) HandleMouse(x, y int) bool {
 	result := false
 	for c := len(cont.children) - 1; c >= 0; c-- {
 		child := cont.children[c]
@@ -199,7 +199,7 @@ func (cont *ContainerEmbed) HandleMouse(x, y int) bool {
 	return result
 }
 
-func (cont *ContainerEmbed) HandleJustPressedMouseButtonLeft(x, y int) bool {
+func (cont *containerEmbed) HandleJustPressedMouseButtonLeft(x, y int) bool {
 	result := false
 
 	for c := len(cont.children) - 1; c >= 0; c-- {
@@ -230,7 +230,7 @@ func (cont *ContainerEmbed) HandleJustPressedMouseButtonLeft(x, y int) bool {
 	return result
 }
 
-func (cont *ContainerEmbed) HandleJustReleasedMouseButtonLeft(x, y int) {
+func (cont *containerEmbed) HandleJustReleasedMouseButtonLeft(x, y int) {
 	for c := len(cont.children) - 1; c >= 0; c-- {
 		child := cont.children[c]
 		mouseLeftClickHandler, ok := child.Item.(MouseLeftClickHandler)
@@ -260,7 +260,7 @@ func isInside(r *image.Rectangle, x, y int) bool {
 	return r.Min.X <= x && x <= r.Max.X && r.Min.Y <= y && y <= r.Max.Y
 }
 
-func (cont *ContainerEmbed) handleTouch() {
+func (cont *containerEmbed) handleTouch() {
 	justPressedTouchIds := inpututil.JustPressedTouchIDs()
 
 	if justPressedTouchIds != nil {
@@ -286,7 +286,7 @@ func (cont *ContainerEmbed) handleTouch() {
 	}
 }
 
-func (cont *ContainerEmbed) handleMouse() {
+func (cont *containerEmbed) handleMouse() {
 	x, y := ebiten.CursorPosition()
 	cont.HandleMouse(x, y)
 	if inpututil.IsMouseButtonJustPressed((ebiten.MouseButtonLeft)) {
