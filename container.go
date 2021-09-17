@@ -154,3 +154,11 @@ func (cont *ContainerEmbed) HandleMouse(x, y int) bool {
 func isInside(r image.Rectangle, x, y int) bool {
 	return r.Min.X <= x && x <= r.Max.X && r.Min.Y <= y && y <= r.Max.Y
 }
+
+func lastTouchPosition(t ebiten.TouchID) (int, int) {
+	s, ok := touchPositions[t]
+	if ok {
+		return s.x, s.y
+	}
+	return 0, 0
+}
