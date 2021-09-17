@@ -1,4 +1,3 @@
-// Referenced code: https://github.com/golang/exp/blob/master/shiny/widget/flex/flex.go
 package furex_test
 
 import (
@@ -33,30 +32,30 @@ func TestContainerButtonTouch(t *testing.T) {
 			b:    bf.Min,
 			want: result{true, true, true},
 		},
-		// {
-		// 	name: "press inside left-top edge, release outside",
-		// 	a:    bf.Min,
-		// 	b:    image.Pt(bf.Min.X, bf.Min.Y-1),
-		// 	want: result{true, true, false},
-		// },
-		// {
-		// 	name: "press inside righ-bottom edge, release inside",
-		// 	a:    bf.Max,
-		// 	b:    bf.Max,
-		// 	want: result{true, true, true},
-		// },
-		// {
-		// 	name: "press inside righ-bottom edge, release outside",
-		// 	a:    bf.Max,
-		// 	b:    image.Pt(bf.Max.X+1, bf.Max.Y),
-		// 	want: result{true, true, false},
-		// },
-		// {
-		// 	name: "press outside, release inside",
-		// 	a:    image.Pt(bf.Min.X-1, bf.Min.Y),
-		// 	b:    image.Pt(bf.Min.X+bf.Dx()/2, bf.Min.Y+bf.Dy()/2),
-		// 	want: result{false, false, false},
-		// },
+		{
+			name: "press inside left-top edge, release outside",
+			a:    bf.Min,
+			b:    image.Pt(bf.Min.X, bf.Min.Y-1),
+			want: result{true, true, false},
+		},
+		{
+			name: "press inside righ-bottom edge, release inside",
+			a:    bf.Max,
+			b:    bf.Max,
+			want: result{true, true, true},
+		},
+		{
+			name: "press inside righ-bottom edge, release outside",
+			a:    bf.Max,
+			b:    image.Pt(bf.Max.X+1, bf.Max.Y),
+			want: result{true, true, false},
+		},
+		{
+			name: "press outside, release inside",
+			a:    image.Pt(bf.Min.X-1, bf.Min.Y),
+			b:    image.Pt(bf.Min.X+bf.Dx()/2, bf.Min.Y+bf.Dy()/2),
+			want: result{false, false, false},
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
