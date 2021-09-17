@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"image"
 	"math"
+
+	"github.com/yohamta/furex/internal/container"
 )
 
 // Direction is the direction in which flex items are laid out
@@ -100,7 +102,7 @@ func (f *Flex) Update() {
 		f.isDirty = false
 	}
 	for c := range f.children {
-		updatable, ok := f.children[c].item.(UpdatableComponent)
+		updatable, ok := f.children[c].Item.(UpdatableComponent)
 		if ok && updatable != nil {
 			updatable.Update()
 		}
@@ -120,11 +122,11 @@ func (f *Flex) layout() {
 	var children []element
 	for i := 0; i < len(f.children); i++ {
 		c := f.children[i]
-		absolute, ok := c.item.(AbsolutePositionComponent)
+		absolute, ok := c.Item.(AbsolutePositionComponent)
 		if ok {
 			pos := absolute.Position()
 			size := absolute.Size()
-			c.bounds = image.Rect(pos.X, pos.Y, pos.X+size.X, pos.Y+size.Y)
+			c.Bounds = image.Rect(pos.X, pos.Y, pos.X+size.X, pos.Y+size.Y)
 			continue
 		}
 		children = append(children, element{
@@ -186,7 +188,7 @@ func (f *Flex) layout() {
 	// Determine the hypothetical cross size of each item
 	for l := range lines {
 		for _, child := range lines[l].child {
-			fixedSizeC, _ := child.node.item.(FixedSizeComponent)
+			fixedSizeC, _ := child.node.Item.(FixedSizeComponent)
 			if fixedSizeC != nil {
 				child.crossSize = float64(f.crossSize(fixedSizeC.Size()))
 			} else {
@@ -305,20 +307,22 @@ func (f *Flex) layout() {
 		for _, child := range line.child {
 			switch f.Direction {
 			case Row:
-				child.node.bounds = image.Rect(round(child.mainOffset),
+				child.node.Bounds = image.Rect(round(child.mainOffset),
 					round(child.crossOffset),
 					round(child.mainOffset+child.mainSize),
 					round(child.crossOffset+child.crossSize))
-				if child.node.container != nil {
-					child.node.container.SetFrame(child.node.bounds.Add(f.frame.Min))
+				container, ok := child.node.Item.(Container)
+				if ok && container != nil {
+					container.SetFrame(child.node.Bounds.Add(f.frame.Min))
 				}
 			case Column:
-				child.node.bounds = image.Rect(round(child.crossOffset),
+				child.node.Bounds = image.Rect(round(child.crossOffset),
 					round(child.mainOffset),
 					round(child.crossOffset+child.crossSize),
 					round(child.mainOffset+child.mainSize))
-				if child.node.container != nil {
-					child.node.container.SetFrame(child.node.bounds.Add(f.frame.Min))
+				container, ok := child.node.Item.(Container)
+				if ok && container != nil {
+					container.SetFrame(child.node.Bounds.Add(f.frame.Min))
 				}
 			default:
 				panic(fmt.Sprint("flex: bad direction ", f.Direction))
@@ -328,7 +332,7 @@ func (f *Flex) layout() {
 }
 
 type element struct {
-	node         *Child
+	node         *container.Child
 	flexBaseSize float64
 	mainSize     float64
 	mainOffset   float64
@@ -365,8 +369,8 @@ func (f *Flex) crossSize(p image.Point) int {
 	}
 }
 
-func (f *Flex) flexBaseSize(c *Child) int {
-	fixedSizeC, _ := c.item.(FixedSizeComponent)
+func (f *Flex) flexBaseSize(c *container.Child) int {
+	fixedSizeC, _ := c.Item.(FixedSizeComponent)
 	if fixedSizeC != nil {
 		return f.mainSize(fixedSizeC.Size())
 	}
