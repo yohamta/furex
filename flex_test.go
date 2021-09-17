@@ -73,7 +73,7 @@ func TestFlexAlignments(t *testing.T) {
 	}
 }
 
-func TestChangeFrame(t *testing.T) {
+func TestFlexFrameChange(t *testing.T) {
 	flexSize := image.Pt(100, 150)
 	itemSize := image.Pt(30, 40)
 
@@ -86,7 +86,7 @@ func TestChangeFrame(t *testing.T) {
 	item := NewMockItem(itemSize.X, itemSize.Y)
 	flex.AddChild(item)
 	flex.Update()
-	flex.Draw(nil, image.Rect(0, 0, 0, 0))
+	flex.Draw(nil)
 
 	//  (0,0)
 	//  ┌───────────────────────────────────┐
@@ -124,7 +124,7 @@ func TestChangeFrame(t *testing.T) {
 	}
 }
 
-func TestNesting(t *testing.T) {
+func TestFlexNesting(t *testing.T) {
 	// parent
 	flexSize := image.Pt(300, 500)
 	flex := furex.NewFlex(flexSize.X, flexSize.Y)
@@ -139,7 +139,7 @@ func TestNesting(t *testing.T) {
 	inner1.Direction = furex.Column
 	inner1.Justify = furex.JustifyEnd
 	inner1.AlignItems = furex.AlignItemEnd
-	flex.AddChild(inner1)
+	flex.AddChildContainer(inner1)
 
 	// add item into the child flex
 	itemSize := image.Pt(30, 40)
@@ -148,7 +148,7 @@ func TestNesting(t *testing.T) {
 
 	// execute layout & draw
 	flex.Update()
-	flex.Draw(nil, image.Rect(0, 0, 0, 0))
+	flex.Draw(nil)
 
 	// 	(0,0)
 	// ┌───────────────────────────────────┐
@@ -195,7 +195,7 @@ func flexItemBounds(flexSize image.Point, itemSize image.Point, direction flex.D
 	item := NewMockItem(itemSize.X, itemSize.Y)
 	flex.AddChild(item)
 	flex.Update()
-	flex.Draw(nil, image.Rect(0, 0, 0, 0))
+	flex.Draw(nil)
 
 	return item.frame
 }

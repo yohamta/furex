@@ -5,8 +5,6 @@ import (
 	"fmt"
 	"image"
 	"math"
-
-	"github.com/hajimehoshi/ebiten/v2"
 )
 
 // Direction is the direction in which flex items are laid out
@@ -91,29 +89,9 @@ func NewFlex(width, height int) *Flex {
 	f.AlignContent = AlignContentStart
 	f.frame = image.Rect(0, 0, width, height)
 	f.isDirty = true
+	f.parent = nil
 
 	return f
-}
-
-func (f *Flex) Draw(screen *ebiten.Image, _ image.Rectangle) {
-	for c := range f.children {
-		child := f.children[c]
-		child.component.Draw(screen, child.bounds.Add(f.frame.Min))
-	}
-}
-
-// SetSize sets the size of the flex container.
-func (f *Flex) SetSize(size image.Point) {
-	f.frame = image.Rect(
-		f.frame.Min.X,
-		f.frame.Min.Y,
-		f.frame.Min.X+size.X,
-		f.frame.Min.Y+size.Y,
-	)
-}
-
-func (f *Flex) Size() image.Point {
-	return f.frame.Size()
 }
 
 func (f *Flex) Update() {
@@ -122,11 +100,12 @@ func (f *Flex) Update() {
 		f.isDirty = false
 	}
 	for c := range f.children {
-		updatable, ok := f.children[c].component.(UpdatableComponent)
+		updatable, ok := f.children[c].item.(UpdatableComponent)
 		if ok && updatable != nil {
 			updatable.Update()
 		}
 	}
+	f.processEvent()
 }
 
 // layout is the main routine that implements a subset of flexbox layout
@@ -141,7 +120,7 @@ func (f *Flex) layout() {
 	var children []element
 	for i := 0; i < len(f.children); i++ {
 		c := f.children[i]
-		absolute, ok := c.component.(AbsolutePositionComponent)
+		absolute, ok := c.item.(AbsolutePositionComponent)
 		if ok {
 			pos := absolute.Position()
 			size := absolute.Size()
@@ -207,7 +186,7 @@ func (f *Flex) layout() {
 	// Determine the hypothetical cross size of each item
 	for l := range lines {
 		for _, child := range lines[l].child {
-			fixedSizeC, _ := child.node.component.(FixedSizeComponent)
+			fixedSizeC, _ := child.node.item.(FixedSizeComponent)
 			if fixedSizeC != nil {
 				child.crossSize = float64(f.crossSize(fixedSizeC.Size()))
 			} else {
@@ -238,7 +217,7 @@ func (f *Flex) layout() {
 	for l := range lines {
 		line := &lines[l]
 		line.crossOffset = off
-		off += line.crossSize
+		// off += line.crossSize
 	}
 
 	// §9.5. Main-Axis Alignment
@@ -330,18 +309,16 @@ func (f *Flex) layout() {
 					round(child.crossOffset),
 					round(child.mainOffset+child.mainSize),
 					round(child.crossOffset+child.crossSize))
-				cont, ok := child.node.component.(Container)
-				if ok {
-					cont.SetFrame(child.node.bounds.Add(f.frame.Min))
+				if child.node.container != nil {
+					child.node.container.SetFrame(child.node.bounds.Add(f.frame.Min))
 				}
 			case Column:
 				child.node.bounds = image.Rect(round(child.crossOffset),
 					round(child.mainOffset),
 					round(child.crossOffset+child.crossSize),
 					round(child.mainOffset+child.mainSize))
-				cont, ok := child.node.component.(Container)
-				if ok {
-					cont.SetFrame(child.node.bounds.Add(f.frame.Min))
+				if child.node.container != nil {
+					child.node.container.SetFrame(child.node.bounds.Add(f.frame.Min))
 				}
 			default:
 				panic(fmt.Sprint("flex: bad direction ", f.Direction))
@@ -389,7 +366,7 @@ func (f *Flex) crossSize(p image.Point) int {
 }
 
 func (f *Flex) flexBaseSize(c *Child) int {
-	fixedSizeC, _ := c.component.(FixedSizeComponent)
+	fixedSizeC, _ := c.item.(FixedSizeComponent)
 	if fixedSizeC != nil {
 		return f.mainSize(fixedSizeC.Size())
 	}

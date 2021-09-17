@@ -11,7 +11,7 @@ import (
 )
 
 type Game struct {
-	view *furex.View
+	flex *furex.Flex
 }
 
 const desktopScreenScale = 2
@@ -27,12 +27,12 @@ func (g *Game) Update() error {
 		g.buildUI()
 		isInitialized = true
 	}
-	g.view.Update()
+	g.flex.Update()
 	return nil
 }
 
 func (g *Game) Draw(screen *ebiten.Image) {
-	g.view.Draw(screen)
+	g.flex.Draw(screen)
 }
 
 func (g *Game) Layout(outsideWidth, outsideHeight int) (int, int) {
@@ -66,8 +66,8 @@ func (g *Game) buildUI() {
 	rect := components.NewRect(30, 50, 100, 100, color.RGBA{0, 0, 0xff, 0xff})
 	rootFlex.AddChild(rect)
 
-	// view
-	g.view = furex.NewView(image.Rect(0, 0, screenWidth, screenHeight), rootFlex)
+	//flex
+	g.flex = furex.NewView(image.Rect(0, 0, screenWidth, screenHeight), rootFlex)
 }
 
 func main() {

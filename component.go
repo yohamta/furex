@@ -15,17 +15,13 @@ type Component interface {
 
 // UpdatableComponent represents a component that updates by one tick.
 type UpdatableComponent interface {
-	Component
-
 	// Update updates the state of the component by one tick.
 	Update()
 }
 
 // FixedSizeComponent represents a component with fixed size
 type FixedSizeComponent interface {
-	Component
-
-	// Size returns the size(x,y) of the container.
+	// Size returns the size(x,y) of the component
 	Size() image.Point
 }
 
@@ -50,8 +46,6 @@ type Button interface {
 
 // TouchHandler represents a component that handle touches
 type TouchHandler interface {
-	Component
-
 	// HandleJustPressedTouchID handles the touchID just pressed and returns true if it handles the TouchID
 	HandleJustPressedTouchID(touch ebiten.TouchID, x, y int) bool
 	// HandleJustReleasedTouchID handles the touchID just released
@@ -61,16 +55,12 @@ type TouchHandler interface {
 
 // MouseHandler represents a component that handle mouse move
 type MouseHandler interface {
-	Component
-
 	// HandleMouse handles the mouch move and returns true if it handle the mouse move
 	HandleMouse(x, y int) bool
 }
 
 // MouseLeftClickHandler represents a component that handle mouse button left click
 type MouseLeftClickHandler interface {
-	Component
-
 	// HandleJustPressedTouchID handles the touchID just pressed and returns true if it handles the TouchID
 	HandleJustPressedMouseButtonLeft(x, y int) bool
 	// HandleJustReleasedTouchID handles the touchID just released
