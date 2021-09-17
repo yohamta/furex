@@ -5,6 +5,7 @@ import (
 
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
+	"github.com/yohamta/furex/internal/touch"
 )
 
 // View manages a root flex container
@@ -13,14 +14,6 @@ type View struct {
 	touchIDs []ebiten.TouchID
 	flex     *Flex
 }
-
-type tpos struct {
-	x, y int
-}
-
-var (
-	touchPositions = make(map[ebiten.TouchID]tpos)
-)
 
 // NewView makes a View
 func NewView(frame image.Rectangle, flex *Flex) *View {
@@ -54,7 +47,7 @@ func (v *View) handleTouch() {
 	if justPressedTouchIds != nil {
 		for i := 0; i < len(justPressedTouchIds); i++ {
 			touchID := justPressedTouchIds[i]
-			recordTouchPosition(touchID)
+			touch.RecordTouchPosition(touchID)
 
 			v.flex.HandleJustPressedTouchID(touchID)
 			v.touchIDs = append(v.touchIDs, touchID)
@@ -65,7 +58,7 @@ func (v *View) handleTouch() {
 		if inpututil.IsTouchJustReleased(touchIDs[t]) {
 			v.flex.HandleJustReleasedTouchID(touchIDs[t])
 		} else {
-			recordTouchPosition(touchIDs[t])
+			touch.RecordTouchPosition(touchIDs[t])
 		}
 	}
 }
@@ -73,9 +66,4 @@ func (v *View) handleTouch() {
 func (v *View) handleMouse() {
 	x, y := ebiten.CursorPosition()
 	v.flex.HandleMouse(x, y)
-}
-
-func recordTouchPosition(t ebiten.TouchID) {
-	x, y := ebiten.TouchPosition(t)
-	touchPositions[t] = tpos{x, y}
 }

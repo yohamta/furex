@@ -5,6 +5,7 @@ import (
 
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
+	"github.com/yohamta/furex/internal/touch"
 )
 
 // Container represents a container that can have child components
@@ -100,11 +101,11 @@ func (cont *ContainerEmbed) HandleJustReleasedTouchID(touchID ebiten.TouchID) {
 				if child.isButtonPressed == true {
 					child.isButtonPressed = false
 					child.handledTouchID = -1
-					x, y := lastTouchPosition(touchID)
-					if x == 0 && y == 0 {
+					pos := touch.LastTouchPosition(touchID)
+					if pos.X == 0 && pos.Y == 0 {
 						button.HandleRelease(touchID, true)
 					} else {
-						button.HandleRelease(touchID, isInside(child.bounds, x, y))
+						button.HandleRelease(touchID, isInside(child.bounds, pos.X, pos.Y))
 					}
 				}
 			}
@@ -153,12 +154,4 @@ func (cont *ContainerEmbed) HandleMouse(x, y int) bool {
 
 func isInside(r image.Rectangle, x, y int) bool {
 	return r.Min.X <= x && x <= r.Max.X && r.Min.Y <= y && y <= r.Max.Y
-}
-
-func lastTouchPosition(t ebiten.TouchID) (int, int) {
-	s, ok := touchPositions[t]
-	if ok {
-		return s.x, s.y
-	}
-	return 0, 0
 }
