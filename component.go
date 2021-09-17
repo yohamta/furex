@@ -18,3 +18,19 @@ type UpdatableComponent interface {
 	// Update updates the state of the component by one tick.
 	Update()
 }
+
+// FixedSizeComponent represents a component with fixed size
+type FixedSizeComponent interface {
+	Component
+
+	// Size returns the size(x,y) of the container.
+	Size() image.Point
+}
+
+// AbsolutePositionComponent represents a component with fixed size
+type AbsolutePositionComponent interface {
+	FixedSizeComponent
+
+	// Position returns the position(x,y) relative to it's parent container.
+	Position() image.Point
+}
