@@ -47,18 +47,21 @@ func (v *View) handleTouch() {
 	if justPressedTouchIds != nil {
 		for i := 0; i < len(justPressedTouchIds); i++ {
 			touchID := justPressedTouchIds[i]
-			touch.RecordTouchPosition(touchID)
+			x, y := ebiten.TouchPosition(touchID)
+			touch.RecordTouchPosition(touchID, x, y)
 
-			v.flex.HandleJustPressedTouchID(touchID)
+			v.flex.HandleJustPressedTouchID(touchID, x, y)
 			v.touchIDs = append(v.touchIDs, touchID)
 		}
 	}
 	touchIDs := v.touchIDs
 	for t := range touchIDs {
 		if inpututil.IsTouchJustReleased(touchIDs[t]) {
-			v.flex.HandleJustReleasedTouchID(touchIDs[t])
+			pos := touch.LastTouchPosition(touchIDs[t])
+			v.flex.HandleJustReleasedTouchID(touchIDs[t], pos.X, pos.Y)
 		} else {
-			touch.RecordTouchPosition(touchIDs[t])
+			x, y := ebiten.TouchPosition(touchIDs[t])
+			touch.RecordTouchPosition(touchIDs[t], x, y)
 		}
 	}
 }

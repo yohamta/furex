@@ -125,7 +125,6 @@ func TestChangeFrame(t *testing.T) {
 }
 
 func TestNesting(t *testing.T) {
-	println("TestNesting")
 	// parent
 	flexSize := image.Pt(300, 500)
 	flex := furex.NewFlex(flexSize.X, flexSize.Y)
