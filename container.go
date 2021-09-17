@@ -57,7 +57,7 @@ func (cont *ContainerEmbed) HandleJustPressedTouchID(touchID ebiten.TouchID) boo
 		child := cont.children[c]
 		handler, ok := child.component.(TouchHandler)
 		if ok && handler != nil {
-			if result == false && IsInside(child.bounds, x, y) {
+			if result == false && isInside(child.bounds, x, y) {
 				if handler.HandleJustPressedTouchID(touchID) {
 					child.handledTouchID = touchID
 					result = true
@@ -68,7 +68,7 @@ func (cont *ContainerEmbed) HandleJustPressedTouchID(touchID ebiten.TouchID) boo
 
 		button, ok := child.component.(ButtonComponent)
 		if ok && button != nil {
-			if result == false && IsInside(child.bounds, x, y) {
+			if result == false && isInside(child.bounds, x, y) {
 				if child.IsButtonPressed == false {
 					child.IsButtonPressed = true
 					child.handledTouchID = touchID
@@ -104,7 +104,7 @@ func (cont *ContainerEmbed) HandleJustReleasedTouchID(touchID ebiten.TouchID) {
 					if x == 0 && y == 0 {
 						button.HandleRelease(touchID, true)
 					} else {
-						button.HandleRelease(touchID, IsInside(child.bounds, x, y))
+						button.HandleRelease(touchID, isInside(child.bounds, x, y))
 					}
 				}
 			}
@@ -118,7 +118,7 @@ func (cont *ContainerEmbed) HandleMouse(x, y int) bool {
 		child := cont.children[c]
 		handler, ok := child.component.(MouseHandler)
 		if ok && handler != nil {
-			if result == false && IsInside(child.bounds, x, y) {
+			if result == false && isInside(child.bounds, x, y) {
 				if handler.HandleMouse(x, y) {
 					result = true
 				}
@@ -127,10 +127,10 @@ func (cont *ContainerEmbed) HandleMouse(x, y int) bool {
 
 		button, ok := child.component.(ButtonComponent)
 		if ok && button != nil && child.handledTouchID == -1 {
-			if result == false && IsInside(child.bounds, x, y) {
+			if result == false && isInside(child.bounds, x, y) {
 				if child.IsButtonPressed {
 					if inpututil.IsMouseButtonJustReleased((ebiten.MouseButtonLeft)) {
-						button.HandleRelease(-1, IsInside(child.bounds, x, y))
+						button.HandleRelease(-1, isInside(child.bounds, x, y))
 						child.IsButtonPressed = false
 					}
 				} else if inpututil.IsMouseButtonJustPressed(ebiten.MouseButtonLeft) {
@@ -141,7 +141,7 @@ func (cont *ContainerEmbed) HandleMouse(x, y int) bool {
 			} else {
 				if child.IsButtonPressed {
 					if inpututil.IsMouseButtonJustReleased(ebiten.MouseButtonLeft) {
-						button.HandleRelease(-1, IsInside(child.bounds, x, y))
+						button.HandleRelease(-1, isInside(child.bounds, x, y))
 						child.IsButtonPressed = false
 					}
 				}
@@ -149,4 +149,8 @@ func (cont *ContainerEmbed) HandleMouse(x, y int) bool {
 		}
 	}
 	return result
+}
+
+func isInside(r image.Rectangle, x, y int) bool {
+	return r.Min.X <= x && x <= r.Max.X && r.Min.Y <= y && y <= r.Max.Y
 }
