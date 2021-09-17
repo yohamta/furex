@@ -1,7 +1,6 @@
 package main
 
 import (
-	"image"
 	"image/color"
 
 	"github.com/hajimehoshi/ebiten/v2"
@@ -10,9 +9,7 @@ import (
 	"github.com/yohamta/furex/examples/shared"
 )
 
-type Game struct {
-	flex *furex.Flex
-}
+type Game struct{}
 
 const desktopScreenScale = 2
 
@@ -20,6 +17,7 @@ var (
 	screenWidth   int
 	screenHeight  int
 	isInitialized = false
+	rootFlex      *furex.Flex
 )
 
 func (g *Game) Update() error {
@@ -27,12 +25,12 @@ func (g *Game) Update() error {
 		g.buildUI()
 		isInitialized = true
 	}
-	g.flex.Update()
+	rootFlex.Update()
 	return nil
 }
 
 func (g *Game) Draw(screen *ebiten.Image) {
-	g.flex.Draw(screen)
+	rootFlex.Draw(screen)
 }
 
 func (g *Game) Layout(outsideWidth, outsideHeight int) (int, int) {
@@ -49,7 +47,7 @@ func NewGame() (*Game, error) {
 
 func (g *Game) buildUI() {
 	// root flex container
-	rootFlex := furex.NewFlex(screenWidth, screenHeight)
+	rootFlex = furex.NewFlex(screenWidth, screenHeight)
 	rootFlex.Direction = furex.Column
 	rootFlex.Justify = furex.JustifySpaceBetween
 	rootFlex.AlignItems = furex.AlignItemCenter
@@ -65,9 +63,6 @@ func (g *Game) buildUI() {
 	// absolute postion box (x=30, y=50)
 	rect := components.NewRect(30, 50, 100, 100, color.RGBA{0, 0, 0xff, 0xff})
 	rootFlex.AddChild(rect)
-
-	//flex
-	g.flex = furex.NewView(image.Rect(0, 0, screenWidth, screenHeight), rootFlex)
 }
 
 func main() {

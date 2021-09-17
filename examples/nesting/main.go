@@ -1,7 +1,6 @@
 package main
 
 import (
-	"image"
 	"image/color"
 
 	"github.com/hajimehoshi/ebiten/v2"
@@ -9,9 +8,7 @@ import (
 	"github.com/yohamta/furex/examples/shared"
 )
 
-type Game struct {
-	view *furex.View
-}
+type Game struct{}
 
 const desktopScreenScale = 2
 
@@ -19,6 +16,7 @@ var (
 	screenWidth   int
 	screenHeight  int
 	isInitialized = false
+	rootFlex      *furex.Flex
 )
 
 func (g *Game) Update() error {
@@ -26,12 +24,12 @@ func (g *Game) Update() error {
 		g.buildUI()
 		isInitialized = true
 	}
-	g.view.Update()
+	rootFlex.Update()
 	return nil
 }
 
 func (g *Game) Draw(screen *ebiten.Image) {
-	g.view.Draw(screen)
+	rootFlex.Draw(screen)
 }
 
 func (g *Game) Layout(outsideWidth, outsideHeight int) (int, int) {
@@ -48,7 +46,7 @@ func NewGame() (*Game, error) {
 
 func (g *Game) buildUI() {
 	// root container
-	rootFlex := furex.NewFlex(screenWidth, screenHeight)
+	rootFlex = furex.NewFlex(screenWidth, screenHeight)
 	rootFlex.Direction = furex.Column
 	rootFlex.Justify = furex.JustifySpaceBetween
 	rootFlex.AlignContent = furex.AlignContentCenter
@@ -61,7 +59,7 @@ func (g *Game) buildUI() {
 	top.AddChild(shared.NewBox(50, 50, color.RGBA{0xff, 0, 0, 0xff}))
 	top.AddChild(shared.NewBox(100, 30, color.RGBA{0xff, 0xff, 0xff, 0xff}))
 	top.AddChild(shared.NewBox(50, 50, color.RGBA{0, 0xff, 0, 0xff}))
-	rootFlex.AddChild(top)
+	rootFlex.AddChildContainer(top)
 
 	// center
 	rootFlex.AddChild(shared.NewButton(100, 50))
@@ -75,10 +73,7 @@ func (g *Game) buildUI() {
 	bottom.AddChild(shared.NewButton(50, 30))
 	bottom.AddChild(shared.NewButton(50, 30))
 	bottom.AddChild(shared.NewButton(50, 30))
-	rootFlex.AddChild(bottom)
-
-	// view
-	g.view = furex.NewView(image.Rect(0, 0, screenWidth, screenHeight), rootFlex)
+	rootFlex.AddChildContainer(bottom)
 }
 
 func main() {
