@@ -41,13 +41,13 @@ type containerEmbed struct {
 }
 
 func (cont *containerEmbed) processEvent() {
-	if cont.IsRoot() {
+	if cont.isRoot() {
 		cont.handleTouch()
 		cont.handleMouse()
 	}
 }
 
-func (cont *containerEmbed) IsRoot() bool {
+func (cont *containerEmbed) isRoot() bool {
 	return cont.parent == nil
 }
 
