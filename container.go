@@ -15,11 +15,11 @@ type Container interface {
 }
 
 type Child struct {
-	bounds          image.Rectangle
-	component       Component
-	isButtonPressed bool
-	handledTouchID  ebiten.TouchID
-	isMouseHandler  bool
+	bounds                  image.Rectangle
+	component               Component
+	isButtonPressed         bool
+	handledTouchID          ebiten.TouchID
+	isMouseLeftClickHandler bool
 }
 
 type ContainerEmbed struct {
@@ -139,12 +139,12 @@ func (cont *ContainerEmbed) HandleJustPressedMouseButtonLeft(x, y int) bool {
 	for c := len(cont.children) - 1; c >= 0; c-- {
 		child := cont.children[c]
 		childFrame := cont.childFrame(child)
-		handler, ok := child.component.(MouseHandler)
+		handler, ok := child.component.(MouseLeftClickHandler)
 		if ok && handler != nil {
 			if result == false && isInside(childFrame, x, y) {
 				if handler.HandleJustPressedMouseButtonLeft(x, y) {
 					result = true
-					child.isMouseHandler = true
+					child.isMouseLeftClickHandler = true
 				}
 			}
 		}
@@ -154,7 +154,7 @@ func (cont *ContainerEmbed) HandleJustPressedMouseButtonLeft(x, y int) bool {
 			if result == false && isInside(childFrame, x, y) {
 				if child.isButtonPressed == false {
 					child.isButtonPressed = true
-					child.isMouseHandler = true
+					child.isMouseLeftClickHandler = true
 					result = true
 					button.HandlePress()
 				}
@@ -167,19 +167,19 @@ func (cont *ContainerEmbed) HandleJustPressedMouseButtonLeft(x, y int) bool {
 func (cont *ContainerEmbed) HandleJustReleasedMouseButtonLeft(x, y int) {
 	for c := len(cont.children) - 1; c >= 0; c-- {
 		child := cont.children[c]
-		handler, ok := child.component.(MouseHandler)
+		handler, ok := child.component.(MouseLeftClickHandler)
 		if ok && handler != nil {
-			if child.isMouseHandler {
-				child.isMouseHandler = false
+			if child.isMouseLeftClickHandler {
+				child.isMouseLeftClickHandler = false
 				handler.HandleJustReleasedMouseButtonLeft(x, y)
 			}
 		}
 
 		button, ok := child.component.(Button)
 		if ok && button != nil {
-			if child.isButtonPressed == true && child.isMouseHandler {
+			if child.isButtonPressed == true && child.isMouseLeftClickHandler {
 				child.isButtonPressed = false
-				child.isMouseHandler = false
+				child.isMouseLeftClickHandler = false
 				if x == 0 && y == 0 {
 					button.HandleRelease(true)
 				} else {

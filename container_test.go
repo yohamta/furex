@@ -9,10 +9,13 @@ import (
 	"github.com/yohamta/furex"
 )
 
+var (
+	// testButtonFrame is the expected button frame for test layout
+	testButtonFrame = image.Rect(290, 380, 300, 400)
+)
+
 func TestButtonTouch(t *testing.T) {
-	// expected button frame:
-	// x = 300-10 = 290 to 300
-	// y = 400-20 = 380 to 400
+	bf := testButtonFrame
 	type result struct {
 		isPressed  bool
 		isReleased bool
@@ -26,32 +29,32 @@ func TestButtonTouch(t *testing.T) {
 	}{
 		{
 			name: "press inside left-top edge, release inside",
-			a:    image.Pt(290, 380),
-			b:    image.Pt(290, 380),
+			a:    bf.Min,
+			b:    bf.Min,
 			want: result{true, true, true},
 		},
 		{
 			name: "press inside left-top edge, release outside",
-			a:    image.Pt(290, 380),
-			b:    image.Pt(290, 379),
+			a:    bf.Min,
+			b:    image.Pt(bf.Min.X, bf.Min.Y-1),
 			want: result{true, true, false},
 		},
 		{
 			name: "press inside righ-bottom edge, release inside",
-			a:    image.Pt(300, 400),
-			b:    image.Pt(300, 400),
+			a:    bf.Max,
+			b:    bf.Max,
 			want: result{true, true, true},
 		},
 		{
 			name: "press inside righ-bottom edge, release outside",
-			a:    image.Pt(300, 400),
-			b:    image.Pt(301, 400),
+			a:    bf.Max,
+			b:    image.Pt(bf.Max.X+1, bf.Max.Y),
 			want: result{true, true, false},
 		},
 		{
 			name: "press outside, release inside",
-			a:    image.Pt(289, 390),
-			b:    image.Pt(295, 390),
+			a:    image.Pt(bf.Min.X-1, bf.Min.Y),
+			b:    image.Pt(bf.Min.X+bf.Dx()/2, bf.Min.Y+bf.Dy()/2),
 			want: result{false, false, false},
 		},
 	}
@@ -62,12 +65,139 @@ func TestButtonTouch(t *testing.T) {
 			if got != tt.want {
 				t.Errorf("TestButtonTouch(%s): got %v; want %v", tt.name, got, tt.want)
 			}
+		})
+	}
+}
 
+func TestButtonMouse(t *testing.T) {
+	bf := testButtonFrame
+	type result struct {
+		isPressed  bool
+		isReleased bool
+		isInside   bool
+	}
+	var tests = []struct {
+		name string
+		a    image.Point
+		b    image.Point
+		want result
+	}{
+		{
+			name: "press inside left-top edge, release inside",
+			a:    bf.Min,
+			b:    bf.Min,
+			want: result{true, true, true},
+		},
+		{
+			name: "press inside left-top edge, release outside",
+			a:    bf.Min,
+			b:    image.Pt(bf.Min.X, bf.Min.Y-1),
+			want: result{true, true, false},
+		},
+		{
+			name: "press inside righ-bottom edge, release inside",
+			a:    bf.Max,
+			b:    bf.Max,
+			want: result{true, true, true},
+		},
+		{
+			name: "press inside righ-bottom edge, release outside",
+			a:    bf.Max,
+			b:    image.Pt(bf.Max.X+1, bf.Max.Y),
+			want: result{true, true, false},
+		},
+		{
+			name: "press outside, release inside",
+			a:    image.Pt(bf.Min.X-1, bf.Min.Y),
+			b:    image.Pt(bf.Min.X+bf.Dx()/2, bf.Min.Y+bf.Dy()/2),
+			want: result{false, false, false},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			b := _TestButtonMouse(tt.a, tt.b)
+			got := result{b.isPressed, b.isReleased, b.isInside}
+			if got != tt.want {
+				t.Errorf("TestButtonTouch(%s): got %v; want %v", tt.name, got, tt.want)
+			}
+		})
+	}
+}
+
+func TestMouseMove(t *testing.T) {
+	bf := testButtonFrame
+	type result struct {
+		isMouseMoved bool
+		mousePoint   image.Point
+	}
+	var tests = []struct {
+		name string
+		a    image.Point
+		want result
+	}{
+		{
+			name: "move mouse left-top inside",
+			a:    image.Point{bf.Min.X, bf.Min.Y},
+			want: result{isMouseMoved: true, mousePoint: image.Point{bf.Min.X, bf.Min.Y}},
+		},
+		{
+			name: "move mouse right-bottom inside",
+			a:    image.Point{bf.Max.X, bf.Max.Y},
+			want: result{isMouseMoved: true, mousePoint: image.Point{bf.Max.X, bf.Max.Y}},
+		},
+		{
+			name: "move mouse left outside",
+			a:    image.Point{bf.Min.X - 1, bf.Min.Y},
+			want: result{isMouseMoved: false, mousePoint: image.Point{-1, -1}},
+		},
+		{
+			name: "move mouse right outside",
+			a:    image.Point{bf.Max.X + 1, bf.Min.Y},
+			want: result{isMouseMoved: false, mousePoint: image.Point{-1, -1}},
+		},
+		{
+			name: "move mouse top outside",
+			a:    image.Point{bf.Min.X, bf.Min.Y - 1},
+			want: result{isMouseMoved: false, mousePoint: image.Point{-1, -1}},
+		},
+		{
+			name: "move mouse bottom outside",
+			a:    image.Point{bf.Min.X, bf.Max.Y + 1},
+			want: result{isMouseMoved: false, mousePoint: image.Point{-1, -1}},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			b := _TestMouseMove(tt.a)
+			got := result{b.isMouseMoved, b.mousePoint}
+			if got != tt.want {
+				t.Errorf("TestMouseMove(%s): got %v; want %v", tt.name, got, tt.want)
+			}
 		})
 	}
 }
 
 func _TestButtonTouch(pressedPos image.Point, releasedPos image.Point) *MockButton {
+	flex, button := testLayout()
+	flex.HandleJustPressedTouchID(0, pressedPos.X, pressedPos.Y)
+	flex.HandleJustReleasedTouchID(0, releasedPos.X, releasedPos.Y)
+	return button
+}
+
+func _TestButtonMouse(pressedPos image.Point, releasedPos image.Point) *MockButton {
+	flex, button := testLayout()
+	flex.HandleJustPressedMouseButtonLeft(pressedPos.X, pressedPos.Y)
+	flex.HandleJustReleasedMouseButtonLeft(releasedPos.X, releasedPos.Y)
+	return button
+}
+
+func _TestMouseMove(mousePoint image.Point) *MockButton {
+	flex, button := testLayout()
+	flex.HandleMouse(mousePoint.X, mousePoint.Y)
+	return button
+}
+
+func testLayout() (*furex.Flex, *MockButton) {
 	// parent
 	flexSize := image.Pt(300, 500)
 	flex := furex.NewFlex(flexSize.X, flexSize.Y)
@@ -121,19 +251,17 @@ func _TestButtonTouch(pressedPos image.Point, releasedPos image.Point) *MockButt
 	// expected button frame:
 	// x = 300-10 = 290 to 300
 	// y = 400-20 = 380 to 400
-
-	flex.HandleJustPressedTouchID(0, pressedPos.X, pressedPos.Y)
-	flex.HandleJustReleasedTouchID(0, releasedPos.X, releasedPos.Y)
-
-	return button
+	return flex, button
 }
 
 type MockButton struct {
-	size       image.Point
-	frame      image.Rectangle
-	isPressed  bool
-	isReleased bool
-	isInside   bool
+	size         image.Point
+	frame        image.Rectangle
+	isPressed    bool
+	isReleased   bool
+	isInside     bool
+	isMouseMoved bool
+	mousePoint   image.Point
 }
 
 func NewMockButton(w, h int) *MockButton {
@@ -142,6 +270,8 @@ func NewMockButton(w, h int) *MockButton {
 	m.isInside = false
 	m.isPressed = false
 	m.isReleased = false
+	m.isMouseMoved = false
+	m.mousePoint = image.Pt(-1, -1)
 	return m
 }
 
@@ -160,4 +290,10 @@ func (m *MockButton) HandlePress() {
 func (m *MockButton) HandleRelease(isInside bool) {
 	m.isReleased = true
 	m.isInside = isInside
+}
+
+func (m *MockButton) HandleMouse(x, y int) bool {
+	m.isMouseMoved = true
+	m.mousePoint = image.Pt(x, y)
+	return true
 }

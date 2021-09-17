@@ -65,6 +65,11 @@ type MouseHandler interface {
 
 	// HandleMouse handles the mouch move and returns true if it handle the mouse move
 	HandleMouse(x, y int) bool
+}
+
+// MouseLeftClickHandler represents a component that handle mouse button left click
+type MouseLeftClickHandler interface {
+	Component
 
 	// HandleJustPressedTouchID handles the touchID just pressed and returns true if it handles the TouchID
 	HandleJustPressedMouseButtonLeft(x, y int) bool
