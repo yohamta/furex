@@ -12,10 +12,6 @@ import (
 // Direction is the direction in which flex items are laid out
 type Direction uint8
 
-type flexComponent interface {
-	setFlexFrame(image.Rectangle)
-}
-
 const (
 	Row Direction = iota
 	Column
@@ -73,8 +69,7 @@ const (
 	AlignContentSpaceAround
 )
 
-// Flex is a container widget that lays out its children following the
-// CSS flexbox algorithm.
+// Flex is a container widget that lays out its children following the flexbox algorithm.
 type Flex struct {
 	ContainerEmbed
 
@@ -83,8 +78,6 @@ type Flex struct {
 	Justify      Justify
 	AlignItems   AlignItem
 	AlignContent AlignContent
-
-	frame image.Rectangle
 }
 
 // NewFlex creates NewFlexContaienr
@@ -102,16 +95,21 @@ func NewFlex(width, height int) *Flex {
 	return f
 }
 
-func (f *Flex) setFlexFrame(frame image.Rectangle) {
-	f.frame = frame
-	f.isDirty = true
-}
-
 func (f *Flex) Draw(screen *ebiten.Image, _ image.Rectangle) {
 	for c := range f.children {
 		child := f.children[c]
-		child.component.Draw(screen, child.bounds)
+		child.component.Draw(screen, child.bounds.Add(f.frame.Min))
 	}
+}
+
+// SetSize sets the size of the flex container.
+func (f *Flex) SetSize(size image.Point) {
+	f.frame = image.Rect(
+		f.frame.Min.X,
+		f.frame.Min.Y,
+		f.frame.Min.X+size.X,
+		f.frame.Min.Y+size.Y,
+	)
 }
 
 func (f *Flex) Size() image.Point {
@@ -131,7 +129,7 @@ func (f *Flex) Update() {
 	}
 }
 
-// This is the main routing that implements a subset of flexbox layout
+// layout is the main routine that implements a subset of flexbox layout
 // https://www.w3.org/TR/css-flexbox-1/#layout-algorithm
 func (f *Flex) layout() {
 	// 9.2. Line Length Determination
@@ -328,22 +326,22 @@ func (f *Flex) layout() {
 		for _, child := range line.child {
 			switch f.Direction {
 			case Row:
-				child.node.bounds = image.Rect(round(child.mainOffset)+f.frame.Min.X,
-					round(child.crossOffset)+f.frame.Min.Y,
-					round(child.mainOffset+child.mainSize)+f.frame.Min.X,
-					round(child.crossOffset+child.crossSize)+f.frame.Min.Y)
-				f, ok := child.node.component.(flexComponent)
+				child.node.bounds = image.Rect(round(child.mainOffset),
+					round(child.crossOffset),
+					round(child.mainOffset+child.mainSize),
+					round(child.crossOffset+child.crossSize))
+				cont, ok := child.node.component.(Container)
 				if ok {
-					f.setFlexFrame(child.node.bounds)
+					cont.SetFrame(child.node.bounds.Add(f.frame.Min))
 				}
 			case Column:
-				child.node.bounds = image.Rect(round(child.crossOffset)+f.frame.Min.X,
-					round(child.mainOffset)+f.frame.Min.Y,
-					round(child.crossOffset+child.crossSize)+f.frame.Min.X,
-					round(child.mainOffset+child.mainSize)+f.frame.Min.Y)
-				f, ok := child.node.component.(flexComponent)
+				child.node.bounds = image.Rect(round(child.crossOffset),
+					round(child.mainOffset),
+					round(child.crossOffset+child.crossSize),
+					round(child.mainOffset+child.mainSize))
+				cont, ok := child.node.component.(Container)
 				if ok {
-					f.setFlexFrame(child.node.bounds)
+					cont.SetFrame(child.node.bounds.Add(f.frame.Min))
 				}
 			default:
 				panic(fmt.Sprint("flex: bad direction ", f.Direction))

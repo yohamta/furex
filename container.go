@@ -11,6 +11,7 @@ import (
 type Container interface {
 	Component
 
+	SetFrame(image.Rectangle)
 	AddChild(child Component)
 }
 
@@ -24,6 +25,13 @@ type Child struct {
 type ContainerEmbed struct {
 	children []*Child
 	isDirty  bool
+	frame    image.Rectangle
+}
+
+// SetFrame sets the location (x,y) and size (width,height) relative to the window (0,0).
+func (cont *ContainerEmbed) SetFrame(frame image.Rectangle) {
+	cont.frame = frame
+	cont.isDirty = true
 }
 
 func (cont *ContainerEmbed) AddChild(child Component) {

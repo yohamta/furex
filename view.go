@@ -19,7 +19,7 @@ func NewView(frame image.Rectangle, flex *Flex) *View {
 	v.flex = flex
 
 	s := v.flex.Size()
-	v.flex.setFlexFrame(image.Rect(
+	v.flex.SetFrame(image.Rect(
 		frame.Min.X, frame.Min.Y, frame.Min.X+s.X, frame.Min.Y+s.Y,
 	))
 
