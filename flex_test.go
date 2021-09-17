@@ -1,4 +1,3 @@
-// Referenced code: https://github.com/golang/exp/blob/master/shiny/widget/flex/flex.go
 package furex_test
 
 import (
@@ -66,10 +65,62 @@ func TestFlexAlignments(t *testing.T) {
 				tt.a, tt.b, flex.Direction(tt.c), flex.Justify(tt.d), flex.AlignItem(tt.e),
 			)
 			if got != tt.want {
-				t.Errorf("flexItemBounds(%s): got %v; want %v", tt.name, got, tt.want)
+				t.Errorf("TestFlexAlignments(%s): got %v; want %v", tt.name, got, tt.want)
 			}
 
 		})
+	}
+}
+
+func TestFlexWrap(t *testing.T) {
+	flexSize := image.Pt(200, 200)
+	itemSize := image.Pt(100, 100)
+
+	flex := furex.NewFlex(flexSize.X, flexSize.Y)
+	flex.Direction = furex.Row
+	flex.Justify = furex.JustifyStart
+	flex.AlignItems = furex.AlignItemStart
+	flex.Wrap = furex.Wrap
+
+	item1 := NewMockItem(itemSize.X, itemSize.Y)
+	flex.AddChild(item1)
+
+	item2 := NewMockItem(itemSize.X, itemSize.Y)
+	flex.AddChild(item2)
+
+	item3 := NewMockItem(itemSize.X, itemSize.Y)
+	flex.AddChild(item3)
+
+	flex.Update()
+	flex.Draw(nil)
+
+	// (0,0)
+	// ┌───────────────(100,0)───────────┐
+	// │box1            │box2            │
+	// │                │                │
+	// │                │                │
+	// │                │                │
+	// │                │                │
+	// │                │                │
+	// │                │                │
+	// │                │                │
+	// (0,100)──────────┼────────────(200,100)
+	// │box3            │                │
+	// │                │                │
+	// │                │                │
+	// │                │                │
+	// │                │                │
+	// │                │                │
+	// │                │                │
+	// │                │                │
+	// │                │                │
+	// └──────────────(100,200)──────────┘
+	// 															 (200,200)
+
+	want := image.Rect(0, 100, 100, 200)
+	got := item3.frame
+	if got != want {
+		t.Errorf("TestFlexWrap: got %v; want %v", got, want)
 	}
 }
 
@@ -120,7 +171,7 @@ func TestFlexFrameChange(t *testing.T) {
 	want := image.Rect(135, 105, 135+30, 105+40)
 	got := item.frame
 	if got != want {
-		t.Errorf("TestChangeFrame: got %v; want %v", got, want)
+		t.Errorf("TestFlexFrameChange: got %v; want %v", got, want)
 	}
 }
 

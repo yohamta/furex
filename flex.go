@@ -217,7 +217,7 @@ func (f *Flex) layout() {
 	for l := range lines {
 		line := &lines[l]
 		line.crossOffset = off
-		// off += line.crossSize
+		off += line.crossSize
 	}
 
 	// §9.5. Main-Axis Alignment
