@@ -15,6 +15,8 @@ type Component interface {
 
 // UpdatableComponent represents a component that updates by one tick.
 type UpdatableComponent interface {
+	Component
+
 	// Update updates the state of the component by one tick.
 	Update()
 }
@@ -33,4 +35,14 @@ type AbsolutePositionComponent interface {
 
 	// Position returns the position(x,y) relative to it's parent container.
 	Position() image.Point
+}
+
+// ButtonComponent represents a button
+type Button interface {
+	Component
+
+	// OnPressButton will be called when the button is pressed
+	HandlePress(t ebiten.TouchID)
+	// OnReleaseButton will be called when the button is released
+	HandleRelease(t ebiten.TouchID, isInside bool)
 }

@@ -66,7 +66,7 @@ func (cont *ContainerEmbed) HandleJustPressedTouchID(touchID ebiten.TouchID) boo
 			}
 		}
 
-		button, ok := child.component.(ButtonComponent)
+		button, ok := child.component.(Button)
 		if ok && button != nil {
 			if result == false && isInside(child.bounds, x, y) {
 				if child.IsButtonPressed == false {
@@ -94,7 +94,7 @@ func (cont *ContainerEmbed) HandleJustReleasedTouchID(touchID ebiten.TouchID) {
 			}
 		}
 
-		button, ok := child.component.(ButtonComponent)
+		button, ok := child.component.(Button)
 		if ok && button != nil {
 			if child.handledTouchID == touchID {
 				if child.IsButtonPressed == true {
@@ -125,7 +125,7 @@ func (cont *ContainerEmbed) HandleMouse(x, y int) bool {
 			}
 		}
 
-		button, ok := child.component.(ButtonComponent)
+		button, ok := child.component.(Button)
 		if ok && button != nil && child.handledTouchID == -1 {
 			if result == false && isInside(child.bounds, x, y) {
 				if child.IsButtonPressed {
