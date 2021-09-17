@@ -68,7 +68,7 @@ func (g *Game) initUI() {
 	// Add items to flexbox container
 	for i := 0; i < 20; i++ {
 		// Each flexbox item must have fixed size.
-		// In this case, the width is 50, height is 50.
+		// In this case, the size is 50x50 pixels.
 		rootFlex.AddChild(NewBox(50, 50, colors[i%3]))
 	}
 }
