@@ -37,12 +37,32 @@ type AbsolutePositionComponent interface {
 	Position() image.Point
 }
 
+// TouchHandler represents a touch handler
+type TouchHandler interface {
+	Component
+
+	// HandleJustPressedTouchID handles the touchID just pressed and returns true if it handles the TouchID
+	HandleJustPressedTouchID(touchID ebiten.TouchID) bool
+	// HandleJustReleasedTouchID handles the touchID just released
+	// Should be called only when it handled the TouchID when pressed
+	HandleJustReleasedTouchID(touchID ebiten.TouchID)
+}
+
+// MouseHandler represents a mouse handler
+type MouseHandler interface {
+	Component
+
+	// HandleMouse handles the TouchID when it is pressed
+	HandleMouse(x, y int) bool
+}
+
 // ButtonComponent represents a button
 type Button interface {
 	Component
 
 	// OnPressButton will be called when the button is pressed
 	HandlePress(t ebiten.TouchID)
+
 	// OnReleaseButton will be called when the button is released
 	HandleRelease(t ebiten.TouchID, isInside bool)
 }
