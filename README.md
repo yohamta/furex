@@ -1,15 +1,15 @@
 # furex
 
-A light-weight simple UI framework for [Ebiten](https://ebiten.org/) with a subset of flexbox layout specification.
+A simple UI framework for [Ebiten](https://ebiten.org/) with a subset of flexbox layout specification.
 [GoDoc](https://pkg.go.dev/github.com/yohamta/furex)
 
 ## Motivation
 
-When I was working on React Native app, I felt Flexbox layout is very intuitive and useful to me, so I thought it would be great if I could use the same concept to build user interface for games built with Ebiten. I would be so happy if it helps someone who has the same thoughts. I really appreciate if anyone could make any contribution to make the library more useful.
+When I was developing the React Native app, I found the Flexbox layout to be very intuitive and useful, so I wanted to be able to use the same concept when building a UI for a game developed in Ebiten. I hope this library will help others with the same thoughts.
 
 ## Features
 
-It has very minimum and sufficient features to implement 2D game UI using Flexbox layout.
+It provides minimum functionalities to implement user interactions such as buttons, as well as functionality to implement UI using Flexbox layout.
 
 | Feature                 | Supported | Note                                                                                                                   |
 |-------------------------|------------------|------------------------------------------------------------------------------------------------------------------------|
@@ -31,13 +31,11 @@ It has very minimum and sufficient features to implement 2D game UI using Flexbo
 
 ## Button Component Example
 
-It's easy to implement a button component that works in any platform that is supported by Ebiten.
-
 [Button component example](https://github.com/yohamta/furex/blob/master/examples/shared/button.go)
 
 ## Simple Usage Example
 
-[Source code for simple usage example](https://github.com/yohamta/furex/blob/master/examples/wrap/main.go)
+[Source code of simple example](https://github.com/yohamta/furex/blob/master/examples/wrap/main.go)
 
 ```go
 import "github.com/yohamta/furex"
