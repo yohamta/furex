@@ -8,24 +8,24 @@ import (
 	"github.com/yohamta/furex/internal/touch"
 )
 
-// Container represents a container that can have child components
+// Container represents a container that can have child components.
 type Container interface {
 	// SetFrame sets the location (x,y) and size (width,height) relative to the window (0,0).
 	SetFrame(image.Rectangle)
 
-	// AddChild adds a child component
+	// AddChild adds a child component.
 	AddChild(child Component)
 
-	// AddChild adds a child component
+	// AddChild adds a child component.
 	AddChildContainer(child Container)
 
-	// Draw draws its children component
+	// Draw draws its children component.
 	Draw(screen *ebiten.Image)
 
 	// Size returns the size(x,y) of the container.
 	Size() image.Point
 
-	// Update updates the container
+	// Update updates the container.
 	Update()
 
 	setParent(parent Container)
