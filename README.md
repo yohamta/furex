@@ -30,9 +30,9 @@ It provides minimum functionalities to implement user interactions such as butto
 <image src="https://user-images.githubusercontent.com/1475839/133440846-dae6cc3e-22d4-4e13-965c-7989b50ed58a.png" width="500px" />
 
 
-## Button Component Example
+## Simple Button Example
 
-[Button component example](https://github.com/yohamta/furex/blob/master/examples/shared/button.go)
+[Simple button example](https://github.com/yohamta/furex/blob/master/examples/shared/button.go)
 
 ## Simple Usage
 
