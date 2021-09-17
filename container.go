@@ -18,7 +18,7 @@ type Container interface {
 type Child struct {
 	bounds          image.Rectangle
 	component       Component
-	IsButtonPressed bool
+	isButtonPressed bool
 	handledTouchID  ebiten.TouchID
 }
 
@@ -69,8 +69,8 @@ func (cont *ContainerEmbed) HandleJustPressedTouchID(touchID ebiten.TouchID) boo
 		button, ok := child.component.(Button)
 		if ok && button != nil {
 			if result == false && isInside(child.bounds, x, y) {
-				if child.IsButtonPressed == false {
-					child.IsButtonPressed = true
+				if child.isButtonPressed == false {
+					child.isButtonPressed = true
 					child.handledTouchID = touchID
 					button.HandlePress(touchID)
 				}
@@ -97,8 +97,8 @@ func (cont *ContainerEmbed) HandleJustReleasedTouchID(touchID ebiten.TouchID) {
 		button, ok := child.component.(Button)
 		if ok && button != nil {
 			if child.handledTouchID == touchID {
-				if child.IsButtonPressed == true {
-					child.IsButtonPressed = false
+				if child.isButtonPressed == true {
+					child.isButtonPressed = false
 					child.handledTouchID = -1
 					x, y := lastTouchPosition(touchID)
 					if x == 0 && y == 0 {
@@ -128,21 +128,21 @@ func (cont *ContainerEmbed) HandleMouse(x, y int) bool {
 		button, ok := child.component.(Button)
 		if ok && button != nil && child.handledTouchID == -1 {
 			if result == false && isInside(child.bounds, x, y) {
-				if child.IsButtonPressed {
+				if child.isButtonPressed {
 					if inpututil.IsMouseButtonJustReleased((ebiten.MouseButtonLeft)) {
 						button.HandleRelease(-1, isInside(child.bounds, x, y))
-						child.IsButtonPressed = false
+						child.isButtonPressed = false
 					}
 				} else if inpututil.IsMouseButtonJustPressed(ebiten.MouseButtonLeft) {
 					button.HandlePress(-1)
-					child.IsButtonPressed = true
+					child.isButtonPressed = true
 				}
 				result = true
 			} else {
-				if child.IsButtonPressed {
+				if child.isButtonPressed {
 					if inpututil.IsMouseButtonJustReleased(ebiten.MouseButtonLeft) {
 						button.HandleRelease(-1, isInside(child.bounds, x, y))
-						child.IsButtonPressed = false
+						child.isButtonPressed = false
 					}
 				}
 			}
