@@ -83,11 +83,9 @@ func (g *Game) Draw(screen *ebiten.Image) {
 
 ## How to implement a custom component
 
-Please implement the following inserfaces. Component and FixedSizeComponent need to be implemented at least.
+Please implement [Component](https://pkg.go.dev/github.com/yohamta/furex#Component) and [FixedSizeComponent](https://pkg.go.dev/github.com/yohamta/furex#FixedSizeComponent).
 
-- [Component](https://pkg.go.dev/github.com/yohamta/furex#Component)
-- [FixedSizeComponent](https://pkg.go.dev/github.com/yohamta/furex#FixedSizeComponent)
-- [UpdatableComponent](https://pkg.go.dev/github.com/yohamta/furex#UpdatableComponent)
+If you want to update the component by one tick, please implement [UpdatableComponent](https://pkg.go.dev/github.com/yohamta/furex#UpdatableComponent) interface.
 
 ## How to implement user interaction
 
