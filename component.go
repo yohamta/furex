@@ -27,7 +27,8 @@ type FixedSizeComponent interface {
 
 // AbsolutePositionComponent represents a component with fixed size.
 type AbsolutePositionComponent interface {
-	FixedSizeComponent
+	// Size returns the size(x,y) of the component.
+	Size() image.Point
 
 	// Position returns the position(x,y) relative to it's parent container.
 	Position() image.Point
@@ -35,8 +36,6 @@ type AbsolutePositionComponent interface {
 
 // ButtonComponent represents a button component.
 type Button interface {
-	Component
-
 	// OnPressButton will be called when the button is pressed.
 	HandlePress()
 
