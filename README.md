@@ -83,27 +83,11 @@ func (g *Game) Draw(screen *ebiten.Image) {
 
 ## How to implement a custom component
 
-Please implement the inserfaces of Component and FixedSizeComponent at least.
+Please implement the following inserfaces. Component and FixedSizeComponent need to be implemented at least.
 
-Then you can add the component to a flex container using Flex.AddChild() method.
-
-```go
-type Component interface {
-        // Draw function draws the content of the component inside the frame.
-	// The frame parameter represents the location (x,y) and size (width,height) relative to the window (0,0).
-	Draw(screen *ebiten.Image, frame image.Rectangle)
-}
-
-type FixedSizeComponent interface {
-        // Size returns the size (width, height) of the component.
-	Size() image.Point
-}
-
-type UpdatableComponent interface {
-        // Update updates the state of the component by one tick.
-	Update()
-}
-```
+- [Component](https://pkg.go.dev/github.com/yohamta/furex#Component)
+- [FixedSizeComponent](https://pkg.go.dev/github.com/yohamta/furex#FixedSizeComponent)
+- [UpdatableComponent](https://pkg.go.dev/github.com/yohamta/furex#UpdatableComponent)
 
 ## How to implement user interaction
 
