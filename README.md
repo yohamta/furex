@@ -30,10 +30,6 @@ It provides minimum functionalities to implement user interactions such as butto
 <image src="https://user-images.githubusercontent.com/1475839/133440846-dae6cc3e-22d4-4e13-965c-7989b50ed58a.png" width="500px" />
 
 
-## Simple Button Example
-
-[Simple button example](https://github.com/yohamta/furex/blob/master/examples/shared/button.go)
-
 ## Simple Usage
 
 [Full source code of simple usage example](https://github.com/yohamta/furex/blob/master/examples/wrap/main.go)
@@ -78,7 +74,7 @@ func (g *Game) Update() {
 
 func (g *Game) Draw(screen *ebiten.Image) {
 	// Draw the UI tree
-	view.Draw(screen)
+	rootFlex.Draw(screen)
 }
 ```
 
@@ -88,22 +84,45 @@ func (g *Game) Draw(screen *ebiten.Image) {
 ## How to implement a custom component
 
 Please implement both Component and FixedSizeComponent interface below.
-Then the component can be added to a Flex container using Flex.AddChild() method.
+
+Then you can add the component to a flex container using Flex.AddChild() method.
 
 ```go
-// Component represents a UI component that can be added to a Flex container.
 type Component interface {
-	// Draw function draws the content of the component inside the frame.
-	// The frame parameter represents the location (x,y) and size (width,height) relative to the window (0,0).
 	Draw(screen *ebiten.Image, frame image.Rectangle)
 }
 
-// FixedSizeComponent represents a component with fixed size.
 type FixedSizeComponent interface {
-	// Size returns the size(x,y) of the component.
 	Size() image.Point
 }
 ```
+
+## How to implement user interaction
+
+Please implement the following components for different user interactions.
+
+```go
+type Button interface {
+	HandlePress(x, y int)
+	HandleRelease(x, y int, isCancel bool)
+}
+
+type TouchHandler interface {
+	HandleJustPressedTouchID(touch ebiten.TouchID, x, y int) bool
+	HandleJustReleasedTouchID(touch ebiten.TouchID, x, y int)
+}
+
+type MouseHandler interface {
+	HandleMouse(x, y int) bool
+}
+
+type MouseLeftClickHandler interface {
+	HandleJustPressedMouseButtonLeft(x, y int) bool
+	HandleJustReleasedMouseButtonLeft(x, y int)
+}
+```
+
+[Simple button example](https://github.com/yohamta/furex/blob/master/examples/shared/button.go)
 
 ## Use case
 This [simple game](https://github.com/yohamta/godanmaku) is using furex for UI layout and interaction.
