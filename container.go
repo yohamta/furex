@@ -24,7 +24,7 @@ type Container interface {
 	Draw(screen *ebiten.Image)
 
 	// Size returns the size(x,y) of the container.
-	Size() image.Point
+	Size() (int, int)
 
 	// Update updates the container.
 	Update()
@@ -75,8 +75,8 @@ func (cont *containerEmbed) SetFrame(frame image.Rectangle) {
 }
 
 // SetFramePosition sets the location (x,y) relative to the window (0,0).
-func (cont *containerEmbed) SetFramePosition(pos image.Point) {
-	cont.SetFrame(image.Rect(pos.X, pos.Y, pos.X+cont.frame.Dx(), pos.Y+cont.frame.Dy()))
+func (cont *containerEmbed) SetFramePosition(x, y int) {
+	cont.SetFrame(image.Rect(x, y, x+cont.frame.Dx(), y+cont.frame.Dy()))
 }
 
 // AddChild adds child component
@@ -98,18 +98,18 @@ func (cont *containerEmbed) AddChildContainer(child Container) {
 func (cont *containerEmbed) Update() {}
 
 // SetSize sets the size of the flex container.
-func (cont *containerEmbed) SetSize(size image.Point) {
+func (cont *containerEmbed) SetSize(w, h int) {
 	cont.frame = image.Rect(
 		cont.frame.Min.X,
 		cont.frame.Min.Y,
-		cont.frame.Min.X+size.X,
-		cont.frame.Min.Y+size.Y,
+		cont.frame.Min.X+w,
+		cont.frame.Min.Y+h,
 	)
 }
 
 // Size returns the size of the contaienr
-func (cont *containerEmbed) Size() image.Point {
-	return cont.frame.Size()
+func (cont *containerEmbed) Size() (int, int) {
+	return cont.frame.Dx(), cont.frame.Dy()
 }
 
 func (cont *containerEmbed) setParent(parent Container) {

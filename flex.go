@@ -115,8 +115,8 @@ func (f *Flex) Update() {
 func (f *Flex) layout() {
 	// 9.2. Line Length Determination
 	// Determine the available main and cross space for the flex items.
-	containerMainSize := float64(f.mainSize(f.frame.Size()))
-	containerCrossSize := float64(f.crossSize(f.frame.Size()))
+	containerMainSize := float64(f.mainSize(f.Size()))
+	containerCrossSize := float64(f.crossSize(f.Size()))
 
 	// Determine the flex base size and hypothetical main size of each item:
 	var children []element
@@ -124,9 +124,9 @@ func (f *Flex) layout() {
 		c := f.children[i]
 		absolute, ok := c.Item.(AbsolutePositionComponent)
 		if ok {
-			pos := absolute.Position()
-			size := absolute.Size()
-			c.Bounds = image.Rect(pos.X, pos.Y, pos.X+size.X, pos.Y+size.Y)
+			x, y := absolute.Position()
+			w, h := absolute.Size()
+			c.Bounds = image.Rect(x, y, x+w, y+h)
 			continue
 		}
 		children = append(children, element{
@@ -173,7 +173,7 @@ func (f *Flex) layout() {
 		line := &lines[l]
 
 		// Calculate free space
-		freeSpace := float64(f.mainSize(f.frame.Size()))
+		freeSpace := float64(f.mainSize(f.Size()))
 		for _, child := range line.child {
 			freeSpace -= float64(f.flexBaseSize(child.node))
 		}
@@ -347,23 +347,23 @@ type flexLine struct {
 	child       []*element
 }
 
-func (f *Flex) mainSize(p image.Point) int {
+func (f *Flex) mainSize(x, y int) int {
 	switch f.Direction {
 	case Row:
-		return p.X
+		return x
 	case Column:
-		return p.Y
+		return y
 	default:
 		panic(fmt.Sprint("flex: bad direction ", f.Direction))
 	}
 }
 
-func (f *Flex) crossSize(p image.Point) int {
+func (f *Flex) crossSize(x, y int) int {
 	switch f.Direction {
 	case Row:
-		return p.Y
+		return y
 	case Column:
-		return p.X
+		return x
 	default:
 		panic(fmt.Sprint("flex: bad direction ", f.Direction))
 	}

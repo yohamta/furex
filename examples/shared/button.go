@@ -19,8 +19,8 @@ func NewButton(w, h int) *Button {
 	return b
 }
 
-func (b *Button) Size() image.Point {
-	return b.size
+func (b *Button) Size() (int, int) {
+	return b.size.X, b.size.Y
 }
 
 func (b *Button) HandlePress(x, y int) {

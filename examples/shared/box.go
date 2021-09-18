@@ -19,11 +19,9 @@ func NewBox(w, h int, clr color.Color) *Box {
 	return box
 }
 
-func (box *Box) Size() image.Point {
-	return box.size
+func (box *Box) Size() (int, int) {
+	return box.size.X, box.size.Y
 }
-
-func (box *Box) Update() {}
 
 func (box *Box) Draw(screen *ebiten.Image, frame image.Rectangle) {
 	FillRect(screen, frame, box.color)

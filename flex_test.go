@@ -262,8 +262,8 @@ func NewMockItem(w, h int) *MockItem {
 	return m
 }
 
-func (m *MockItem) Size() image.Point {
-	return m.size
+func (m *MockItem) Size() (int, int) {
+	return m.size.X, m.size.Y
 }
 
 func (m *MockItem) Draw(screen *ebiten.Image, frame image.Rectangle) {
