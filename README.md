@@ -95,11 +95,12 @@ type Component interface {
 }
 
 type FixedSizeComponent interface {
+        // Size returns the size (width, height) of the component.
 	Size() image.Point
 }
 
-// UpdatableComponent represents a component that updates by one tick.
 type UpdatableComponent interface {
+        // Update updates the state of the component by one tick.
 	Update()
 }
 ```
