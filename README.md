@@ -96,7 +96,7 @@ type FixedSizeComponent interface {
 	Size() image.Point
 }
 
-// Please implement UpdatableComponent interface if you want to update the state of the component in every frame.
+// Please implement UpdatableComponent interface if you want to update the state of the component by one tick.
 type UpdatableComponent interface {
 	Update()
 }
