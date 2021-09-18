@@ -36,11 +36,14 @@ type AbsolutePositionComponent interface {
 
 // ButtonComponent represents a button component.
 type Button interface {
-	// OnPressButton will be called when the button is pressed.
-	HandlePress()
+	// HandlePress handle the event when user just started pressing the button
+	// The parameter (x, y) is the location relative to the window (0,0).
+	HandlePress(x, y int)
 
-	// OnReleaseButton will be called when the button is released.
-	HandleRelease(isInside bool)
+	// HandleRelease handle the event when user just released the button.
+	// The parameter (x, y) is the location relative to the window (0,0).
+	// The parameter isCancel is true when the touch/left click is released outside of the button.
+	HandleRelease(x, y int, isCancel bool)
 }
 
 // TouchHandler represents a component that handle touches.
@@ -55,14 +58,17 @@ type TouchHandler interface {
 // MouseHandler represents a component that handle mouse move.
 type MouseHandler interface {
 	// HandleMouse handles the mouch move and returns true if it handle the mouse move.
+	// The parameter (x, y) is the location relative to the window (0,0).
 	HandleMouse(x, y int) bool
 }
 
 // MouseLeftClickHandler represents a component that handle mouse button left click.
 type MouseLeftClickHandler interface {
-	// HandleJustPressedTouchID handles the touchID just pressed and returns true if it handles the TouchID.
+	// HandleJustPressedMouseButtonLeft handle left mouse button click just pressed.
+	// The parameter (x, y) is the location relative to the window (0,0).
+	// It returns true if it handles the mouse move.
 	HandleJustPressedMouseButtonLeft(x, y int) bool
 	// HandleJustReleasedTouchID handles the touchID just released.
-	// Should be called only when it handled the TouchID when pressed.
+	// The parameter (x, y) is the location relative to the window (0,0).
 	HandleJustReleasedMouseButtonLeft(x, y int)
 }

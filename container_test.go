@@ -18,7 +18,7 @@ func TestContainerButtonTouch(t *testing.T) {
 	type result struct {
 		isPressed  bool
 		isReleased bool
-		isInside   bool
+		isCancel   bool
 	}
 	var tests = []struct {
 		name string
@@ -30,25 +30,25 @@ func TestContainerButtonTouch(t *testing.T) {
 			name: "press inside left-top edge, release inside",
 			a:    bf.Min,
 			b:    bf.Min,
-			want: result{true, true, true},
+			want: result{true, true, false},
 		},
 		{
 			name: "press inside left-top edge, release outside",
 			a:    bf.Min,
 			b:    image.Pt(bf.Min.X, bf.Min.Y-1),
-			want: result{true, true, false},
+			want: result{true, true, true},
 		},
 		{
 			name: "press inside righ-bottom edge, release inside",
 			a:    bf.Max,
 			b:    bf.Max,
-			want: result{true, true, true},
+			want: result{true, true, false},
 		},
 		{
 			name: "press inside righ-bottom edge, release outside",
 			a:    bf.Max,
 			b:    image.Pt(bf.Max.X+1, bf.Max.Y),
-			want: result{true, true, false},
+			want: result{true, true, true},
 		},
 		{
 			name: "press outside, release inside",
@@ -60,7 +60,7 @@ func TestContainerButtonTouch(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			b := _TestContainerButtonTouch(tt.a, tt.b)
-			got := result{b.isPressed, b.isReleased, b.isInside}
+			got := result{b.isPressed, b.isReleased, b.isCancel}
 			if got != tt.want {
 				t.Errorf("TestButtonTouch(%s): got %v; want %v", tt.name, got, tt.want)
 			}
@@ -73,7 +73,7 @@ func TestContainerButtonMouse(t *testing.T) {
 	type result struct {
 		isPressed  bool
 		isReleased bool
-		isInside   bool
+		isCancel   bool
 	}
 	var tests = []struct {
 		name string
@@ -85,25 +85,25 @@ func TestContainerButtonMouse(t *testing.T) {
 			name: "press inside left-top edge, release inside",
 			a:    bf.Min,
 			b:    bf.Min,
-			want: result{true, true, true},
+			want: result{true, true, false},
 		},
 		{
 			name: "press inside left-top edge, release outside",
 			a:    bf.Min,
 			b:    image.Pt(bf.Min.X, bf.Min.Y-1),
-			want: result{true, true, false},
+			want: result{true, true, true},
 		},
 		{
 			name: "press inside righ-bottom edge, release inside",
 			a:    bf.Max,
 			b:    bf.Max,
-			want: result{true, true, true},
+			want: result{true, true, false},
 		},
 		{
 			name: "press inside righ-bottom edge, release outside",
 			a:    bf.Max,
 			b:    image.Pt(bf.Max.X+1, bf.Max.Y),
-			want: result{true, true, false},
+			want: result{true, true, true},
 		},
 		{
 			name: "press outside, release inside",
@@ -115,7 +115,7 @@ func TestContainerButtonMouse(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			b := _TestContainerButtonMouse(tt.a, tt.b)
-			got := result{b.isPressed, b.isReleased, b.isInside}
+			got := result{b.isPressed, b.isReleased, b.isCancel}
 			if got != tt.want {
 				t.Errorf("TestButtonTouch(%s): got %v; want %v", tt.name, got, tt.want)
 			}
@@ -258,7 +258,7 @@ type MockButton struct {
 	frame        image.Rectangle
 	isPressed    bool
 	isReleased   bool
-	isInside     bool
+	isCancel     bool
 	isMouseMoved bool
 	mousePoint   image.Point
 }
@@ -266,7 +266,7 @@ type MockButton struct {
 func NewMockButton(w, h int) *MockButton {
 	m := new(MockButton)
 	m.size = image.Pt(w, h)
-	m.isInside = false
+	m.isCancel = false
 	m.isPressed = false
 	m.isReleased = false
 	m.isMouseMoved = false
@@ -282,13 +282,13 @@ func (m *MockButton) Draw(screen *ebiten.Image, frame image.Rectangle) {
 	m.frame = frame
 }
 
-func (m *MockButton) HandlePress() {
+func (m *MockButton) HandlePress(x, y int) {
 	m.isPressed = true
 }
 
-func (m *MockButton) HandleRelease(isInside bool) {
+func (m *MockButton) HandleRelease(x, y int, isCancel bool) {
 	m.isReleased = true
-	m.isInside = isInside
+	m.isCancel = isCancel
 }
 
 func (m *MockButton) HandleMouse(x, y int) bool {

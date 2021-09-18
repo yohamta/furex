@@ -143,7 +143,7 @@ func (cont *containerEmbed) HandleJustPressedTouchID(touchID ebiten.TouchID, x, 
 				if child.IsButtonPressed == false {
 					child.IsButtonPressed = true
 					child.HandledTouchID = touchID
-					button.HandlePress()
+					button.HandlePress(x, y)
 				}
 				result = true
 			} else if child.HandledTouchID == touchID {
@@ -172,9 +172,9 @@ func (cont *containerEmbed) HandleJustReleasedTouchID(touchID ebiten.TouchID, x,
 					child.IsButtonPressed = false
 					child.HandledTouchID = -1
 					if x == 0 && y == 0 {
-						button.HandleRelease(true)
+						button.HandleRelease(x, y, false)
 					} else {
-						button.HandleRelease(isInside(cont.childFrame(child), x, y))
+						button.HandleRelease(x, y, isInside(cont.childFrame(child), x, y) == false)
 					}
 				}
 			}
@@ -222,7 +222,7 @@ func (cont *containerEmbed) HandleJustPressedMouseButtonLeft(x, y int) bool {
 					child.IsButtonPressed = true
 					child.IsMouseLeftClickHandler = true
 					result = true
-					button.HandlePress()
+					button.HandlePress(x, y)
 				}
 			}
 		}
@@ -247,9 +247,9 @@ func (cont *containerEmbed) HandleJustReleasedMouseButtonLeft(x, y int) {
 				child.IsButtonPressed = false
 				child.IsMouseLeftClickHandler = false
 				if x == 0 && y == 0 {
-					button.HandleRelease(true)
+					button.HandleRelease(x, y, true)
 				} else {
-					button.HandleRelease(isInside(cont.childFrame(child), x, y))
+					button.HandleRelease(x, y, isInside(cont.childFrame(child), x, y) == false)
 				}
 			}
 		}

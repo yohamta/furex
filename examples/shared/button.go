@@ -23,16 +23,16 @@ func (b *Button) Size() image.Point {
 	return b.size
 }
 
-func (b *Button) HandlePress() {
+func (b *Button) HandlePress(x, y int) {
 	b.isPressing = true
 }
 
-func (b *Button) HandleRelease(isInside bool) {
+func (b *Button) HandleRelease(x, y int, isCancel bool) {
 	b.isPressing = false
-	if isInside {
-		println("clicked!")
-	} else {
+	if isCancel {
 		println("The click is cancelled!")
+	} else {
+		println("clicked!")
 	}
 }
 
