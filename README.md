@@ -83,7 +83,7 @@ func (g *Game) Draw(screen *ebiten.Image) {
 
 ## How to implement a custom component
 
-Please implement both Component and FixedSizeComponent interface below.
+Please implement the inserfaces of Component and FixedSizeComponent at least.
 
 Then you can add the component to a flex container using Flex.AddChild() method.
 
@@ -94,6 +94,11 @@ type Component interface {
 
 type FixedSizeComponent interface {
 	Size() image.Point
+}
+
+// Please implement UpdatableComponent interface if the component state need to be updated by one tick.
+type UpdatableComponent interface {
+	Update()
 }
 ```
 
