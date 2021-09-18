@@ -89,6 +89,8 @@ Then you can add the component to a flex container using Flex.AddChild() method.
 
 ```go
 type Component interface {
+        // Draw function draws the content of the component inside the frame.
+	// The frame parameter represents the location (x,y) and size (width,height) relative to the window (0,0).
 	Draw(screen *ebiten.Image, frame image.Rectangle)
 }
 
@@ -106,26 +108,10 @@ type UpdatableComponent interface {
 
 Please implement the following components for different user interactions.
 
-```go
-type Button interface {
-	HandlePress(x, y int)
-	HandleRelease(x, y int, isCancel bool)
-}
-
-type TouchHandler interface {
-	HandleJustPressedTouchID(touch ebiten.TouchID, x, y int) bool
-	HandleJustReleasedTouchID(touch ebiten.TouchID, x, y int)
-}
-
-type MouseHandler interface {
-	HandleMouse(x, y int) bool
-}
-
-type MouseLeftClickHandler interface {
-	HandleJustPressedMouseButtonLeft(x, y int) bool
-	HandleJustReleasedMouseButtonLeft(x, y int)
-}
-```
+- [Button](https://pkg.go.dev/github.com/yohamta/furex#Button)
+- [TouchHandler](https://pkg.go.dev/github.com/yohamta/furex#TouchHandler)
+- [MouseHandler](https://pkg.go.dev/github.com/yohamta/furex#MouseHandler)
+- [MouseLeftClickHandler](https://pkg.go.dev/github.com/yohamta/furex#MouseLeftClickHandler)
 
 [Simple button example](https://github.com/yohamta/furex/blob/master/examples/shared/button.go)
 
