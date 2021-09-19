@@ -11,16 +11,26 @@ import (
 type Button struct {
 	size       image.Point
 	isPressing bool
+	margin     []int
 }
 
 func NewButton(w, h int) *Button {
 	b := new(Button)
 	b.size = image.Pt(w, h)
+	b.margin = []int{0, 0, 0, 0}
 	return b
 }
 
 func (b *Button) Size() (int, int) {
 	return b.size.X, b.size.Y
+}
+
+func (b *Button) Margin() []int {
+	return b.margin
+}
+
+func (b *Button) SetMargin(m []int) {
+	b.margin = m
 }
 
 func (b *Button) HandlePress(x, y int) {

@@ -67,13 +67,19 @@ func (g *Game) buildUI() {
 	// bottom container
 	bottom := furex.NewFlex(screenWidth, 70)
 	bottom.Direction = furex.Row
-	bottom.Justify = furex.JustifySpaceAround
+	bottom.Justify = furex.JustifyCenter
 	bottom.AlignItems = furex.AlignItemEnd
-	bottom.AddChild(shared.NewButton(50, 30))
-	bottom.AddChild(shared.NewButton(50, 30))
-	bottom.AddChild(shared.NewButton(50, 30))
-	bottom.AddChild(shared.NewButton(50, 30))
+	bottom.AddChild(buttonWithMargin(50, 30, []int{5, 5, 10, 5}))
+	bottom.AddChild(buttonWithMargin(50, 30, []int{5, 5, 10, 5}))
+	bottom.AddChild(buttonWithMargin(50, 30, []int{5, 5, 10, 5}))
+	bottom.AddChild(buttonWithMargin(50, 30, []int{5, 5, 10, 5}))
 	rootFlex.AddChildContainer(bottom)
+}
+
+func buttonWithMargin(w, h int, margin []int) *shared.Button {
+	b := shared.NewButton(w, h)
+	b.SetMargin(margin)
+	return b
 }
 
 func main() {
