@@ -6,27 +6,27 @@ import (
 	"github.com/hajimehoshi/ebiten/v2"
 )
 
-// Component represents a UI component that can be added to a Flex container.
-type Component interface {
+// Drawable represents a UI component that can be added to a Flex container.
+type Drawable interface {
 	// Draw function draws the content of the component inside the frame.
 	// The frame parameter represents the location (x,y) and size (width,height) relative to the window (0,0).
 	Draw(screen *ebiten.Image, frame image.Rectangle)
 }
 
-// UpdatableComponent represents a component that updates by one tick.
-type UpdatableComponent interface {
+// Updatable represents a component that updates by one tick.
+type Updatable interface {
 	// Update updates the state of the component by one tick.
 	Update()
 }
 
-// FixedSizeComponent represents a component with fixed size.
-type FixedSizeComponent interface {
+// FixedSizeItem represents a component with fixed size.
+type FixedSizeItem interface {
 	// Size returns the size(width, height) of the component.
 	Size() (int, int)
 }
 
-// AbsolutePositionComponent represents a component with fixed size.
-type AbsolutePositionComponent interface {
+// AbsolutePositionItem represents a component with fixed size.
+type AbsolutePositionItem interface {
 	// Size returns the size(x,y) of the component.
 	Size() (int, int)
 
@@ -34,7 +34,7 @@ type AbsolutePositionComponent interface {
 	Position() (int, int)
 }
 
-// ButtonComponent represents a button component.
+// Button represents a button component.
 type Button interface {
 	// HandlePress handle the event when user just started pressing the button
 	// The parameter (x, y) is the location relative to the window (0,0).

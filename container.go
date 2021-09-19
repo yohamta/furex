@@ -15,7 +15,7 @@ type Container interface {
 	SetFrame(image.Rectangle)
 
 	// AddChild adds a child component.
-	AddChild(child Component)
+	AddChild(child Drawable)
 
 	// AddChild adds a child component.
 	AddChildContainer(child Container)
@@ -60,7 +60,7 @@ func (cont *containerEmbed) Draw(screen *ebiten.Image) {
 			container.Draw(screen)
 			continue
 		}
-		component, ok := child.Item.(Component)
+		component, ok := child.Item.(Drawable)
 		if ok && component != nil {
 			component.Draw(screen, child.Bounds.Add(cont.frame.Min))
 			continue
@@ -80,7 +80,7 @@ func (cont *containerEmbed) SetFramePosition(x, y int) {
 }
 
 // AddChild adds child component
-func (cont *containerEmbed) AddChild(child Component) {
+func (cont *containerEmbed) AddChild(child Drawable) {
 	c := container.NewChild(child)
 	cont.children = append(cont.children, c)
 	cont.isDirty = true

@@ -102,7 +102,7 @@ func (f *Flex) Update() {
 		f.isDirty = false
 	}
 	for c := range f.children {
-		updatable, ok := f.children[c].Item.(UpdatableComponent)
+		updatable, ok := f.children[c].Item.(Updatable)
 		if ok && updatable != nil {
 			updatable.Update()
 		}
@@ -122,7 +122,7 @@ func (f *Flex) layout() {
 	var children []element
 	for i := 0; i < len(f.children); i++ {
 		c := f.children[i]
-		absolute, ok := c.Item.(AbsolutePositionComponent)
+		absolute, ok := c.Item.(AbsolutePositionItem)
 		if ok {
 			x, y := absolute.Position()
 			w, h := absolute.Size()
@@ -188,7 +188,7 @@ func (f *Flex) layout() {
 	// Determine the hypothetical cross size of each item
 	for l := range lines {
 		for _, child := range lines[l].child {
-			fixedSizeC, _ := child.node.Item.(FixedSizeComponent)
+			fixedSizeC, _ := child.node.Item.(FixedSizeItem)
 			if fixedSizeC != nil {
 				child.crossSize = float64(f.crossSize(fixedSizeC.Size()))
 			} else {
@@ -370,7 +370,7 @@ func (f *Flex) crossSize(x, y int) int {
 }
 
 func (f *Flex) flexBaseSize(c *container.Child) int {
-	fixedSizeC, _ := c.Item.(FixedSizeComponent)
+	fixedSizeC, _ := c.Item.(FixedSizeItem)
 	if fixedSizeC != nil {
 		return f.mainSize(fixedSizeC.Size())
 	}
