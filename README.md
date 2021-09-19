@@ -14,12 +14,12 @@ It provides minimum functionalities to implement user interactions such as butto
 | Feature                 | Supported | Note                                                                                                                   |
 |-------------------------|------------------|------------------------------------------------------------------------------------------------------------------------|
 | Flexbox layout          | o                | Supports a subset of flexbox layout spec.                                                                              |
-| Custom component   | o                | Supports any component that implements `Component` interface. See the [example](https://github.com/yohamta/furex/blob/master/examples/shared/box.go). |
-| Button event handling   | o                | Supports both of touch and mouse click on components that implements `ButtonComponent` interface. See the [example](https://github.com/yohamta/furex/blob/master/examples/shared/button.go). |
+| Custom component   | o                | Supports any component that implements `Drawable` (and `Updatable`) interface. See the [example](https://github.com/yohamta/furex/blob/master/examples/shared/box.go). |
+| Button event handling   | o                | Supports both of touch and mouse click on components that implements `Button` interface. See the [example](https://github.com/yohamta/furex/blob/master/examples/shared/button.go). |
 | Touch handler interface | o                | Able to handle touch ID on components that implements the `TouchHandler` interface.                                                                             |
 | Mouse handler           | o                | Able to handle left click on components that implements the `MouseHandler` interface.                                                                                |
+| Margin           | o                | Margin is supported for components that implement `MarginedItem` interface.
 | Padding           | -                | To be implemented when needed.                                                     |
-| Margin           | -                | To be implemented when needed.                                                      |
 
 
 
@@ -80,24 +80,4 @@ func (g *Game) Draw(screen *ebiten.Image) {
 
 ### Result
 <image src="https://user-images.githubusercontent.com/1475839/133445715-b94b8c7f-bcd3-4aef-b7a4-b58bbb29d556.png" width="500px" />
-
-## How to implement a custom component
-
-Please implement [Component](https://pkg.go.dev/github.com/yohamta/furex#Component) and [FixedSizeComponent](https://pkg.go.dev/github.com/yohamta/furex#FixedSizeComponent).
-
-If you want to update the component by one tick, please implement [UpdatableComponent](https://pkg.go.dev/github.com/yohamta/furex#UpdatableComponent) interface.
-
-## How to implement user interaction
-
-Please implement the following components for different user interactions.
-
-- [Button](https://pkg.go.dev/github.com/yohamta/furex#Button)
-- [TouchHandler](https://pkg.go.dev/github.com/yohamta/furex#TouchHandler)
-- [MouseHandler](https://pkg.go.dev/github.com/yohamta/furex#MouseHandler)
-- [MouseLeftClickHandler](https://pkg.go.dev/github.com/yohamta/furex#MouseLeftClickHandler)
-
-[Simple button example](https://github.com/yohamta/furex/blob/master/examples/shared/button.go)
-
-## Use case
-This [simple game](https://github.com/yohamta/godanmaku) is using furex for UI layout and interaction.
 
