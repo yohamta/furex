@@ -157,7 +157,7 @@ func (f *Flex) layout() {
 			child.mainMargin = f.mainMargin(child.node)
 			line.child[i] = child
 			line.mainSize += child.flexBaseSize +
-				float64(child.mainMargin[0]+child.mainMargin[1])
+				(child.mainMargin[0] + child.mainMargin[1])
 		}
 		lines = []flexLine{line}
 	} else {
@@ -169,7 +169,7 @@ func (f *Flex) layout() {
 
 			// hypotheticalMainSize = flexBaseSize + main margin
 			hypotheticalMainSize := child.flexBaseSize +
-				float64(child.mainMargin[0]+child.mainMargin[1])
+				(child.mainMargin[0] + child.mainMargin[1])
 
 			if line.mainSize > 0 && line.mainSize+hypotheticalMainSize > containerMainSize {
 				lines = append(lines, line)
@@ -191,7 +191,7 @@ func (f *Flex) layout() {
 		freeSpace := float64(f.mainSize(f.Size()))
 		for _, child := range line.child {
 			freeSpace -= (float64(f.flexBaseSize(child.node)) +
-				float64(child.mainMargin[0]+child.mainMargin[1]))
+				(child.mainMargin[0] + child.mainMargin[1]))
 		}
 
 		// Distribute free space
@@ -226,7 +226,7 @@ func (f *Flex) layout() {
 			for _, child := range line.child {
 				if child.crossSize > max {
 					max = child.crossSize +
-						float64(child.crossMargin[0]+child.crossMargin[1])
+						(child.crossMargin[0] + child.crossMargin[1])
 				}
 			}
 			line.crossSize = max
@@ -257,7 +257,7 @@ func (f *Flex) layout() {
 		total := 0.0
 		for _, child := range line.child {
 			total += child.mainSize +
-				float64(child.mainMargin[0]+child.mainMargin[1])
+				(child.mainMargin[0] + child.mainMargin[1])
 		}
 		remFree := containerMainSize - total
 		off, spacing := 0.0, 0.0
@@ -274,9 +274,9 @@ func (f *Flex) layout() {
 			off = spacing / 2
 		}
 		for _, child := range line.child {
-			child.mainOffset = off + float64(child.mainMargin[0])
+			child.mainOffset = off + (child.mainMargin[0])
 			off += spacing + child.mainSize +
-				float64(child.mainMargin[0]+child.mainMargin[1])
+				(child.mainMargin[0] + child.mainMargin[1])
 		}
 	}
 
@@ -284,21 +284,21 @@ func (f *Flex) layout() {
 	for l := range lines {
 		line := &lines[l]
 		for _, child := range line.child {
-			child.crossOffset = line.crossOffset + float64(child.crossMargin[0])
+			child.crossOffset = line.crossOffset + (child.crossMargin[0])
 			if child.crossSize == line.crossSize {
 				continue
 			}
 			diff := line.crossSize - child.crossSize -
-				float64(child.crossMargin[0]+child.crossMargin[1])
+				(child.crossMargin[0] + child.crossMargin[1])
 			switch f.AlignItems {
 			case AlignItemStart:
 				// already laid out correctly
 			case AlignItemEnd:
 				child.crossOffset = line.crossOffset + diff +
-					float64(child.crossMargin[0])
+					(child.crossMargin[0])
 			case AlignItemCenter:
 				child.crossOffset = line.crossOffset + diff/2 +
-					float64(child.crossMargin[0])
+					(child.crossMargin[0])
 			}
 		}
 	}
@@ -370,10 +370,10 @@ type element struct {
 	flexBaseSize float64
 	mainSize     float64
 	mainOffset   float64
-	mainMargin   []int
+	mainMargin   []float64
 	crossSize    float64
 	crossOffset  float64
-	crossMargin  []int
+	crossMargin  []float64
 }
 
 type flexLine struct {
@@ -405,10 +405,10 @@ func (f *Flex) crossSize(x, y int) int {
 	}
 }
 
-func (f *Flex) mainMargin(c *container.Child) []int {
+func (f *Flex) mainMargin(c *container.Child) []float64 {
 	margined, _ := c.Item.(MarginedItem)
 	if margined == nil {
-		return []int{0, 0}
+		return []float64{0, 0}
 	}
 	m := margined.Margin()
 	if len(m) < 4 {
@@ -416,18 +416,18 @@ func (f *Flex) mainMargin(c *container.Child) []int {
 	}
 	switch f.Direction {
 	case Row:
-		return []int{m[3], m[1]}
+		return []float64{float64(m[3]), float64(m[1])}
 	case Column:
-		return []int{m[0], m[2]}
+		return []float64{float64(m[0]), float64(m[2])}
 	default:
 		panic(fmt.Sprint("flex: bad direction ", f.Direction))
 	}
 }
 
-func (f *Flex) crossMargin(c *container.Child) []int {
+func (f *Flex) crossMargin(c *container.Child) []float64 {
 	margined, _ := c.Item.(MarginedItem)
 	if margined == nil {
-		return []int{0, 0}
+		return []float64{0, 0}
 	}
 	m := margined.Margin()
 	if len(m) < 4 {
@@ -435,9 +435,9 @@ func (f *Flex) crossMargin(c *container.Child) []int {
 	}
 	switch f.Direction {
 	case Row:
-		return []int{m[0], m[2]}
+		return []float64{float64(m[0]), float64(m[2])}
 	case Column:
-		return []int{m[3], m[1]}
+		return []float64{float64(m[3]), float64(m[1])}
 	default:
 		panic(fmt.Sprint("flex: bad direction ", f.Direction))
 	}
