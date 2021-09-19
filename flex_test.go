@@ -237,6 +237,388 @@ func TestFlexNesting(t *testing.T) {
 	}
 }
 
+func TestMarginedItem(t *testing.T) {
+	flexSize := image.Pt(300, 300)
+	itemSize := image.Pt(100, 100)
+
+	var tests = []struct {
+		name string
+		a    image.Point
+		b    image.Point
+		c    []int
+		d    furex.Direction
+		e    furex.Justify
+		f    furex.AlignItem
+		want image.Rectangle
+	}{
+		{
+			name: "Row, Center, Margin Top",
+			a:    flexSize,
+			b:    itemSize,
+			c:    []int{100, 0, 0, 0},
+			d:    furex.Row,
+			e:    furex.JustifyCenter,
+			f:    furex.AlignItemCenter,
+			want: image.Rect(100, 150, 200, 250),
+		},
+		{
+			name: "Row, Center, Margin Top = Margin Bottom",
+			a:    flexSize,
+			b:    itemSize,
+			c:    []int{100, 0, 100, 0},
+			d:    furex.Row,
+			e:    furex.JustifyCenter,
+			f:    furex.AlignItemCenter,
+			want: image.Rect(100, 100, 200, 200),
+		},
+		{
+			name: "Row, Center, Margin Bottom",
+			a:    flexSize,
+			b:    itemSize,
+			c:    []int{0, 0, 100, 0},
+			d:    furex.Row,
+			e:    furex.JustifyCenter,
+			f:    furex.AlignItemCenter,
+			want: image.Rect(100, 50, 200, 150),
+		},
+		{
+			name: "Row, Start, Margin Top",
+			a:    flexSize,
+			b:    itemSize,
+			c:    []int{50, 0, 0, 0},
+			d:    furex.Row,
+			e:    furex.JustifyCenter,
+			f:    furex.AlignItemStart,
+			want: image.Rect(100, 50, 200, 150),
+		},
+		{
+			name: "Row, End, Margin Bottom",
+			a:    flexSize,
+			b:    itemSize,
+			c:    []int{0, 0, 50, 0},
+			d:    furex.Row,
+			e:    furex.JustifyCenter,
+			f:    furex.AlignItemEnd,
+			want: image.Rect(100, 150, 200, 250),
+		},
+		{
+			name: "Col, Center, Margin Top",
+			a:    flexSize,
+			b:    itemSize,
+			c:    []int{100, 0, 0, 0},
+			d:    furex.Column,
+			e:    furex.JustifyCenter,
+			f:    furex.AlignItemCenter,
+			want: image.Rect(100, 150, 200, 250),
+		},
+		{
+			name: "Col, Center, Margin Top = Margin Bottom",
+			a:    flexSize,
+			b:    itemSize,
+			c:    []int{100, 0, 100, 0},
+			d:    furex.Column,
+			e:    furex.JustifyCenter,
+			f:    furex.AlignItemCenter,
+			want: image.Rect(100, 100, 200, 200),
+		},
+		{
+			name: "Col, Center, Margin Bottom",
+			a:    flexSize,
+			b:    itemSize,
+			c:    []int{0, 0, 100, 0},
+			d:    furex.Column,
+			e:    furex.JustifyCenter,
+			f:    furex.AlignItemCenter,
+			want: image.Rect(100, 50, 200, 150),
+		},
+		{
+			name: "Col, Start, Margin Top",
+			a:    flexSize,
+			b:    itemSize,
+			c:    []int{50, 0, 0, 0},
+			d:    furex.Column,
+			e:    furex.JustifyStart,
+			f:    furex.AlignItemCenter,
+			want: image.Rect(100, 50, 200, 150),
+		},
+		{
+			name: "Col, End, Margin Bottom",
+			a:    flexSize,
+			b:    itemSize,
+			c:    []int{0, 0, 50, 0},
+			d:    furex.Column,
+			e:    furex.JustifyEnd,
+			f:    furex.AlignItemCenter,
+			want: image.Rect(100, 150, 200, 250),
+		},
+		{
+			name: "Row, Center, Margin Right",
+			a:    flexSize,
+			b:    itemSize,
+			c:    []int{0, 100, 0, 0},
+			d:    furex.Row,
+			e:    furex.JustifyCenter,
+			f:    furex.AlignItemCenter,
+			want: image.Rect(50, 100, 150, 200),
+		},
+		{
+			name: "Row, Center, Margin Left",
+			a:    flexSize,
+			b:    itemSize,
+			c:    []int{0, 0, 0, 100},
+			d:    furex.Row,
+			e:    furex.JustifyCenter,
+			f:    furex.AlignItemCenter,
+			want: image.Rect(150, 100, 250, 200),
+		},
+		{
+			name: "Row, Center, Margin Right = Margin Left",
+			a:    flexSize,
+			b:    itemSize,
+			c:    []int{0, 100, 0, 100},
+			d:    furex.Row,
+			e:    furex.JustifyCenter,
+			f:    furex.AlignItemCenter,
+			want: image.Rect(100, 100, 200, 200),
+		},
+		{
+			name: "Row, Left, Margin Left",
+			a:    flexSize,
+			b:    itemSize,
+			c:    []int{0, 0, 0, 100},
+			d:    furex.Row,
+			e:    furex.JustifyStart,
+			f:    furex.AlignItemCenter,
+			want: image.Rect(100, 100, 200, 200),
+		},
+		{
+			name: "Row, Right, Margin Right",
+			a:    flexSize,
+			b:    itemSize,
+			c:    []int{0, 100, 0, 0},
+			d:    furex.Row,
+			e:    furex.JustifyEnd,
+			f:    furex.AlignItemCenter,
+			want: image.Rect(100, 100, 200, 200),
+		},
+		{
+			name: "Row, Center, Margin Bottom",
+			a:    flexSize,
+			b:    itemSize,
+			c:    []int{0, 0, 100, 0},
+			d:    furex.Row,
+			e:    furex.JustifyCenter,
+			f:    furex.AlignItemCenter,
+			want: image.Rect(100, 50, 200, 150),
+		},
+		{
+			name: "Row, Start, Margin Top",
+			a:    flexSize,
+			b:    itemSize,
+			c:    []int{50, 0, 0, 0},
+			d:    furex.Row,
+			e:    furex.JustifyCenter,
+			f:    furex.AlignItemStart,
+			want: image.Rect(100, 50, 200, 150),
+		},
+		{
+			name: "Col, Center, Margin Right",
+			a:    flexSize,
+			b:    itemSize,
+			c:    []int{0, 100, 0, 0},
+			d:    furex.Column,
+			e:    furex.JustifyCenter,
+			f:    furex.AlignItemCenter,
+			want: image.Rect(50, 100, 150, 200),
+		},
+		{
+			name: "Col, Center, Margin Left",
+			a:    flexSize,
+			b:    itemSize,
+			c:    []int{0, 0, 0, 100},
+			d:    furex.Column,
+			e:    furex.JustifyCenter,
+			f:    furex.AlignItemCenter,
+			want: image.Rect(150, 100, 250, 200),
+		},
+		{
+			name: "Col, Center, Margin Right = Margin Left",
+			a:    flexSize,
+			b:    itemSize,
+			c:    []int{0, 100, 0, 100},
+			d:    furex.Column,
+			e:    furex.JustifyCenter,
+			f:    furex.AlignItemCenter,
+			want: image.Rect(100, 100, 200, 200),
+		},
+		{
+			name: "Col, Left, Margin Left",
+			a:    flexSize,
+			b:    itemSize,
+			c:    []int{0, 0, 0, 100},
+			d:    furex.Column,
+			e:    furex.JustifyCenter,
+			f:    furex.AlignItemStart,
+			want: image.Rect(100, 100, 200, 200),
+		},
+		{
+			name: "Col, Right, Margin Right",
+			a:    flexSize,
+			b:    itemSize,
+			c:    []int{0, 100, 0, 0},
+			d:    furex.Column,
+			e:    furex.JustifyCenter,
+			f:    furex.AlignItemEnd,
+			want: image.Rect(100, 100, 200, 200),
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got := flexMarginedBounds(
+				tt.a, tt.b, tt.c, flex.Direction(tt.d), flex.Justify(tt.e), flex.AlignItem(tt.f),
+			)
+			if got != tt.want {
+				t.Errorf("TestMarginedItem(%s): got %v; want %v", tt.name, got, tt.want)
+			}
+		})
+	}
+}
+
+func TestMultiMarginedItems(t *testing.T) {
+	flexSize := image.Pt(300, 300)
+	itemSize := image.Pt(50, 50)
+
+	var tests = []struct {
+		name  string
+		a     image.Point
+		b     image.Point
+		c     []int
+		d     []int
+		e     furex.Direction
+		f     furex.Justify
+		g     furex.AlignItem
+		want1 image.Rectangle
+		want2 image.Rectangle
+	}{
+		{
+			name:  "Row, Center, A{}, B{Margin Left}",
+			a:     flexSize,
+			b:     itemSize,
+			c:     []int{0, 0, 0, 0},
+			d:     []int{0, 0, 0, 50},
+			e:     furex.Row,
+			f:     furex.JustifyCenter,
+			g:     furex.AlignItemCenter,
+			want1: image.Rect(75, 125, 125, 175),
+			want2: image.Rect(175, 125, 225, 175),
+		},
+		{
+			name:  "Col, Center, A{}, B{Margin Top}",
+			a:     flexSize,
+			b:     itemSize,
+			c:     []int{0, 0, 0, 0},
+			d:     []int{50, 0, 0, 0},
+			e:     furex.Column,
+			f:     furex.JustifyCenter,
+			g:     furex.AlignItemCenter,
+			want1: image.Rect(125, 75, 175, 125),
+			want2: image.Rect(125, 175, 175, 225),
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got1, got2 := flexMultiMarginedBounds(
+				tt.a, tt.b, tt.c, tt.d, flex.Direction(tt.e), flex.Justify(tt.f), flex.AlignItem(tt.g),
+			)
+			if got1 != tt.want1 {
+				t.Errorf("TestMarginedItem(%s) A: got %v; want %v", tt.name, got1, tt.want1)
+			}
+			if got2 != tt.want2 {
+				t.Errorf("TestMarginedItem(%s) B: got %v; want %v", tt.name, got2, tt.want2)
+			}
+		})
+	}
+}
+
+func TestMultiMarginedWrapRowItems(t *testing.T) {
+	flexSize := image.Pt(200, 200)
+	itemSize := image.Pt(85, 85)
+
+	flex := furex.NewFlex(flexSize.X, flexSize.Y)
+	flex.Direction = furex.Row
+	flex.Justify = furex.JustifyStart
+	flex.AlignItems = furex.AlignItemCenter
+	flex.AlignContent = furex.AlignContentCenter
+	flex.Wrap = furex.Wrap
+
+	margin := []int{10, 0, 0, 10}
+
+	item1 := NewMockMarginedItem(itemSize.X, itemSize.Y, margin)
+	item2 := NewMockMarginedItem(itemSize.X, itemSize.Y, margin)
+	item3 := NewMockMarginedItem(itemSize.X, itemSize.Y, margin)
+	item4 := NewMockMarginedItem(itemSize.X, itemSize.Y, margin)
+	flex.AddChild(item1)
+	flex.AddChild(item2)
+	flex.AddChild(item3)
+	flex.AddChild(item4)
+
+	flex.Update()
+	flex.Draw(nil)
+
+	want1 := image.Rect(10, 15, 10+85, 15+85)
+	want2 := image.Rect(105, 15, 105+85, 15+85)
+	want3 := image.Rect(10, 110, 10+85, 110+85)
+	want4 := image.Rect(105, 110, 105+85, 110+85)
+
+	got1 := item1.frame
+	got2 := item2.frame
+	got3 := item3.frame
+	got4 := item4.frame
+
+	if got1 != want1 {
+		t.Errorf("TestMultiMarginedWrapRowItems box1: got %v; want %v", got1, want1)
+	}
+	if got2 != want2 {
+		t.Errorf("TestMultiMarginedWrapRowItems box2: got %v; want %v", got2, want2)
+	}
+	if got3 != want3 {
+		t.Errorf("TestMultiMarginedWrapRowItems box3: got %v; want %v", got3, want3)
+	}
+	if got4 != want4 {
+		t.Errorf("TestMultiMarginedWrapRowItems box4: got %v; want %v", got4, want4)
+	}
+}
+
+func flexMarginedBounds(flexSize image.Point, itemSize image.Point, margin []int, direction flex.Direction, justify flex.Justify, alignItem flex.AlignItem) image.Rectangle {
+	flex := furex.NewFlex(flexSize.X, flexSize.Y)
+	flex.Direction = furex.Direction(direction)
+	flex.Justify = furex.Justify(justify)
+	flex.AlignItems = furex.AlignItem(alignItem)
+
+	item := NewMockMarginedItem(itemSize.X, itemSize.Y, margin)
+	flex.AddChild(item)
+	flex.Update()
+	flex.Draw(nil)
+
+	return item.frame
+}
+
+func flexMultiMarginedBounds(flexSize image.Point, itemSize image.Point, margin1 []int, margin2 []int, direction flex.Direction, justify flex.Justify, alignItem flex.AlignItem) (image.Rectangle, image.Rectangle) {
+	flex := furex.NewFlex(flexSize.X, flexSize.Y)
+	flex.Direction = furex.Direction(direction)
+	flex.Justify = furex.Justify(justify)
+	flex.AlignItems = furex.AlignItem(alignItem)
+
+	item1 := NewMockMarginedItem(itemSize.X, itemSize.Y, margin1)
+	item2 := NewMockMarginedItem(itemSize.X, itemSize.Y, margin2)
+	flex.AddChild(item1)
+	flex.AddChild(item2)
+	flex.Update()
+	flex.Draw(nil)
+
+	return item1.frame, item2.frame
+}
+
 func flexItemBounds(flexSize image.Point, itemSize image.Point, direction flex.Direction, justify flex.Justify, alignItem flex.AlignItem) image.Rectangle {
 	flex := furex.NewFlex(flexSize.X, flexSize.Y)
 	flex.Direction = furex.Direction(direction)
@@ -267,5 +649,30 @@ func (m *MockItem) Size() (int, int) {
 }
 
 func (m *MockItem) Draw(screen *ebiten.Image, frame image.Rectangle) {
+	m.frame = frame
+}
+
+type MockMarginedItem struct {
+	size   image.Point
+	frame  image.Rectangle
+	margin []int
+}
+
+func NewMockMarginedItem(w, h int, margin []int) *MockMarginedItem {
+	m := new(MockMarginedItem)
+	m.size = image.Pt(w, h)
+	m.margin = margin
+	return m
+}
+
+func (m *MockMarginedItem) Margin() []int {
+	return m.margin
+}
+
+func (m *MockMarginedItem) Size() (int, int) {
+	return m.size.X, m.size.Y
+}
+
+func (m *MockMarginedItem) Draw(screen *ebiten.Image, frame image.Rectangle) {
 	m.frame = frame
 }

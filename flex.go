@@ -67,6 +67,7 @@ const (
 	AlignContentCenter
 	AlignContentSpaceBetween
 	AlignContentSpaceAround
+	AlignContentStretch
 )
 
 // Flex is a container widget that lays out its children following the flexbox algorithm.
@@ -88,7 +89,7 @@ func NewFlex(width, height int) *Flex {
 	f.Wrap = NoWrap
 	f.Justify = JustifyStart
 	f.AlignItems = AlignItemCenter
-	f.AlignContent = AlignContentStart
+	f.AlignContent = AlignContentStretch
 	f.frame = image.Rect(0, 0, width, height)
 	f.isDirty = true
 	f.parent = nil
@@ -143,8 +144,10 @@ func (f *Flex) layout() {
 		line := flexLine{child: make([]*element, len(children))}
 		for i := range children {
 			child := &children[i]
+			child.mainMargin = f.mainMargin(child.node)
 			line.child[i] = child
-			line.mainSize += child.flexBaseSize
+			line.mainSize += child.flexBaseSize +
+				float64(child.mainMargin[0]+child.mainMargin[1])
 		}
 		lines = []flexLine{line}
 	} else {
@@ -152,9 +155,11 @@ func (f *Flex) layout() {
 		var line flexLine
 		for i := range children {
 			child := &children[i]
+			child.mainMargin = f.mainMargin(child.node)
 
-			// Use flexBaseSize as hypotheticalMainSize for now
-			hypotheticalMainSize := child.flexBaseSize
+			// hypotheticalMainSize = flexBaseSize + main margin
+			hypotheticalMainSize := child.flexBaseSize +
+				float64(child.mainMargin[0]+child.mainMargin[1])
 
 			if line.mainSize > 0 && line.mainSize+hypotheticalMainSize > containerMainSize {
 				lines = append(lines, line)
@@ -175,7 +180,8 @@ func (f *Flex) layout() {
 		// Calculate free space
 		freeSpace := float64(f.mainSize(f.Size()))
 		for _, child := range line.child {
-			freeSpace -= float64(f.flexBaseSize(child.node))
+			freeSpace -= (float64(f.flexBaseSize(child.node)) +
+				float64(child.mainMargin[0]+child.mainMargin[1]))
 		}
 
 		// Distribute free space
@@ -190,6 +196,7 @@ func (f *Flex) layout() {
 		for _, child := range lines[l].child {
 			fixedSizeC, _ := child.node.Item.(FixedSizeItem)
 			if fixedSizeC != nil {
+				child.crossMargin = f.crossMargin(child.node)
 				child.crossSize = float64(f.crossSize(fixedSizeC.Size()))
 			} else {
 				panic("flexible size is not available for now")
@@ -208,7 +215,8 @@ func (f *Flex) layout() {
 			max := 0.0
 			for _, child := range line.child {
 				if child.crossSize > max {
-					max = child.crossSize
+					max = child.crossSize +
+						float64(child.crossMargin[0]+child.crossMargin[1])
 				}
 			}
 			line.crossSize = max
@@ -222,12 +230,24 @@ func (f *Flex) layout() {
 		off += line.crossSize
 	}
 
+	// §9.4.9 align-content: stretch
+	remCrossSize := containerCrossSize - off
+	if f.AlignContent == AlignContentStretch && remCrossSize > 0 {
+		add := remCrossSize / float64(len(lines))
+		for l := range lines {
+			line := &lines[l]
+			line.crossOffset += float64(l) * add
+			line.crossSize += add
+		}
+	}
+
 	// §9.5. Main-Axis Alignment
 	for l := range lines {
 		line := &lines[l]
 		total := 0.0
 		for _, child := range line.child {
-			total += child.mainSize
+			total += child.mainSize +
+				float64(child.mainMargin[0]+child.mainMargin[1])
 		}
 		remFree := containerMainSize - total
 		off, spacing := 0.0, 0.0
@@ -244,8 +264,9 @@ func (f *Flex) layout() {
 			off = spacing / 2
 		}
 		for _, child := range line.child {
-			child.mainOffset = off
-			off += spacing + child.mainSize
+			child.mainOffset = off + float64(child.mainMargin[0])
+			off += spacing + child.mainSize +
+				float64(child.mainMargin[0]+child.mainMargin[1])
 		}
 	}
 
@@ -253,18 +274,21 @@ func (f *Flex) layout() {
 	for l := range lines {
 		line := &lines[l]
 		for _, child := range line.child {
-			child.crossOffset = line.crossOffset
+			child.crossOffset = line.crossOffset + float64(child.crossMargin[0])
 			if child.crossSize == line.crossSize {
 				continue
 			}
-			diff := line.crossSize - child.crossSize
+			diff := line.crossSize - child.crossSize -
+				float64(child.crossMargin[0]+child.crossMargin[1])
 			switch f.AlignItems {
 			case AlignItemStart:
 				// already laid out correctly
 			case AlignItemEnd:
-				child.crossOffset = line.crossOffset + diff
+				child.crossOffset = line.crossOffset + diff +
+					float64(child.crossMargin[0])
 			case AlignItemCenter:
-				child.crossOffset = line.crossOffset + diff/2
+				child.crossOffset = line.crossOffset + diff/2 +
+					float64(child.crossMargin[0])
 			}
 		}
 	}
@@ -336,8 +360,10 @@ type element struct {
 	flexBaseSize float64
 	mainSize     float64
 	mainOffset   float64
+	mainMargin   []int
 	crossSize    float64
 	crossOffset  float64
+	crossMargin  []int
 }
 
 type flexLine struct {
@@ -364,6 +390,44 @@ func (f *Flex) crossSize(x, y int) int {
 		return y
 	case Column:
 		return x
+	default:
+		panic(fmt.Sprint("flex: bad direction ", f.Direction))
+	}
+}
+
+func (f *Flex) mainMargin(c *container.Child) []int {
+	margined, _ := c.Item.(MarginedItem)
+	if margined == nil {
+		return []int{0, 0}
+	}
+	m := margined.Margin()
+	if len(m) < 4 {
+		panic(fmt.Sprint("flex: margin value is incorrect"))
+	}
+	switch f.Direction {
+	case Row:
+		return []int{m[3], m[1]}
+	case Column:
+		return []int{m[0], m[2]}
+	default:
+		panic(fmt.Sprint("flex: bad direction ", f.Direction))
+	}
+}
+
+func (f *Flex) crossMargin(c *container.Child) []int {
+	margined, _ := c.Item.(MarginedItem)
+	if margined == nil {
+		return []int{0, 0}
+	}
+	m := margined.Margin()
+	if len(m) < 4 {
+		panic(fmt.Sprint("flex: margin value is incorrect"))
+	}
+	switch f.Direction {
+	case Row:
+		return []int{m[0], m[2]}
+	case Column:
+		return []int{m[3], m[1]}
 	default:
 		panic(fmt.Sprint("flex: bad direction ", f.Direction))
 	}

@@ -25,6 +25,12 @@ type FixedSizeItem interface {
 	Size() (int, int)
 }
 
+// MarginedItem represents a component with fixed size.
+type MarginedItem interface {
+	// Margin returns the size of margin int[]{top, riht, bottom, left}
+	Margin() []int
+}
+
 // AbsolutePositionItem represents a component with fixed size.
 type AbsolutePositionItem interface {
 	// Size returns the size(x,y) of the component.
