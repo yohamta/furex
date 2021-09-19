@@ -73,6 +73,7 @@ const (
 // Flex is a container widget that lays out its children following the flexbox algorithm.
 type Flex struct {
 	containerEmbed
+	margin []int
 
 	Direction    Direction
 	Wrap         FlexWrap
@@ -85,6 +86,7 @@ type Flex struct {
 func NewFlex(width, height int) *Flex {
 	f := new(Flex)
 
+	f.margin = []int{0, 0, 0, 0}
 	f.Direction = Row
 	f.Wrap = NoWrap
 	f.Justify = JustifyStart
@@ -109,6 +111,14 @@ func (f *Flex) Update() {
 		}
 	}
 	f.processEvent()
+}
+
+func (f *Flex) Margin() []int {
+	return f.margin
+}
+
+func (f *Flex) SetMargin(m []int) {
+	f.margin = m
 }
 
 // layout is the main routine that implements a subset of flexbox layout
