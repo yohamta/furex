@@ -2,10 +2,12 @@ package furex
 
 import (
 	"image"
+	"image/color"
 
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
 	"github.com/yohamta/furex/internal/container"
+	"github.com/yohamta/furex/internal/paint"
 	"github.com/yohamta/furex/internal/touch"
 )
 
@@ -53,6 +55,9 @@ func (cont *containerEmbed) isRoot() bool {
 
 // Draw draws it's children
 func (cont *containerEmbed) Draw(screen *ebiten.Image) {
+	if debug {
+		paint.DrawRect(screen, cont.frame, color.RGBA{0xff, 0xff, 0, 0xff}, 2)
+	}
 	for c := range cont.children {
 		child := cont.children[c]
 		container, ok := child.Item.(Container)
@@ -62,7 +67,11 @@ func (cont *containerEmbed) Draw(screen *ebiten.Image) {
 		}
 		component, ok := child.Item.(Drawable)
 		if ok && component != nil {
-			component.Draw(screen, child.Bounds.Add(cont.frame.Min))
+			b := child.Bounds.Add(cont.frame.Min)
+			component.Draw(screen, b)
+			if debug {
+				paint.DrawRect(screen, b, color.RGBA{0xff, 0, 0, 0xff}, 1)
+			}
 			continue
 		}
 	}
