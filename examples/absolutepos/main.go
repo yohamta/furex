@@ -4,9 +4,9 @@ import (
 	"image/color"
 
 	"github.com/hajimehoshi/ebiten/v2"
-	"github.com/yohamta/furex"
-	"github.com/yohamta/furex/examples/absolutepos/components"
-	"github.com/yohamta/furex/examples/shared"
+	"github.com/miyahoyo/furex"
+	"github.com/miyahoyo/furex/examples/absolutepos/components"
+	"github.com/miyahoyo/furex/examples/shared"
 )
 
 type Game struct{}
