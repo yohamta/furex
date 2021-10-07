@@ -3,9 +3,12 @@ module github.com/miyahoyo/furex
 go 1.16
 
 require (
-	github.com/hajimehoshi/ebiten/v2 v2.1.6
-	golang.org/x/exp v0.0.0-20210910231120-3d0173ecaa1e // indirect
+	github.com/gofrs/flock v0.8.0 // indirect
+	github.com/hajimehoshi/ebiten/v2 v2.2.0
+	github.com/hajimehoshi/oto v0.7.1 // indirect
+	golang.org/x/exp v0.0.0-20210916165020-5cb4fee858ee // indirect
 	golang.org/x/image v0.0.0-20210628002857-a66eb6448b8d // indirect
-	golang.org/x/mobile v0.0.0-20210902104108-5d9a33257ab5 // indirect
-	golang.org/x/sys v0.0.0-20210910150752-751e447fb3d0 // indirect
+	golang.org/x/mobile v0.0.0-20210924032853-1c027f395ef7 // indirect
+	golang.org/x/sys v0.0.0-20211007075335-d3039528d8ac // indirect
+	gopkg.in/check.v1 v1.0.0-20201130134442-10cb98267c6c // indirect
 )
