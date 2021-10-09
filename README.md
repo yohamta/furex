@@ -5,7 +5,7 @@ A simple UI framework for [Ebiten](https://ebiten.org/) with a subset of flexbox
 
 ## Motivation
 
-When I was developing some React Native app, I thought the Flexbox layout is very intuitive for UI and it would be great if I could use the same concept when building UI for a game I make in Ebiten. I hope this library will help others with the same thoughts.
+When I was developing some React Native app, I thought the Flexbox layout is very intuitive for UI and it would be great if I could use the same concept when building UI for a game made in Ebiten. I hope this library will help others with the same thoughts.
 
 ## Features
 
