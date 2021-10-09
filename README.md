@@ -9,7 +9,7 @@ When I was developing some React Native app, I thought the Flexbox layout is ver
 
 ## Features
 
-It provides minimum functionalities to implement user interactions such as buttons, as well as functionality to implement UI using Flexbox layout.
+It provides minimum functionalities to implement user interactions such as buttons and building UI using Flexbox concept.
 
 | Feature                 | Supported | Note                                                                                                                   |
 |-------------------------|------------------|------------------------------------------------------------------------------------------------------------------------|
