@@ -9,9 +9,6 @@ When I was developing some React Native app, I thought the Flexbox layout is ver
 
 ## Features
 
-- minimum functionalities to implement UI using Flexbox layout.
-- interactive components such as Button / MouseHandler / TouchHandler.
-
 | Feature                 | Supported | Note                                                                                                                   |
 |-------------------------|------------------|------------------------------------------------------------------------------------------------------------------------|
 | Flexbox layout          | o                | Supports a subset of flexbox layout spec.                                                                              |
