@@ -1,7 +1,7 @@
 # furex
 
 A simple UI framework for [Ebiten](https://ebiten.org/) with a subset of flexbox layout specification.
-[GoDoc](https://pkg.go.dev/github.com/miyahoyo/furex)
+[GoDoc](https://pkg.go.dev/github.com/yohamta/furex)
 
 ## Motivation
 
@@ -12,8 +12,8 @@ When I was developing some React Native app, I thought the Flexbox layout is ver
 | Feature                 | Supported | Note                                                                                                                   |
 |-------------------------|------------------|------------------------------------------------------------------------------------------------------------------------|
 | Flexbox layout          | o                | Supports a subset of flexbox layout spec.                                                                              |
-| Custom component   | o                | Supports any component that implements `Drawable` (and `Updatable`) interface. See the [example](https://github.com/miyahoyo/furex/blob/master/examples/shared/box.go). |
-| Button event handling   | o                | Supports both of touch and mouse click on components that implements `Button` interface. See the [example](https://github.com/miyahoyo/furex/blob/master/examples/shared/button.go). |
+| Custom component   | o                | Supports any component that implements `Drawable` (and `Updatable`) interface. See the [example](https://github.com/yohamta/furex/blob/master/examples/shared/box.go). |
+| Button event handling   | o                | Supports both of touch and mouse click on components that implements `Button` interface. See the [example](https://github.com/yohamta/furex/blob/master/examples/shared/button.go). |
 | Touch handler interface | o                | Able to handle touch ID on components that implements the `TouchHandler` interface.                                                                             |
 | Mouse handler           | o                | Able to handle left click on components that implements the `MouseHandler` interface.                                                                                |
 | Margin           | o                | Margin is supported for components that implement `MarginedItem` interface.
@@ -23,17 +23,17 @@ When I was developing some React Native app, I thought the Flexbox layout is ver
 
 ## Layout Example
 
-[Full source code of the example](https://github.com/miyahoyo/furex/blob/master/examples/nesting/main.go)
+[Full source code of the example](https://github.com/yohamta/furex/blob/master/examples/nesting/main.go)
 
 <image src="https://user-images.githubusercontent.com/1475839/133440846-dae6cc3e-22d4-4e13-965c-7989b50ed58a.png" width="500px" />
 
 
 ## Simple Usage
 
-[Full source code of simple usage example](https://github.com/miyahoyo/furex/blob/master/examples/wrap/main.go)
+[Full source code of simple usage example](https://github.com/yohamta/furex/blob/master/examples/wrap/main.go)
 
 ```go
-import "github.com/miyahoyo/furex"
+import "github.com/yohamta/furex"
 
 var (
 	colors = []color.Color{

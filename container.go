@@ -6,9 +6,9 @@ import (
 
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
-	"github.com/miyahoyo/furex/internal/container"
-	"github.com/miyahoyo/furex/internal/paint"
-	"github.com/miyahoyo/furex/internal/touch"
+	"github.com/yohamta/furex/internal/container"
+	"github.com/yohamta/furex/internal/paint"
+	"github.com/yohamta/furex/internal/touch"
 )
 
 // Container represents a container that can have child components.

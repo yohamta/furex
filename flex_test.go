@@ -5,7 +5,7 @@ import (
 	"testing"
 
 	"github.com/hajimehoshi/ebiten/v2"
-	"github.com/miyahoyo/furex"
+	"github.com/yohamta/furex"
 	"golang.org/x/exp/shiny/widget/flex"
 )
 

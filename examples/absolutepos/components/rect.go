@@ -4,7 +4,7 @@ import (
 	"image"
 	"image/color"
 
-	"github.com/miyahoyo/furex/examples/shared"
+	"github.com/yohamta/furex/examples/shared"
 )
 
 type Rect struct {

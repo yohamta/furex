@@ -6,7 +6,7 @@ import (
 	"image"
 	"math"
 
-	"github.com/miyahoyo/furex/internal/container"
+	"github.com/yohamta/furex/internal/container"
 )
 
 // Direction is the direction in which flex items are laid out
