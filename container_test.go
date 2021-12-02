@@ -282,7 +282,7 @@ func (m *MockButton) Draw(screen *ebiten.Image, frame image.Rectangle) {
 	m.frame = frame
 }
 
-func (m *MockButton) HandlePress(x, y int) {
+func (m *MockButton) HandlePress(x, y int, t ebiten.TouchID) {
 	m.isPressed = true
 }
 

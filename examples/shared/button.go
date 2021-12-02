@@ -33,7 +33,7 @@ func (b *Button) SetMargin(m []int) {
 	b.margin = m
 }
 
-func (b *Button) HandlePress(x, y int) {
+func (b *Button) HandlePress(x, y int, t ebiten.TouchID) {
 	b.isPressing = true
 }
 

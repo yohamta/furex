@@ -152,7 +152,7 @@ func (cont *containerEmbed) HandleJustPressedTouchID(touchID ebiten.TouchID, x, 
 				if child.IsButtonPressed == false {
 					child.IsButtonPressed = true
 					child.HandledTouchID = touchID
-					button.HandlePress(x, y)
+					button.HandlePress(x, y, touchID)
 				}
 				result = true
 			} else if child.HandledTouchID == touchID {
@@ -231,7 +231,7 @@ func (cont *containerEmbed) HandleJustPressedMouseButtonLeft(x, y int) bool {
 					child.IsButtonPressed = true
 					child.IsMouseLeftClickHandler = true
 					result = true
-					button.HandlePress(x, y)
+					button.HandlePress(x, y, -1)
 				}
 			}
 		}

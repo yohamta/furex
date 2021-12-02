@@ -44,7 +44,9 @@ type AbsolutePositionItem interface {
 type Button interface {
 	// HandlePress handle the event when user just started pressing the button
 	// The parameter (x, y) is the location relative to the window (0,0).
-	HandlePress(x, y int)
+	// touchID is the unique ID of the touch.
+	// If the button is pressed by a mouse, touchID is -1.
+	HandlePress(x, y int, t ebiten.TouchID)
 
 	// HandleRelease handle the event when user just released the button.
 	// The parameter (x, y) is the location relative to the window (0,0).
