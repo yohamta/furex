@@ -1,22 +1,22 @@
 # furex
 
-A simple UI framework for [Ebiten](https://ebiten.org/) with a subset of flexbox layout specification.
+A simple UI framework for [Ebiten](https://ebiten.org/) with a subset of flexbox layout specifications.
 [GoDoc](https://pkg.go.dev/github.com/yohamta/furex)
 
 ## Motivation
 
-When I was developing some React Native app, I thought the Flexbox layout is very intuitive for UI and it would be great if I could use the same concept when building UI for a game made in Ebiten. I hope this library will help others with the same thoughts.
+When I was developing React Native apps, I thought the Flexbox layout was a very intuitive UI, so I thought it would be great if I could use the same concept for the UI of the games I make with Ebiten. I hope this library will help others with the same idea.
 
 ## Features
 
 | Feature                 | Supported | Note                                                                                                                   |
 |-------------------------|------------------|------------------------------------------------------------------------------------------------------------------------|
-| Flexbox layout          | o                | Supports a subset of flexbox layout spec.                                                                              |
+| Flexbox layout          | o                | Supports a subset of flexbox layout specifications.                                                                              |
 | Custom component   | o                | Supports any component that implements `Drawable` (and `Updatable`) interface. See the [example](https://github.com/yohamta/furex/blob/master/examples/shared/box.go). |
-| Button event handling   | o                | Supports both of touch and mouse click on components that implements `Button` interface. See the [example](https://github.com/yohamta/furex/blob/master/examples/shared/button.go). |
-| Touch handler interface | o                | Able to handle touch ID on components that implements the `TouchHandler` interface.                                                                             |
-| Mouse handler           | o                | Able to handle left click on components that implements the `MouseHandler` interface.                                                                                |
-| Margin           | o                | Margin is supported for components that implement `MarginedItem` interface.
+| Button event handling   | o                | Supports both touch and mouse click for components that implement the` Button` interface. See the [example](https://github.com/yohamta/furex/blob/master/examples/shared/button.go). |
+| Touch handler interface | o                | Able to handle touch ID on components that implement the `TouchHandler` interface.                                                                             |
+| Mouse handler           | o                | Able to handle left click on components that implement the `MouseHandler` interface.                                                                                |
+| Margin           | o                | Margin is supported for components that implement the `MarginedItem` interface.
 | Padding           | -                | To be implemented when needed.                                                     |
 
 
