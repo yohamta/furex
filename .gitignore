@@ -22,3 +22,6 @@ Mobile.framework
 
 # XCode project
 UserInterfaceState.xcuserstate
+
+# VSCode debug
+.vscode/launch.json

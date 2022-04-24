@@ -5,63 +5,69 @@ import (
 
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/yohamta/furex"
-	"github.com/yohamta/furex/examples/shared"
+	"github.com/yohamta/furex/components"
 )
 
-type Game struct{}
+type Game struct {
+	init   bool
+	screen screen
+	gameUI *furex.View
+}
 
-const desktopScreenScale = 2
-
-var (
-	screenWidth   int
-	screenHeight  int
-	isInitialized = false
-	rootFlex      *furex.Flex
-)
+type screen struct {
+	Width  int
+	Height int
+}
 
 func (g *Game) Update() error {
-	if isInitialized == false {
-		g.buildUI()
-		isInitialized = true
+	if !g.init {
+		g.init = true
+		g.setupUI()
 	}
-	rootFlex.Update()
+	g.gameUI.Update()
 	return nil
 }
 
 func (g *Game) Draw(screen *ebiten.Image) {
-	rootFlex.Draw(screen)
+	g.gameUI.Draw(screen)
 }
 
 func (g *Game) Layout(outsideWidth, outsideHeight int) (int, int) {
-	screenWidth = outsideWidth / desktopScreenScale
-	screenHeight = outsideHeight / desktopScreenScale
-	return screenWidth, screenHeight
+	g.screen.Width = outsideWidth
+	g.screen.Height = outsideHeight
+	return g.screen.Width, g.screen.Height
 }
 
 func NewGame() (*Game, error) {
 	game := &Game{}
-
 	return game, nil
 }
 
-var (
-	colors = []color.Color{
+func (g *Game) setupUI() {
+	colors := []color.Color{
 		color.RGBA{0xaa, 0, 0, 0xff},
 		color.RGBA{0, 0xaa, 0, 0xff},
 		color.RGBA{0, 0, 0xaa, 0xff},
 	}
-)
 
-func (g *Game) buildUI() {
-	rootFlex = furex.NewFlex(screenWidth, screenHeight)
-	rootFlex.Direction = furex.Row
-	rootFlex.Justify = furex.JustifyCenter
-	rootFlex.AlignItems = furex.AlignItemCenter
-	rootFlex.AlignContent = furex.AlignContentCenter
-	rootFlex.Wrap = furex.Wrap
+	g.gameUI = &furex.View{
+		Width:        g.screen.Width,
+		Height:       g.screen.Height,
+		Direction:    furex.Row,
+		Justify:      furex.JustifyCenter,
+		AlignItems:   furex.AlignItemCenter,
+		AlignContent: furex.AlignContentCenter,
+		Wrap:         furex.Wrap,
+	}
 
 	for i := 0; i < 20; i++ {
-		rootFlex.AddChild(shared.NewBox(50, 50, colors[i%3]))
+		g.gameUI.AddChild(&furex.View{
+			Width:  100,
+			Height: 100,
+			Handler: &components.Box{
+				Color: colors[i%len(colors)],
+			},
+		})
 	}
 }
 

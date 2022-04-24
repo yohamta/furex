@@ -9,24 +9,28 @@ When I was developing React Native apps, I thought the Flexbox layout was a very
 
 ## Features
 
-| Feature                 | Supported | Note                                                                                                                   |
-|-------------------------|------------------|------------------------------------------------------------------------------------------------------------------------|
-| Flexbox layout          | o                | Supports a subset of flexbox layout specifications.                                                                              |
-| Custom component   | o                | Supports any component that implements `Drawable` (and `Updatable`) interface. See the [example](https://github.com/yohamta/furex/blob/master/examples/shared/box.go). |
-| Button event handling   | o                | Supports both touch and mouse click for components that implement the` Button` interface. See the [example](https://github.com/yohamta/furex/blob/master/examples/shared/button.go). |
-| Touch handler interface | o                | Able to handle touch ID on components that implement the `TouchHandler` interface.                                                                             |
-| Mouse handler           | o                | Able to handle left click on components that implement the `MouseHandler` interface.                                                                                |
-| Margin           | o                | Margin is supported for components that implement the `MarginedItem` interface.
-| Padding           | -                | To be implemented when needed.                                                     |
-
-
+- Flexbox layout
+  - Supports a subset of flexbox layout spec.
+- Custom component
+  - Supports any component that implements `DrawHandler` and `UpdateHandler`. See the [example](https://github.com/yohamta/furex/blob/master/components/box.go).
+- Button comopnent
+  - Able to handle touch ID on components that implements the `ButtonHandler` interface. See the [example](https://github.com/yohamta/furex/blob/master/components/button.go).
+- Touch handling
+  - Able to handle touch ID on components that implements the `TouchHandler` interface. 
+- Mouse click / move handling
+  - Able to handle left click on components that implements the `MouseHandler` interface. 
+- Margin
+- Absolute position
+- Nesting view
+- Wrap children
+- Removing child view
 
 ## Layout Example
+To check all examples, visit [this page](https://github.com/yohamta/furex/tree/main/examples).
 
 [Full source code of the example](https://github.com/yohamta/furex/blob/master/examples/nesting/main.go)
 
-<image src="https://user-images.githubusercontent.com/1475839/133440846-dae6cc3e-22d4-4e13-965c-7989b50ed58a.png" width="500px" />
-
+<image src="https://user-images.githubusercontent.com/1475839/165524288-53827304-731e-4f33-81cd-26bb6a42e0d4.png" width="500px" />
 
 ## Simple Usage
 
@@ -35,44 +39,54 @@ When I was developing React Native apps, I thought the Flexbox layout was a very
 ```go
 import "github.com/yohamta/furex"
 
-var (
-	colors = []color.Color{
-		color.RGBA{0xaa, 0, 0, 0xff},
-		color.RGBA{0, 0xaa, 0, 0xff},
-		color.RGBA{0, 0, 0xaa, 0xff},
-	}
-)
-
-var {
-	rootFlex *furex.Flex
+type Game struct {
+  init   bool
+  screen screen
+  gameUI *furex.View
 }
 
-// Initialize the UI
-func (g *Game) initUI() {
-	// Make a instance of root flexbox container
-	rootFlex = furex.NewFlex(screenWidth, screenHeight)
-
-	// Set options for flexbox layout
-	rootFlex.Direction = furex.Row
-	rootFlex.Justify = furex.JustifyCenter
-	rootFlex.AlignItems = furex.AlignItemCenter
-	rootFlex.AlignContent = furex.AlignContentCenter
-	rootFlex.Wrap = furex.Wrap
-
-	// Add items to flexbox container
-	for i := 0; i < 20; i++ {
-		rootFlex.AddChild(NewBox(50, 50, colors[i%3]))
-	}
+func (g *Game) Update() error {
+  if !g.init {
+    g.init = true
+    g.setupUI()
+  }
+  g.gameUI.Update()
+  return nil
 }
 
-func (g *Game) Update() {
-	// Update the UI tree
-	rootFlex.Update()
+func (g *Game) setupUI() {
+  // create root view
+  g.gameUI = &furex.View{
+    Width:        g.screen.Width,
+    Height:       g.screen.Height,
+    Direction:    furex.Row,
+    Justify:      furex.JustifyCenter,
+    AlignItems:   furex.AlignItemCenter,
+    AlignContent: furex.AlignContentCenter,
+    Wrap:         furex.Wrap,
+  }
+
+  // create child view
+  for i := 0; i < 20; i++ {
+    g.gameUI.AddChild(&furex.View{
+      Width:  100,
+      Height: 100,
+      Handler: &components.Box{
+        Color: colors[i%len(colors)],
+      },
+    })
+  }
 }
 
 func (g *Game) Draw(screen *ebiten.Image) {
-	// Draw the UI tree
-	rootFlex.Draw(screen)
+  // Draw the UI tree
+  g.gameUI.Draw(screen)
+}
+
+var colors = []color.Color{
+  color.RGBA{0xaa, 0, 0, 0xff},
+  color.RGBA{0, 0xaa, 0, 0xff},
+  color.RGBA{0, 0, 0xaa, 0xff},
 }
 ```
 

@@ -5,81 +5,110 @@ import (
 
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/yohamta/furex"
-	"github.com/yohamta/furex/examples/shared"
+	"github.com/yohamta/furex/components"
 )
 
-type Game struct{}
+type Game struct {
+	init   bool
+	screen screen
+	gameUI *furex.View
+}
 
-const desktopScreenScale = 2
-
-var (
-	screenWidth   int
-	screenHeight  int
-	isInitialized = false
-	rootFlex      *furex.Flex
-)
+type screen struct {
+	Width  int
+	Height int
+}
 
 func (g *Game) Update() error {
-	if isInitialized == false {
-		g.buildUI()
-		isInitialized = true
+	if !g.init {
+		g.init = true
+		g.setupUI()
 	}
-	rootFlex.Update()
+	g.gameUI.Update()
 	return nil
 }
 
 func (g *Game) Draw(screen *ebiten.Image) {
-	rootFlex.Draw(screen)
+	g.gameUI.Draw(screen)
 }
 
 func (g *Game) Layout(outsideWidth, outsideHeight int) (int, int) {
-	screenWidth = outsideWidth / desktopScreenScale
-	screenHeight = outsideHeight / desktopScreenScale
-	return screenWidth, screenHeight
+	g.screen.Width = outsideWidth
+	g.screen.Height = outsideHeight
+	return g.screen.Width, g.screen.Height
 }
 
 func NewGame() (*Game, error) {
 	game := &Game{}
-
 	return game, nil
 }
 
-func (g *Game) buildUI() {
-	// root container
-	rootFlex = furex.NewFlex(screenWidth, screenHeight)
-	rootFlex.Direction = furex.Column
-	rootFlex.Justify = furex.JustifySpaceBetween
-	rootFlex.AlignContent = furex.AlignContentCenter
+func (g *Game) setupUI() {
+	g.gameUI = &furex.View{
+		Width:      g.screen.Width,
+		Height:     g.screen.Height,
+		Direction:  furex.Column,
+		Justify:    furex.JustifySpaceBetween,
+		AlignItems: furex.AlignItemCenter,
+	}
 
-	// top container
-	top := furex.NewFlex(screenWidth-20, 70)
-	top.Direction = furex.Row
-	top.Justify = furex.JustifySpaceBetween
-	top.AlignItems = furex.AlignItemCenter
-	top.AddChild(shared.NewBox(50, 50, color.RGBA{0xff, 0, 0, 0xff}))
-	top.AddChild(shared.NewBox(100, 30, color.RGBA{0xff, 0xff, 0xff, 0xff}))
-	top.AddChild(shared.NewBox(50, 50, color.RGBA{0, 0xff, 0, 0xff}))
-	rootFlex.AddChildContainer(top)
+	upper := &furex.View{
+		Width:      g.screen.Width - 20,
+		Height:     70,
+		Justify:    furex.JustifySpaceBetween,
+		AlignItems: furex.AlignItemCenter,
+	}
+	g.gameUI.AddChild(upper)
+
+	upper.AddChild(&furex.View{
+		Width:   100,
+		Height:  100,
+		Handler: &components.Box{Color: color.RGBA{0xff, 0, 0, 0xff}},
+	})
+	upper.AddChild(&furex.View{
+		Width:   200,
+		Height:  60,
+		Handler: &components.Box{Color: color.RGBA{0xff, 0xff, 0xff, 0xff}},
+	})
+	upper.AddChild(&furex.View{
+		Width:   100,
+		Height:  100,
+		Handler: &components.Box{Color: color.RGBA{0, 0xff, 0, 0xff}},
+	})
 
 	// center
-	rootFlex.AddChild(shared.NewButton(100, 50))
+	g.gameUI.AddChild(&furex.View{
+		Width:  200,
+		Height: 50,
+		Handler: &components.Button{
+			Text:    "Button",
+			OnClick: func() { println("button clicked") },
+		},
+	})
 
-	// bottom container
-	bottom := furex.NewFlex(screenWidth, 70)
-	bottom.Direction = furex.Row
-	bottom.Justify = furex.JustifyCenter
-	bottom.AlignItems = furex.AlignItemEnd
-	bottom.AddChild(buttonWithMargin(50, 30, []int{5, 5, 10, 5}))
-	bottom.AddChild(buttonWithMargin(50, 30, []int{5, 5, 10, 5}))
-	bottom.AddChild(buttonWithMargin(50, 30, []int{5, 5, 10, 5}))
-	bottom.AddChild(buttonWithMargin(50, 30, []int{5, 5, 10, 5}))
-	rootFlex.AddChildContainer(bottom)
-}
+	// bottom
+	bottom := &furex.View{
+		Width:      g.screen.Width,
+		Height:     140,
+		Justify:    furex.JustifyCenter,
+		AlignItems: furex.AlignItemEnd,
+	}
+	g.gameUI.AddChild(bottom)
 
-func buttonWithMargin(w, h int, margin []int) *shared.Button {
-	b := shared.NewButton(w, h)
-	b.SetMargin(margin)
-	return b
+	for i := 0; i < 4; i++ {
+		bottom.AddChild(&furex.View{
+			Width:        100,
+			Height:       100,
+			MarginTop:    5,
+			MarginBottom: 10,
+			MarginLeft:   5,
+			MarginRight:  5,
+			Handler: &components.Button{
+				Text:    "Button",
+				OnClick: func() { println("button clicked") },
+			},
+		})
+	}
 }
 
 func main() {
