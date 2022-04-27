@@ -34,10 +34,14 @@ To check all examples, visit [this page](https://github.com/yohamta/furex/tree/m
 
 ## Simple Usage
 
+```sh
+go get github.com/yohamta/furex/v2
+```
+
 [Full source code of simple usage example](https://github.com/yohamta/furex/blob/master/examples/wrap/main.go)
 
 ```go
-import "github.com/yohamta/furex"
+import "github.com/yohamta/furex/v2"
 
 type Game struct {
   init   bool

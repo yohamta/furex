@@ -6,7 +6,7 @@ import (
 
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
-	"github.com/yohamta/furex"
+	"github.com/yohamta/furex/v2"
 )
 
 type Button struct {
