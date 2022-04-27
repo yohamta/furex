@@ -69,9 +69,7 @@ func TestFlexAlignments(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			got := flexItemBounds(tt.flex, child)
-			if got != tt.want {
-				t.Errorf("TestFlexAlignments(%s): got %v; want %v", tt.name, got, tt.want)
-			}
+			assert.Equal(t, tt.want, got)
 		})
 	}
 }
@@ -394,6 +392,42 @@ func TestMultiMarginedWrapRowItems(t *testing.T) {
 	assert.Equal(t, image.Rect(105, 15, 105+85, 15+85), mocks[1].frame)
 	assert.Equal(t, image.Rect(10, 110, 10+85, 110+85), mocks[2].frame)
 	assert.Equal(t, image.Rect(105, 110, 105+85, 110+85), mocks[3].frame)
+}
+
+func TestRemoveChild(t *testing.T) {
+	w, h := 100, 100
+
+	flex := &View{
+		Width:      w,
+		Height:     h,
+		Direction:  Row,
+		Justify:    JustifyCenter,
+		AlignItems: AlignItemCenter,
+	}
+
+	mocks := [2]MockHandler{}
+	views := [2]*View{}
+
+	for i := 0; i < 2; i++ {
+		views[i] = &View{
+			Width:   50,
+			Height:  50,
+			Handler: &mocks[i],
+		}
+		flex.AddChild(views[i])
+	}
+
+	flex.Update()
+	flex.Draw(nil)
+
+	require.Equal(t, mocks[0].frame, image.Rect(0, 25, 50, 75))
+	require.Equal(t, mocks[1].frame, image.Rect(50, 25, 100, 75))
+
+	flex.RemoveChild(views[0])
+	flex.Update()
+	flex.Draw(nil)
+
+	require.Equal(t, mocks[1].frame, image.Rect(25, 25, 75, 75))
 }
 
 func flexItemBounds(parent *View, child *View) image.Rectangle {
