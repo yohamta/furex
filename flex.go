@@ -5,8 +5,6 @@ import (
 	"fmt"
 	"image"
 	"math"
-
-	"github.com/yohamta/furex/internal/container"
 )
 
 // Direction is the direction in which flex items are laid out
@@ -70,74 +68,33 @@ const (
 	AlignContentStretch
 )
 
-// Flex is a container widget that lays out its children following the flexbox algorithm.
-type Flex struct {
-	containerEmbed
-	margin []int
+type Position uint8
 
-	Direction    Direction
-	Wrap         FlexWrap
-	Justify      Justify
-	AlignItems   AlignItem
-	AlignContent AlignContent
-}
+const (
+	PositionStatic Position = iota
+	PositionAbsolute
+)
 
-// NewFlex creates NewFlexContaienr
-func NewFlex(width, height int) *Flex {
-	f := new(Flex)
-
-	f.margin = []int{0, 0, 0, 0}
-	f.Direction = Row
-	f.Wrap = NoWrap
-	f.Justify = JustifyStart
-	f.AlignItems = AlignItemCenter
-	f.AlignContent = AlignContentStretch
-	f.frame = image.Rect(0, 0, width, height)
-	f.isDirty = true
-	f.parent = nil
-
-	return f
-}
-
-func (f *Flex) Update() {
-	if f.isDirty {
-		f.layout()
-		f.isDirty = false
-	}
-	for c := range f.children {
-		updatable, ok := f.children[c].Item.(Updatable)
-		if ok && updatable != nil {
-			updatable.Update()
-		}
-	}
-	f.processEvent()
-}
-
-func (f *Flex) Margin() []int {
-	return f.margin
-}
-
-func (f *Flex) SetMargin(m []int) {
-	f.margin = m
+type flexEmbed struct {
+	*View
 }
 
 // layout is the main routine that implements a subset of flexbox layout
 // https://www.w3.org/TR/css-flexbox-1/#layout-algorithm
-func (f *Flex) layout() {
+func (f *flexEmbed) layout(width, height int, container *containerEmbed) {
 	// 9.2. Line Length Determination
 	// Determine the available main and cross space for the flex items.
-	containerMainSize := float64(f.mainSize(f.Size()))
-	containerCrossSize := float64(f.crossSize(f.Size()))
+	containerMainSize := float64(f.mainSize(width, height))
+	containerCrossSize := float64(f.crossSize(width, height))
 
 	// Determine the flex base size and hypothetical main size of each item:
 	var children []element
-	for i := 0; i < len(f.children); i++ {
-		c := f.children[i]
-		absolute, ok := c.Item.(AbsolutePositionItem)
-		if ok {
-			x, y := absolute.Position()
-			w, h := absolute.Size()
-			c.Bounds = image.Rect(x, y, x+w, y+h)
+	for _, c := range container.children {
+		if c.item.Position == PositionAbsolute {
+			c.bounds = image.Rect(
+				c.item.Left, c.item.Top, c.item.Left+c.item.Width, c.item.Top+c.item.Height,
+			)
+			c.item.frame = c.bounds
 			continue
 		}
 		children = append(children, element{
@@ -188,7 +145,7 @@ func (f *Flex) layout() {
 		line := &lines[l]
 
 		// Calculate free space
-		freeSpace := float64(f.mainSize(f.Size()))
+		freeSpace := float64(f.mainSize(width, height))
 		for _, child := range line.child {
 			freeSpace -= (float64(f.flexBaseSize(child.node)) +
 				(child.mainMargin[0] + child.mainMargin[1]))
@@ -203,13 +160,14 @@ func (f *Flex) layout() {
 	// §9.4. Cross Size Determination
 	// Determine the hypothetical cross size of each item
 	for l := range lines {
-		for _, child := range lines[l].child {
-			fixedSizeC, _ := child.node.Item.(FixedSizeItem)
-			if fixedSizeC != nil {
-				child.crossMargin = f.crossMargin(child.node)
-				child.crossSize = float64(f.crossSize(fixedSizeC.Size()))
+		for _, c := range lines[l].child {
+			if c.node.item.Width != 0 || c.node.item.Height != 0 {
+				c.crossMargin = f.crossMargin(c.node)
+				c.crossSize = float64(
+					f.crossSize(c.node.item.Width, c.node.item.Height),
+				)
 			} else {
-				panic("flexible size is not available for now")
+				panic("flex: size must be > 0")
 			}
 		}
 	}
@@ -341,23 +299,19 @@ func (f *Flex) layout() {
 		for _, child := range line.child {
 			switch f.Direction {
 			case Row:
-				child.node.Bounds = image.Rect(round(child.mainOffset),
+				child.node.bounds = image.Rect(
+					round(child.mainOffset),
 					round(child.crossOffset),
 					round(child.mainOffset+child.mainSize),
 					round(child.crossOffset+child.crossSize))
-				container, ok := child.node.Item.(Container)
-				if ok && container != nil {
-					container.SetFrame(child.node.Bounds.Add(f.frame.Min))
-				}
+				child.node.item.setFrame(child.node.bounds.Add(f.frame.Min))
 			case Column:
-				child.node.Bounds = image.Rect(round(child.crossOffset),
+				child.node.bounds = image.Rect(
+					round(child.crossOffset),
 					round(child.mainOffset),
 					round(child.crossOffset+child.crossSize),
 					round(child.mainOffset+child.mainSize))
-				container, ok := child.node.Item.(Container)
-				if ok && container != nil {
-					container.SetFrame(child.node.Bounds.Add(f.frame.Min))
-				}
+				child.node.item.setFrame(child.node.bounds.Add(f.frame.Min))
 			default:
 				panic(fmt.Sprint("flex: bad direction ", f.Direction))
 			}
@@ -366,7 +320,7 @@ func (f *Flex) layout() {
 }
 
 type element struct {
-	node         *container.Child
+	node         *child
 	flexBaseSize float64
 	mainSize     float64
 	mainOffset   float64
@@ -383,7 +337,7 @@ type flexLine struct {
 	child       []*element
 }
 
-func (f *Flex) mainSize(x, y int) int {
+func (f *flexEmbed) mainSize(x, y int) int {
 	switch f.Direction {
 	case Row:
 		return x
@@ -394,7 +348,7 @@ func (f *Flex) mainSize(x, y int) int {
 	}
 }
 
-func (f *Flex) crossSize(x, y int) int {
+func (f *flexEmbed) crossSize(x, y int) int {
 	switch f.Direction {
 	case Row:
 		return y
@@ -405,50 +359,41 @@ func (f *Flex) crossSize(x, y int) int {
 	}
 }
 
-func (f *Flex) mainMargin(c *container.Child) []float64 {
-	margined, _ := c.Item.(MarginedItem)
-	if margined == nil {
-		return []float64{0, 0}
-	}
-	m := margined.Margin()
-	if len(m) < 4 {
-		panic(fmt.Sprint("flex: margin value is incorrect"))
-	}
+func (f *flexEmbed) mainMargin(c *child) []float64 {
 	switch f.Direction {
 	case Row:
-		return []float64{float64(m[3]), float64(m[1])}
+		return []float64{
+			float64(c.item.MarginLeft),
+			float64(c.item.MarginRight)}
 	case Column:
-		return []float64{float64(m[0]), float64(m[2])}
+		return []float64{
+			float64(c.item.MarginTop),
+			float64(c.item.MarginBottom)}
 	default:
-		panic(fmt.Sprint("flex: bad direction ", f.Direction))
+		panic("unreachable")
 	}
 }
 
-func (f *Flex) crossMargin(c *container.Child) []float64 {
-	margined, _ := c.Item.(MarginedItem)
-	if margined == nil {
-		return []float64{0, 0}
-	}
-	m := margined.Margin()
-	if len(m) < 4 {
-		panic(fmt.Sprint("flex: margin value is incorrect"))
-	}
+func (f *flexEmbed) crossMargin(c *child) []float64 {
 	switch f.Direction {
 	case Row:
-		return []float64{float64(m[0]), float64(m[2])}
+		return []float64{
+			float64(c.item.MarginTop),
+			float64(c.item.MarginBottom)}
 	case Column:
-		return []float64{float64(m[3]), float64(m[1])}
+		return []float64{
+			float64(c.item.MarginLeft),
+			float64(c.item.MarginRight)}
 	default:
-		panic(fmt.Sprint("flex: bad direction ", f.Direction))
+		panic("unreachable")
 	}
 }
 
-func (f *Flex) flexBaseSize(c *container.Child) int {
-	fixedSizeC, _ := c.Item.(FixedSizeItem)
-	if fixedSizeC != nil {
-		return f.mainSize(fixedSizeC.Size())
+func (f *flexEmbed) flexBaseSize(c *child) int {
+	if c.item.Width != 0 || c.item.Height != 0 {
+		return f.mainSize(c.item.Width, c.item.Height)
 	}
-	panic("flexible size is not available for now")
+	panic("flex: size must be > 0")
 }
 
 func round(f float64) int {

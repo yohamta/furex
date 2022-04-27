@@ -51,18 +51,31 @@ func (g *Game) setupUI() {
 		Justify:    furex.JustifySpaceBetween,
 		AlignItems: furex.AlignItemCenter,
 	}
+
 	g.gameUI.AddChild(&furex.View{
-		Width:  100,
-		Height: 100,
+		Width:  200,
+		Height: 200,
 		Handler: &components.Box{
 			Color: color.RGBA{0xff, 0, 0, 0xff},
 		},
 	})
+
 	g.gameUI.AddChild(&furex.View{
-		Width:  100,
-		Height: 100,
+		Width:  200,
+		Height: 200,
 		Handler: &components.Box{
 			Color: color.RGBA{0, 0xff, 0, 0xff},
+		},
+	})
+
+	g.gameUI.AddChild(&furex.View{
+		Width:    200,
+		Height:   200,
+		Left:     60,
+		Top:      100,
+		Position: furex.PositionAbsolute,
+		Handler: &components.Box{
+			Color: color.RGBA{0, 0, 0xff, 0xff},
 		},
 	})
 }

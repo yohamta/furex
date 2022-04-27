@@ -6,42 +6,21 @@ import (
 	"github.com/hajimehoshi/ebiten/v2"
 )
 
-// Drawable represents a UI component that can be added to a Flex container.
-type Drawable interface {
-	// Draw function draws the content of the component inside the frame.
+// DrawHandler represents a component that can be added to a container.
+type DrawHandler interface {
+	// HandleDraw function draws the content of the component inside the frame.
 	// The frame parameter represents the location (x,y) and size (width,height) relative to the window (0,0).
-	Draw(screen *ebiten.Image, frame image.Rectangle)
+	HandleDraw(screen *ebiten.Image, frame image.Rectangle)
 }
 
-// Updatable represents a component that updates by one tick.
-type Updatable interface {
-	// Update updates the state of the component by one tick.
-	Update()
+// UpdateHandler represents a component that updates by one tick.
+type UpdateHandler interface {
+	// Updater updates the state of the component by one tick.
+	HandleUpdate()
 }
 
-// FixedSizeItem represents a component with fixed size.
-type FixedSizeItem interface {
-	// Size returns the size(width, height) of the component.
-	Size() (int, int)
-}
-
-// MarginedItem represents a component with fixed size.
-type MarginedItem interface {
-	// Margin returns the size of margin int[]{top, riht, bottom, left}
-	Margin() []int
-}
-
-// AbsolutePositionItem represents a component with fixed size.
-type AbsolutePositionItem interface {
-	// Size returns the size(x,y) of the component.
-	Size() (int, int)
-
-	// Position returns the position(x,y) relative to it's parent container.
-	Position() (int, int)
-}
-
-// Button represents a button component.
-type Button interface {
+// ButtonHandler represents a button component.
+type ButtonHandler interface {
 	// HandlePress handle the event when user just started pressing the button
 	// The parameter (x, y) is the location relative to the window (0,0).
 	// touchID is the unique ID of the touch.
@@ -70,8 +49,8 @@ type MouseHandler interface {
 	HandleMouse(x, y int) bool
 }
 
-// MouseLeftClickHandler represents a component that handle mouse button left click.
-type MouseLeftClickHandler interface {
+// MouseLeftButtonHandler represents a component that handle mouse button left click.
+type MouseLeftButtonHandler interface {
 	// HandleJustPressedMouseButtonLeft handle left mouse button click just pressed.
 	// The parameter (x, y) is the location relative to the window (0,0).
 	// It returns true if it handles the mouse move.
