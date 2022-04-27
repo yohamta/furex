@@ -97,3 +97,8 @@ var colors = []color.Color{
 ### Result
 <image src="https://user-images.githubusercontent.com/1475839/133445715-b94b8c7f-bcd3-4aef-b7a4-b58bbb29d556.png" width="500px" />
 
+## How to contribute?
+
+Feel free to contribute in any way you want. Share ideas, submit issues, create pull requests. 
+Thank you!
+
