@@ -1,7 +1,7 @@
 # furex
 
 A simple UI framework for [Ebiten](https://ebiten.org/) with a subset of flexbox layout specifications.
-[GoDoc](https://pkg.go.dev/github.com/yohamta/furex)
+[GoDoc](https://pkg.go.dev/github.com/yohamta/furex/v2)
 
 ## Motivation
 
@@ -12,13 +12,14 @@ When I was developing React Native apps, I thought the Flexbox layout was a very
 - Flexbox layout
   - Supports a subset of flexbox layout spec.
 - Custom component
-  - Supports any component that implements `DrawHandler` and `UpdateHandler`. See the [example](https://github.com/yohamta/furex/blob/master/components/box.go).
+  - Supports any component that implements `DrawHandler` or `UpdateHandler`. See the [example](https://github.com/yohamta/furex/blob/master/components/box.go).
 - Button comopnent
-  - Able to handle touch ID on components that implements the `ButtonHandler` interface. See the [example](https://github.com/yohamta/furex/blob/master/components/button.go).
+  - Able to handle touch ID by implementing `ButtonHandler` interface. See the [example](https://github.com/yohamta/furex/blob/master/components/button.go).
 - Touch handling
-  - Able to handle touch ID on components that implements the `TouchHandler` interface. 
+  - Able to handle touch ID by implementing `TouchHandler` interface. 
 - Mouse click / move handling
-  - Able to handle left click on components that implements the `MouseHandler` interface. 
+  - Able to handle left click by implementing `MouseHandler` interface. 
+  - Able to handle mouse move by implementing `MouseLeftButtonHandler` interface. 
 - Margin
 - Absolute position
 - Nesting view
@@ -59,7 +60,7 @@ func (g *Game) Update() error {
 }
 
 func (g *Game) setupUI() {
-  // create root view
+  // create a root view
   g.gameUI = &furex.View{
     Width:        g.screen.Width,
     Height:       g.screen.Height,
@@ -70,7 +71,7 @@ func (g *Game) setupUI() {
     Wrap:         furex.Wrap,
   }
 
-  // create child view
+  // create a child view
   for i := 0; i < 20; i++ {
     g.gameUI.AddChild(&furex.View{
       Width:  100,
