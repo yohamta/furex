@@ -1,4 +1,4 @@
-module github.com/yohamta/furex
+module github.com/yohamta/furex/v2
 
 go 1.16
 

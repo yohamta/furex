@@ -5,7 +5,7 @@ import (
 	"image/color"
 
 	"github.com/hajimehoshi/ebiten/v2"
-	"github.com/yohamta/furex"
+	"github.com/yohamta/furex/v2"
 )
 
 type Box struct {

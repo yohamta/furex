@@ -4,8 +4,8 @@ import (
 	"image/color"
 
 	"github.com/hajimehoshi/ebiten/v2"
-	"github.com/yohamta/furex"
-	"github.com/yohamta/furex/components"
+	"github.com/yohamta/furex/v2"
+	"github.com/yohamta/furex/v2/components"
 )
 
 type Game struct {
