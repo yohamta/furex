@@ -22,6 +22,8 @@ type View struct {
 	Justify      Justify
 	AlignItems   AlignItem
 	AlignContent AlignContent
+	Grow         float64
+	Shrink       float64
 
 	containerEmbed
 	flexEmbed
@@ -34,7 +36,7 @@ func (v *View) Update() {
 			v.frame = image.Rect(v.Left, v.Top, v.Left+v.Width, v.Top+v.Height)
 		}
 		v.flexEmbed.View = v
-		v.layout(v.Width, v.Height, &v.containerEmbed)
+		v.layout(v.frame.Dx(), v.frame.Dy(), &v.containerEmbed)
 		v.isDirty = false
 	}
 	for _, v := range v.children {

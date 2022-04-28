@@ -40,7 +40,8 @@ const (
 type AlignItem uint8
 
 const (
-	AlignItemStart AlignItem = iota
+	AlignItemStretch AlignItem = iota
+	AlignItemStart
 	AlignItemEnd
 	AlignItemCenter
 )
@@ -68,6 +69,7 @@ const (
 	AlignContentStretch
 )
 
+// Position is the 'position' property
 type Position uint8
 
 const (
@@ -141,19 +143,112 @@ func (f *flexEmbed) layout(width, height int, container *containerEmbed) {
 		}
 	}
 
+	// §9.3.6 resolve flexible lengths (details in section §9.7)
 	for l := range lines {
 		line := &lines[l]
 
-		// Calculate free space
+		grow := line.mainSize < containerMainSize // §9.7.1
+
+		// §9.7.2 freeze inflexible children.
+		for _, child := range line.child {
+			mainSize := float64(f.mainSize(child.node.item.Width, child.node.item.Height))
+			if grow {
+				if child.node.item.Grow == 0 {
+					child.frozen = true
+					child.mainSize = mainSize
+				}
+			} else {
+				if child.node.item.Shrink == 0 {
+					child.frozen = true
+					child.mainSize = mainSize
+				}
+			}
+		}
+
+		// §9.7.3 calculate initial free space
 		freeSpace := float64(f.mainSize(width, height))
 		for _, child := range line.child {
 			freeSpace -= (float64(f.flexBaseSize(child.node)) +
 				(child.mainMargin[0] + child.mainMargin[1]))
 		}
 
-		// Distribute free space
-		for _, child := range line.child {
-			child.mainSize = float64(f.flexBaseSize(child.node))
+		// §9.7.4 flex loop
+		for {
+			// Check for flexible items.
+			allFrozen := true
+			for _, child := range line.child {
+				if !child.frozen {
+					allFrozen = false
+					break
+				}
+			}
+			if allFrozen {
+				break
+			}
+
+			// Calculate remaining free space.
+			remFreeSpace := float64(f.mainSize(width, height))
+			unfrozenFlexFactor := 0.0
+			for _, child := range line.child {
+				if child.frozen {
+					remFreeSpace -= child.mainSize
+				} else {
+					remFreeSpace -= float64(f.mainSize(child.node.item.Width, child.node.item.Height))
+					if grow {
+						unfrozenFlexFactor += child.node.item.Grow
+					} else {
+						unfrozenFlexFactor += child.node.item.Shrink
+					}
+				}
+			}
+
+			if unfrozenFlexFactor < 1 {
+				p := freeSpace * unfrozenFlexFactor
+				if math.Abs(p) < math.Abs(remFreeSpace) {
+					remFreeSpace = p
+				}
+			}
+
+			// Distribute free space proportional to flex factors.
+			if grow {
+				for _, child := range line.child {
+					if child.frozen {
+						continue
+					}
+					r := child.node.item.Grow / unfrozenFlexFactor
+					child.mainSize = float64(f.mainSize(
+						child.node.item.Width, child.node.item.Height,
+					)) + r*remFreeSpace
+				}
+			} else {
+				sumScaledShrinkFactor := 0.0
+				for _, child := range line.child {
+					if child.frozen {
+						continue
+					}
+					scaledShrinkFactor := float64(f.mainSize(
+						child.node.item.Width, child.node.item.Height,
+					)) * child.node.item.Shrink
+					sumScaledShrinkFactor += scaledShrinkFactor
+				}
+				for _, child := range line.child {
+					if child.frozen {
+						continue
+					}
+					scaledShrinkFactor := float64(f.mainSize(
+						child.node.item.Width, child.node.item.Height,
+					)) * child.node.item.Shrink
+					r := float64(scaledShrinkFactor) / sumScaledShrinkFactor
+					child.mainSize = float64(f.mainSize(
+						child.node.item.Width, child.node.item.Height,
+					)) - r*math.Abs(float64(remFreeSpace))
+				}
+			}
+
+			for _, child := range line.child {
+				child.frozen = true
+			}
+
 		}
 	}
 
@@ -161,14 +256,10 @@ func (f *flexEmbed) layout(width, height int, container *containerEmbed) {
 	// Determine the hypothetical cross size of each item
 	for l := range lines {
 		for _, c := range lines[l].child {
-			if c.node.item.Width != 0 || c.node.item.Height != 0 {
-				c.crossMargin = f.crossMargin(c.node)
-				c.crossSize = float64(
-					f.crossSize(c.node.item.Width, c.node.item.Height),
-				)
-			} else {
-				panic("flex: size must be > 0")
-			}
+			c.crossMargin = f.crossMargin(c.node)
+			c.crossSize = float64(
+				f.crossSize(c.node.item.Width, c.node.item.Height),
+			)
 		}
 	}
 
@@ -206,6 +297,18 @@ func (f *flexEmbed) layout(width, height int, container *containerEmbed) {
 			line := &lines[l]
 			line.crossOffset += float64(l) * add
 			line.crossSize += add
+		}
+	}
+
+	// §9.4.11 align-item: stretch
+	for l := range lines {
+		line := &lines[l]
+		for _, child := range line.child {
+			if f.AlignItems == AlignItemStretch &&
+				f.crossSize(child.node.item.Width, child.node.item.Height) == 0 &&
+				child.crossSize < line.crossSize {
+				child.crossSize = line.crossSize
+			}
 		}
 	}
 
@@ -328,6 +431,7 @@ type element struct {
 	crossSize    float64
 	crossOffset  float64
 	crossMargin  []float64
+	frozen       bool
 }
 
 type flexLine struct {
@@ -390,10 +494,18 @@ func (f *flexEmbed) crossMargin(c *child) []float64 {
 }
 
 func (f *flexEmbed) flexBaseSize(c *child) int {
-	if c.item.Width != 0 || c.item.Height != 0 {
-		return f.mainSize(c.item.Width, c.item.Height)
+	return f.mainSize(c.item.Width, c.item.Height)
+}
+
+func (f *flexEmbed) clampSize(size, width, height int) int {
+	minSize := f.mainSize(width, height)
+	if minSize > size {
+		size = minSize
 	}
-	panic("flex: size must be > 0")
+	if size < 0 {
+		return 0
+	}
+	return size
 }
 
 func round(f float64) int {

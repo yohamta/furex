@@ -430,6 +430,65 @@ func TestRemoveChild(t *testing.T) {
 	require.Equal(t, mocks[1].frame, image.Rect(25, 25, 75, 75))
 }
 
+func TestAutoExpanding(t *testing.T) {
+	flex := &View{
+		Width:      1000,
+		Height:     1000,
+		Direction:  Row,
+		Justify:    JustifyCenter,
+		AlignItems: AlignItemStretch,
+	}
+
+	mocks := [2]MockHandler{}
+	for i := 0; i < 2; i++ {
+		v := &View{
+			Grow:    1,
+			Handler: &mocks[i],
+		}
+		flex.AddChild(v)
+	}
+
+	flex.Update()
+	flex.Draw(nil)
+
+	assert.Equal(t, image.Rect(0, 0, 500, 1000), mocks[0].frame)
+	assert.Equal(t, image.Rect(500, 0, 1000, 1000), mocks[1].frame)
+}
+
+func TestAutoExpandingNested(t *testing.T) {
+	flex := &View{
+		Width:      1000,
+		Height:     1000,
+		Direction:  Row,
+		Justify:    JustifyCenter,
+		AlignItems: AlignItemStretch,
+	}
+
+	child := &View{
+		Direction:  Row,
+		Justify:    JustifyCenter,
+		AlignItems: AlignItemStretch,
+		Grow:       1,
+	}
+
+	flex.AddChild(child)
+
+	mocks := [2]MockHandler{}
+	for i := 0; i < 2; i++ {
+		v := &View{
+			Grow:    1,
+			Handler: &mocks[i],
+		}
+		child.AddChild(v)
+	}
+
+	flex.Update()
+	flex.Draw(nil)
+
+	assert.Equal(t, image.Rect(0, 0, 500, 1000), mocks[0].frame)
+	assert.Equal(t, image.Rect(500, 0, 1000, 1000), mocks[1].frame)
+}
+
 func flexItemBounds(parent *View, child *View) image.Rectangle {
 	mock := &MockHandler{}
 	child.Handler = mock

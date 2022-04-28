@@ -1,6 +1,6 @@
 # furex
 
-A simple UI framework for [Ebiten](https://ebiten.org/) with a subset of flexbox layout specifications.
+A simple and flexible UI framework for [Ebiten](https://ebiten.org/) with a subset of flexbox layout specifications.
 [GoDoc](https://pkg.go.dev/github.com/yohamta/furex/v2)
 
 ## Motivation
@@ -13,18 +13,19 @@ When I was developing React Native apps, I thought the Flexbox layout was a very
   - Supports a subset of flexbox layout spec.
 - Custom component
   - Supports any component that implements `DrawHandler` or `UpdateHandler`. See the [example](https://github.com/yohamta/furex/blob/master/components/box.go).
-- Button comopnent
+- Button component
   - Able to handle touch ID by implementing `ButtonHandler` interface. See the [example](https://github.com/yohamta/furex/blob/master/components/button.go).
-- Touch handling
+- Touch event handling
   - Able to handle touch ID by implementing `TouchHandler` interface. 
-- Mouse click / move handling
+- Mouse click / Mouse move handling
   - Able to handle left click by implementing `MouseHandler` interface. 
   - Able to handle mouse move by implementing `MouseLeftButtonHandler` interface. 
 - Margin
-- Absolute position
-- Nesting view
-- Wrap children
-- Removing child view
+- Nesting
+- Wrap
+- Flex-grow
+- Align-stretch
+- Absolute-position
 
 ## Layout Example
 To check all examples, visit [this page](https://github.com/yohamta/furex/tree/main/examples).
