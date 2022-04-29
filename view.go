@@ -6,6 +6,9 @@ import (
 	"github.com/hajimehoshi/ebiten/v2"
 )
 
+// View represents a UI element.
+// You can set flex options, size, position and so on.
+// Handlers can be set to create custom component such as button or list.
 type View struct {
 	Left         int
 	Top          int
@@ -30,6 +33,7 @@ type View struct {
 	hasParent bool
 }
 
+// Update updates the view
 func (v *View) Update() {
 	if v.isDirty {
 		if !v.hasParent {
@@ -51,23 +55,38 @@ func (v *View) Update() {
 	}
 }
 
+// Draw draws the view
 func (v *View) Draw(screen *ebiten.Image) {
 	v.containerEmbed.Draw(screen)
 }
 
-func (v *View) AddChild(cv *View) {
+// AddChild adds a child view
+func (v *View) AddChild(cv *View) *View {
 	child := &child{item: cv, handledTouchID: -1}
 	v.children = append(v.children, child)
 	v.isDirty = true
 	cv.hasParent = true
+	return v
 }
 
-func (v *View) AddChildren(views ...*View) {
+// AddTo add itself to a parent view
+func (v *View) AddTo(parent *View) *View {
+	if v.hasParent {
+		panic("this view has been already added to a parent")
+	}
+	parent.AddChild(v)
+	return v
+}
+
+// AddChildren adds arbitrary number of child views
+func (v *View) AddChildren(views ...*View) *View {
 	for _, vv := range views {
 		v.AddChild(vv)
 	}
+	return v
 }
 
+// RemoveChild removes a specified view
 func (v *View) RemoveChild(cv *View) bool {
 	for i, child := range v.children {
 		if child.item == cv {
@@ -80,6 +99,7 @@ func (v *View) RemoveChild(cv *View) bool {
 	return false
 }
 
+// RemoveAll removes all children view
 func (v *View) RemoveAll() {
 	v.isDirty = true
 	for _, child := range v.children {
@@ -88,6 +108,7 @@ func (v *View) RemoveAll() {
 	v.children = []*child{}
 }
 
+// PopChild remove the last child view add to this view
 func (v *View) PopChild() *View {
 	if len(v.children) == 0 {
 		return nil
