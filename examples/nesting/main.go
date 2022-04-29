@@ -60,21 +60,23 @@ func (g *Game) setupUI() {
 	}
 	g.gameUI.AddChild(upper)
 
-	upper.AddChild(&furex.View{
-		Width:   100,
-		Height:  100,
-		Handler: &components.Box{Color: color.RGBA{0xff, 0, 0, 0xff}},
-	})
-	upper.AddChild(&furex.View{
-		Width:   200,
-		Height:  60,
-		Handler: &components.Box{Color: color.RGBA{0xff, 0xff, 0xff, 0xff}},
-	})
-	upper.AddChild(&furex.View{
-		Width:   100,
-		Height:  100,
-		Handler: &components.Box{Color: color.RGBA{0, 0xff, 0, 0xff}},
-	})
+	upper.AddChildren(
+		&furex.View{
+			Width:   100,
+			Height:  100,
+			Handler: &components.Box{Color: color.RGBA{0xff, 0, 0, 0xff}},
+		},
+		&furex.View{
+			Width:   200,
+			Height:  60,
+			Handler: &components.Box{Color: color.RGBA{0xff, 0xff, 0xff, 0xff}},
+		},
+		&furex.View{
+			Width:   100,
+			Height:  100,
+			Handler: &components.Box{Color: color.RGBA{0, 0xff, 0, 0xff}},
+		},
+	)
 
 	// center
 	g.gameUI.AddChild(&furex.View{
