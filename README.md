@@ -26,13 +26,10 @@ When I was developing React Native apps, I thought the Flexbox layout was a very
 - Flex grow
 - Align stretch
 - Absolute-position with Left and Top
+- Method chaning
 
-## Layout Example
+## Examples
 To check all examples, visit [this page](https://github.com/yohamta/furex/tree/main/examples).
-
-[Full source code of the example](https://github.com/yohamta/furex/blob/master/examples/nesting/main.go)
-
-<image src="https://user-images.githubusercontent.com/1475839/165524288-53827304-731e-4f33-81cd-26bb6a42e0d4.png" width="500px" />
 
 ## Simple Usage
 
@@ -97,7 +94,84 @@ var colors = []color.Color{
 ```
 
 ### Result
+
 <image src="https://user-images.githubusercontent.com/1475839/133445715-b94b8c7f-bcd3-4aef-b7a4-b58bbb29d556.png" width="500px" />
+
+## Method chaining example
+
+[Full source code of the example](https://github.com/yohamta/furex/blob/master/examples/nesting/main.go)
+
+```go
+func (g *Game) setupUI() {
+	newButton := func() *furex.View {
+		return (&furex.View{
+			Width:        100,
+			Height:       100,
+			MarginTop:    5,
+			MarginBottom: 10,
+			MarginLeft:   5,
+			MarginRight:  5,
+			Handler: &components.Button{
+				Text:    "Button",
+				OnClick: func() { println("button clicked") },
+			},
+		})
+	}
+
+	g.gameUI = (&furex.View{
+		Width:      g.screen.Width,
+		Height:     g.screen.Height,
+		Direction:  furex.Column,
+		Justify:    furex.JustifySpaceBetween,
+		AlignItems: furex.AlignItemCenter,
+	}).AddChild(
+		(&furex.View{
+			Width:      g.screen.Width - 20,
+			Height:     70,
+			Justify:    furex.JustifySpaceBetween,
+			AlignItems: furex.AlignItemCenter,
+		}).AddChildren(
+			&furex.View{
+				Width:   100,
+				Height:  100,
+				Handler: &components.Box{Color: color.RGBA{0xff, 0, 0, 0xff}},
+			},
+			&furex.View{
+				Width:   200,
+				Height:  60,
+				Handler: &components.Box{Color: color.RGBA{0xff, 0xff, 0xff, 0xff}},
+			},
+			&furex.View{
+				Width:   100,
+				Height:  100,
+				Handler: &components.Box{Color: color.RGBA{0, 0xff, 0, 0xff}},
+			},
+		),
+	).AddChild(&furex.View{
+		Width:  200,
+		Height: 50,
+		Handler: &components.Button{
+			Text:    "Button",
+			OnClick: func() { println("button clicked") },
+		},
+	}).AddChild((&furex.View{
+		Width:      g.screen.Width,
+		Height:     140,
+		Justify:    furex.JustifyCenter,
+		AlignItems: furex.AlignItemEnd,
+	}).AddChildren(
+		newButton(),
+		newButton(),
+		newButton(),
+		newButton(),
+	))
+}
+```
+
+### Result
+
+<image src="https://user-images.githubusercontent.com/1475839/165524288-53827304-731e-4f33-81cd-26bb6a42e0d4.png" width="500px" />
+
 
 ## How to contribute?
 
