@@ -16,10 +16,10 @@ When I was developing React Native apps, I thought the Flexbox layout was a very
 - Button component
   - Able to handle touch ID by implementing `ButtonHandler` interface. See the [example](https://github.com/yohamta/furex/blob/master/components/button.go).
 - Touch event handling
-  - Able to handle touch ID by implementing `TouchHandler` interface. 
+  - Able to handle touch ID by implementing `TouchHandler` interface. See the [GoDoc](https://pkg.go.dev/github.com/yohamta/furex/v2#TouchHandler).
 - Mouse click / Mouse move handling
-  - Able to handle left click by implementing `MouseHandler` interface. 
-  - Able to handle mouse move by implementing `MouseLeftButtonHandler` interface. 
+  - Able to handle left click by implementing `MouseHandler` interface. See the [GoDoc](https://pkg.go.dev/github.com/yohamta/furex/v2#MouseHandler).
+  - Able to handle mouse move by implementing `MouseLeftButtonHandler` interface. See the [GoDoc](https://pkg.go.dev/github.com/yohamta/furex/v2#MouseLeftButtonHandler).
 - Margin
 - Nesting
 - Wrap
