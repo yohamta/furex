@@ -55,17 +55,27 @@ func (v *View) Draw(screen *ebiten.Image) {
 	v.containerEmbed.Draw(screen)
 }
 
-func (v *View) AddChild(cv *View) {
+func (v *View) AddChild(cv *View) *View {
 	child := &child{item: cv, handledTouchID: -1}
 	v.children = append(v.children, child)
 	v.isDirty = true
 	cv.hasParent = true
+	return v
 }
 
-func (v *View) AddChildren(views ...*View) {
+func (v *View) AddTo(pv *View) *View {
+	if v.hasParent {
+		panic("this view has been already added to a parent")
+	}
+	pv.AddChild(v)
+	return v
+}
+
+func (v *View) AddChildren(views ...*View) *View {
 	for _, vv := range views {
 		v.AddChild(vv)
 	}
+	return v
 }
 
 func (v *View) RemoveChild(cv *View) bool {

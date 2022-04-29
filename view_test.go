@@ -22,7 +22,7 @@ func TestAddChildUpdateRemove(t *testing.T) {
 		Height:  10,
 		Handler: mock,
 	}
-	view.AddChild(child)
+	require.Equal(t, view, view.AddChild(child))
 	require.True(t, view.isDirty)
 
 	view.Update()
@@ -35,6 +35,30 @@ func TestAddChildUpdateRemove(t *testing.T) {
 	require.Equal(t, 0, len(view.children))
 }
 
+func TestAddToParent(t *testing.T) {
+	root := &View{
+		Width:      100,
+		Height:     100,
+		Direction:  Row,
+		Justify:    JustifyStart,
+		AlignItems: AlignItemStart,
+	}
+
+	mock := &mockHandler{}
+
+	child := (&View{
+		Width:   10,
+		Height:  10,
+		Handler: mock,
+	})
+
+	require.Equal(t, child, child.AddTo(root))
+
+	root.Update()
+	require.True(t, mock.IsUpdated)
+
+}
+
 func TestAddChildren(t *testing.T) {
 	view := &View{
 		Width:      100,
@@ -45,7 +69,7 @@ func TestAddChildren(t *testing.T) {
 	}
 
 	mocks := [2]mockHandler{}
-	view.AddChildren(
+	require.Equal(t, view, view.AddChildren(
 		&View{
 			Width:   10,
 			Height:  10,
@@ -56,7 +80,7 @@ func TestAddChildren(t *testing.T) {
 			Height:  10,
 			Handler: &mocks[1],
 		},
-	)
+	))
 
 	view.Update()
 	require.True(t, mocks[0].IsUpdated)
