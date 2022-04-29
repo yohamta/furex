@@ -4,7 +4,6 @@ import (
 	"image"
 	"testing"
 
-	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -84,7 +83,7 @@ func TestFlexWrap(t *testing.T) {
 		Wrap:       Wrap,
 	}
 
-	mocks := [3]MockHandler{}
+	mocks := [3]mockHandler{}
 	flex.AddChild(&View{Width: 100, Height: 100, Handler: &mocks[0]})
 	flex.AddChild(&View{Width: 100, Height: 100, Handler: &mocks[1]})
 	flex.AddChild(&View{Width: 100, Height: 100, Handler: &mocks[2]})
@@ -108,7 +107,7 @@ func TestFlexWrap(t *testing.T) {
 	// └──────────────(100,200)──────────┘
 	// 															 (200,200)
 
-	assert.Equal(t, image.Rect(0, 100, 100, 200), mocks[2].frame)
+	assert.Equal(t, image.Rect(0, 100, 100, 200), mocks[2].Frame)
 }
 
 func TestAbsolutePos(t *testing.T) {
@@ -125,7 +124,7 @@ func TestAbsolutePos(t *testing.T) {
 		Wrap:       Wrap,
 	}
 
-	mock := MockHandler{}
+	mock := mockHandler{}
 
 	f1.AddChild(&View{Width: 30, Height: 40, Handler: &mock})
 	f1.Update()
@@ -153,7 +152,7 @@ func TestAbsolutePos(t *testing.T) {
 
 	w, h := 30, 40
 	x, y := 100/2-w/2+left, 200/2-h/2+top
-	require.Equal(t, image.Rect(x, y, x+w, y+h), mock.frame)
+	require.Equal(t, image.Rect(x, y, x+w, y+h), mock.Frame)
 }
 
 func TestAbsolutePosNested(t *testing.T) {
@@ -180,7 +179,7 @@ func TestAbsolutePosNested(t *testing.T) {
 
 	f1.AddChild(f2)
 
-	mock := MockHandler{}
+	mock := mockHandler{}
 
 	f2.AddChild(&View{Width: 30, Height: 40, Handler: &mock})
 	f1.Update()
@@ -210,7 +209,7 @@ func TestAbsolutePosNested(t *testing.T) {
 
 	w, h := 30, 40
 	x, y := 100+50/2-w/2, 50+150/2-h/2
-	require.Equal(t, image.Rect(x, y, x+w, y+h), mock.frame)
+	require.Equal(t, image.Rect(x, y, x+w, y+h), mock.Frame)
 }
 
 func TestNesting(t *testing.T) {
@@ -235,7 +234,7 @@ func TestNesting(t *testing.T) {
 
 	parent.AddChild(child)
 
-	item := &MockHandler{}
+	item := &mockHandler{}
 
 	child.AddChild(&View{
 		Width:   30,
@@ -271,12 +270,12 @@ func TestNesting(t *testing.T) {
 	// │      │                            │
 	// └──────┴────────────────────────────┘
 	//                                 (400,550)
-	// expected item frame:
+	// expected item Frame:
 	// x = 300-30 = 270 to 300
 	// y = 400-40 = 360 to 400
 
 	want := image.Rect(270, 360, 300, 400)
-	require.Equal(t, want, item.frame)
+	require.Equal(t, want, item.Frame)
 }
 
 func TestMargin(t *testing.T) {
@@ -350,13 +349,13 @@ func TestMargin(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		mock := &MockHandler{}
+		mock := &mockHandler{}
 		tt.View.Handler = mock
 		tt.Flex.AddChild(tt.View)
 		tt.Flex.Update()
 		tt.Flex.Draw(nil)
 
-		assert.Equal(t, tt.Want, mock.frame)
+		assert.Equal(t, tt.Want, mock.Frame)
 	}
 }
 
@@ -371,7 +370,7 @@ func TestMultiMarginedWrapRowItems(t *testing.T) {
 		Wrap:         Wrap,
 	}
 
-	mocks := [4]MockHandler{}
+	mocks := [4]mockHandler{}
 	view := View{
 		Width:      85,
 		Height:     85,
@@ -388,10 +387,10 @@ func TestMultiMarginedWrapRowItems(t *testing.T) {
 	flex.Update()
 	flex.Draw(nil)
 
-	assert.Equal(t, image.Rect(10, 15, 10+85, 15+85), mocks[0].frame)
-	assert.Equal(t, image.Rect(105, 15, 105+85, 15+85), mocks[1].frame)
-	assert.Equal(t, image.Rect(10, 110, 10+85, 110+85), mocks[2].frame)
-	assert.Equal(t, image.Rect(105, 110, 105+85, 110+85), mocks[3].frame)
+	assert.Equal(t, image.Rect(10, 15, 10+85, 15+85), mocks[0].Frame)
+	assert.Equal(t, image.Rect(105, 15, 105+85, 15+85), mocks[1].Frame)
+	assert.Equal(t, image.Rect(10, 110, 10+85, 110+85), mocks[2].Frame)
+	assert.Equal(t, image.Rect(105, 110, 105+85, 110+85), mocks[3].Frame)
 }
 
 func TestRemoveChild(t *testing.T) {
@@ -405,7 +404,7 @@ func TestRemoveChild(t *testing.T) {
 		AlignItems: AlignItemCenter,
 	}
 
-	mocks := [2]MockHandler{}
+	mocks := [2]mockHandler{}
 	views := [2]*View{}
 
 	for i := 0; i < 2; i++ {
@@ -420,14 +419,14 @@ func TestRemoveChild(t *testing.T) {
 	flex.Update()
 	flex.Draw(nil)
 
-	require.Equal(t, mocks[0].frame, image.Rect(0, 25, 50, 75))
-	require.Equal(t, mocks[1].frame, image.Rect(50, 25, 100, 75))
+	require.Equal(t, mocks[0].Frame, image.Rect(0, 25, 50, 75))
+	require.Equal(t, mocks[1].Frame, image.Rect(50, 25, 100, 75))
 
 	flex.RemoveChild(views[0])
 	flex.Update()
 	flex.Draw(nil)
 
-	require.Equal(t, mocks[1].frame, image.Rect(25, 25, 75, 75))
+	require.Equal(t, mocks[1].Frame, image.Rect(25, 25, 75, 75))
 }
 
 func TestAutoExpanding(t *testing.T) {
@@ -439,7 +438,7 @@ func TestAutoExpanding(t *testing.T) {
 		AlignItems: AlignItemStretch,
 	}
 
-	mocks := [2]MockHandler{}
+	mocks := [2]mockHandler{}
 	for i := 0; i < 2; i++ {
 		v := &View{
 			Grow:    1,
@@ -451,8 +450,8 @@ func TestAutoExpanding(t *testing.T) {
 	flex.Update()
 	flex.Draw(nil)
 
-	assert.Equal(t, image.Rect(0, 0, 500, 1000), mocks[0].frame)
-	assert.Equal(t, image.Rect(500, 0, 1000, 1000), mocks[1].frame)
+	assert.Equal(t, image.Rect(0, 0, 500, 1000), mocks[0].Frame)
+	assert.Equal(t, image.Rect(500, 0, 1000, 1000), mocks[1].Frame)
 }
 
 func TestAutoExpandingNested(t *testing.T) {
@@ -473,7 +472,7 @@ func TestAutoExpandingNested(t *testing.T) {
 
 	flex.AddChild(child)
 
-	mocks := [2]MockHandler{}
+	mocks := [2]mockHandler{}
 	for i := 0; i < 2; i++ {
 		v := &View{
 			Grow:    1,
@@ -485,25 +484,17 @@ func TestAutoExpandingNested(t *testing.T) {
 	flex.Update()
 	flex.Draw(nil)
 
-	assert.Equal(t, image.Rect(0, 0, 500, 1000), mocks[0].frame)
-	assert.Equal(t, image.Rect(500, 0, 1000, 1000), mocks[1].frame)
+	assert.Equal(t, image.Rect(0, 0, 500, 1000), mocks[0].Frame)
+	assert.Equal(t, image.Rect(500, 0, 1000, 1000), mocks[1].Frame)
 }
 
 func flexItemBounds(parent *View, child *View) image.Rectangle {
-	mock := &MockHandler{}
+	mock := &mockHandler{}
 	child.Handler = mock
 
 	parent.AddChild(child)
 	parent.Update()
 	parent.Draw(nil)
 
-	return mock.frame
-}
-
-type MockHandler struct {
-	frame image.Rectangle
-}
-
-func (m *MockHandler) HandleDraw(screen *ebiten.Image, frame image.Rectangle) {
-	m.frame = frame
+	return mock.Frame
 }

@@ -23,9 +23,9 @@ When I was developing React Native apps, I thought the Flexbox layout was a very
 - Margin
 - Nesting
 - Wrap
-- Flex-grow
-- Align-stretch
-- Absolute-position
+- Flex grow
+- Align stretch
+- Absolute-position with Left and Top
 
 ## Layout Example
 To check all examples, visit [this page](https://github.com/yohamta/furex/tree/main/examples).

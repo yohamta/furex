@@ -62,6 +62,12 @@ func (v *View) AddChild(cv *View) {
 	cv.hasParent = true
 }
 
+func (v *View) AddChildren(views ...*View) {
+	for _, vv := range views {
+		v.AddChild(vv)
+	}
+}
+
 func (v *View) RemoveChild(cv *View) bool {
 	for i, child := range v.children {
 		if child.item == cv {
@@ -72,6 +78,14 @@ func (v *View) RemoveChild(cv *View) bool {
 		}
 	}
 	return false
+}
+
+func (v *View) RemoveAll() {
+	v.isDirty = true
+	for _, child := range v.children {
+		child.item.hasParent = false
+	}
+	v.children = []*child{}
 }
 
 func (v *View) PopChild() *View {

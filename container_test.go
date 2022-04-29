@@ -141,7 +141,7 @@ func testButtonTouch(t *testing.T, flex *View, h *mockHandler, frame image.Recta
 
 	for _, tt := range tests {
 		t.Run(tt.Scenario, func(t *testing.T) {
-			h.InitFlags()
+			h.Init()
 
 			flex.HandleJustPressedTouchID(0, tt.Start.X, tt.Start.Y)
 			flex.HandleJustReleasedTouchID(0, tt.End.X, tt.End.Y)
@@ -199,7 +199,7 @@ func testMouchClick(t *testing.T, flex *View, h *mockHandler, frame image.Rectan
 
 	for _, tt := range tests {
 		t.Run(tt.Scenario, func(t *testing.T) {
-			h.InitFlags()
+			h.Init()
 
 			flex.HandleJustPressedMouseButtonLeft(tt.Start.X, tt.Start.Y)
 			flex.HandleJustReleasedMouseButtonLeft(tt.End.X, tt.End.Y)
@@ -253,7 +253,7 @@ func testMouseMove(t *testing.T, flex *View, h *mockHandler, frame image.Rectang
 
 	for _, tt := range tests {
 		t.Run(tt.Scenario, func(t *testing.T) {
-			h.InitFlags()
+			h.Init()
 
 			flex.HandleMouse(tt.Point.X, tt.Point.Y)
 
@@ -263,20 +263,31 @@ func testMouseMove(t *testing.T, flex *View, h *mockHandler, frame image.Rectang
 }
 
 type mockHandler struct {
-	Frame        image.Rectangle
+	mockFlags
+	Frame      image.Rectangle
+	MousePoint image.Point
+}
+
+type mockFlags struct {
 	IsPressed    bool
 	IsReleased   bool
 	IsCancel     bool
+	IsUpdated    bool
 	IsMouseMoved bool
-	MousePoint   image.Point
 }
 
-func (h *mockHandler) InitFlags() {
-	h.IsPressed = false
-	h.IsReleased = false
-	h.IsCancel = false
-	h.IsMouseMoved = false
+var _ DrawHandler = (*mockHandler)(nil)
+var _ UpdateHandler = (*mockHandler)(nil)
+var _ ButtonHandler = (*mockHandler)(nil)
+var _ MouseHandler = (*mockHandler)(nil)
+
+func (h *mockHandler) Init() {
+	h.mockFlags = mockFlags{}
 	h.MousePoint = image.Pt(-1, -1)
+}
+
+func (h *mockHandler) HandleUpdate() {
+	h.IsUpdated = true
 }
 
 func (h *mockHandler) HandleDraw(screen *ebiten.Image, frame image.Rectangle) {
