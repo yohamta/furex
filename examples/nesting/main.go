@@ -44,61 +44,8 @@ func NewGame() (*Game, error) {
 }
 
 func (g *Game) setupUI() {
-	g.gameUI = &furex.View{
-		Width:      g.screen.Width,
-		Height:     g.screen.Height,
-		Direction:  furex.Column,
-		Justify:    furex.JustifySpaceBetween,
-		AlignItems: furex.AlignItemCenter,
-	}
-
-	upper := &furex.View{
-		Width:      g.screen.Width - 20,
-		Height:     70,
-		Justify:    furex.JustifySpaceBetween,
-		AlignItems: furex.AlignItemCenter,
-	}
-	g.gameUI.AddChild(upper)
-
-	upper.AddChildren(
-		&furex.View{
-			Width:   100,
-			Height:  100,
-			Handler: &components.Box{Color: color.RGBA{0xff, 0, 0, 0xff}},
-		},
-		&furex.View{
-			Width:   200,
-			Height:  60,
-			Handler: &components.Box{Color: color.RGBA{0xff, 0xff, 0xff, 0xff}},
-		},
-		&furex.View{
-			Width:   100,
-			Height:  100,
-			Handler: &components.Box{Color: color.RGBA{0, 0xff, 0, 0xff}},
-		},
-	)
-
-	// center
-	g.gameUI.AddChild(&furex.View{
-		Width:  200,
-		Height: 50,
-		Handler: &components.Button{
-			Text:    "Button",
-			OnClick: func() { println("button clicked") },
-		},
-	})
-
-	// bottom
-	bottom := &furex.View{
-		Width:      g.screen.Width,
-		Height:     140,
-		Justify:    furex.JustifyCenter,
-		AlignItems: furex.AlignItemEnd,
-	}
-	g.gameUI.AddChild(bottom)
-
-	for i := 0; i < 4; i++ {
-		bottom.AddChild(&furex.View{
+	newButton := func() *furex.View {
+		return (&furex.View{
 			Width:        100,
 			Height:       100,
 			MarginTop:    5,
@@ -111,6 +58,54 @@ func (g *Game) setupUI() {
 			},
 		})
 	}
+
+	g.gameUI = (&furex.View{
+		Width:      g.screen.Width,
+		Height:     g.screen.Height,
+		Direction:  furex.Column,
+		Justify:    furex.JustifySpaceBetween,
+		AlignItems: furex.AlignItemCenter,
+	}).AddChild(
+		(&furex.View{
+			Width:      g.screen.Width - 20,
+			Height:     70,
+			Justify:    furex.JustifySpaceBetween,
+			AlignItems: furex.AlignItemCenter,
+		}).AddChildren(
+			&furex.View{
+				Width:   100,
+				Height:  100,
+				Handler: &components.Box{Color: color.RGBA{0xff, 0, 0, 0xff}},
+			},
+			&furex.View{
+				Width:   200,
+				Height:  60,
+				Handler: &components.Box{Color: color.RGBA{0xff, 0xff, 0xff, 0xff}},
+			},
+			&furex.View{
+				Width:   100,
+				Height:  100,
+				Handler: &components.Box{Color: color.RGBA{0, 0xff, 0, 0xff}},
+			},
+		),
+	).AddChild(&furex.View{
+		Width:  200,
+		Height: 50,
+		Handler: &components.Button{
+			Text:    "Button",
+			OnClick: func() { println("button clicked") },
+		},
+	}).AddChild((&furex.View{
+		Width:      g.screen.Width,
+		Height:     140,
+		Justify:    furex.JustifyCenter,
+		AlignItems: furex.AlignItemEnd,
+	}).AddChildren(
+		newButton(),
+		newButton(),
+		newButton(),
+		newButton(),
+	))
 }
 
 func main() {
