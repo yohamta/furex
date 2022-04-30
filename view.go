@@ -60,15 +60,6 @@ func (v *View) Draw(screen *ebiten.Image) {
 	v.containerEmbed.Draw(screen)
 }
 
-// AddChild adds a child view
-func (v *View) AddChild(cv *View) *View {
-	child := &child{item: cv, handledTouchID: -1}
-	v.children = append(v.children, child)
-	v.isDirty = true
-	cv.hasParent = true
-	return v
-}
-
 // AddTo add itself to a parent view
 func (v *View) AddTo(parent *View) *View {
 	if v.hasParent {
@@ -78,10 +69,10 @@ func (v *View) AddTo(parent *View) *View {
 	return v
 }
 
-// AddChildren adds arbitrary number of child views
-func (v *View) AddChildren(views ...*View) *View {
+// AddChild adds one or multiple child views
+func (v *View) AddChild(views ...*View) *View {
 	for _, vv := range views {
-		v.AddChild(vv)
+		v.addChild(vv)
 	}
 	return v
 }
@@ -117,6 +108,14 @@ func (v *View) PopChild() *View {
 	v.children = v.children[:len(v.children)-1]
 	v.isDirty = true
 	return c.item
+}
+
+func (v *View) addChild(cv *View) *View {
+	child := &child{item: cv, handledTouchID: -1}
+	v.children = append(v.children, child)
+	v.isDirty = true
+	cv.hasParent = true
+	return v
 }
 
 type child struct {

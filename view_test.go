@@ -59,7 +59,7 @@ func TestAddToParent(t *testing.T) {
 
 }
 
-func TestAddChildren(t *testing.T) {
+func TestAddChild(t *testing.T) {
 	view := &View{
 		Width:      100,
 		Height:     100,
@@ -69,7 +69,7 @@ func TestAddChildren(t *testing.T) {
 	}
 
 	mocks := [2]mockHandler{}
-	require.Equal(t, view, view.AddChildren(
+	require.Equal(t, view, view.AddChild(
 		&View{
 			Width:   10,
 			Height:  10,

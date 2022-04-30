@@ -130,7 +130,7 @@ func (g *Game) setupUI() {
 			Height:     70,
 			Justify:    furex.JustifySpaceBetween,
 			AlignItems: furex.AlignItemCenter,
-		}).AddChildren(
+		}).AddChild(
 			&furex.View{
 				Width:   100,
 				Height:  100,
@@ -159,7 +159,7 @@ func (g *Game) setupUI() {
 		Height:     140,
 		Justify:    furex.JustifyCenter,
 		AlignItems: furex.AlignItemEnd,
-	}).AddChildren(
+	}).AddChild(
 		newButton(),
 		newButton(),
 		newButton(),
