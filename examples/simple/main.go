@@ -51,7 +51,7 @@ func (g *Game) setupUI() {
 		Justify:    furex.JustifySpaceBetween,
 		AlignItems: furex.AlignItemCenter,
 	}
-	g.gameUI.AddChildren(
+	g.gameUI.AddChild(
 		&furex.View{
 			Width:  100,
 			Height: 100,
