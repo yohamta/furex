@@ -454,7 +454,7 @@ func TestAutoExpanding(t *testing.T) {
 	assert.Equal(t, image.Rect(500, 0, 1000, 1000), mocks[1].Frame)
 }
 
-func TestAutoExpandingNested(t *testing.T) {
+func TestNestedChildrenGrow(t *testing.T) {
 	flex := &View{
 		Width:      1000,
 		Height:     1000,
@@ -464,7 +464,7 @@ func TestAutoExpandingNested(t *testing.T) {
 	}
 
 	child := &View{
-		Direction:  Row,
+		Direction:  Column,
 		Justify:    JustifyCenter,
 		AlignItems: AlignItemStretch,
 		Grow:       1,
@@ -472,13 +472,22 @@ func TestAutoExpandingNested(t *testing.T) {
 
 	flex.AddChild(child)
 
+	child2 := &View{
+		Direction:  Row,
+		Justify:    JustifyCenter,
+		AlignItems: AlignItemStretch,
+		Grow:       1,
+	}
+
+	child.AddChild(child2)
+
 	mocks := [2]mockHandler{}
 	for i := 0; i < 2; i++ {
 		v := &View{
 			Grow:    1,
 			Handler: &mocks[i],
 		}
-		child.AddChild(v)
+		child2.AddChild(v)
 	}
 
 	flex.Update()
@@ -486,6 +495,40 @@ func TestAutoExpandingNested(t *testing.T) {
 
 	assert.Equal(t, image.Rect(0, 0, 500, 1000), mocks[0].Frame)
 	assert.Equal(t, image.Rect(500, 0, 1000, 1000), mocks[1].Frame)
+}
+
+func TestNestedChildGrow(t *testing.T) {
+	flex := &View{
+		Width:      1000,
+		Height:     1000,
+		Direction:  Column,
+		AlignItems: AlignItemStretch,
+		Justify:    JustifyCenter,
+	}
+
+	mock := mockHandler{}
+
+	flex.AddChild(
+		(&View{
+			Direction:  Column,
+			AlignItems: AlignItemStretch,
+			Justify:    JustifyCenter,
+			Grow:       1,
+		}).AddChild(
+			&View{
+				Direction:  Row,
+				AlignItems: AlignItemStretch,
+				Justify:    JustifyCenter,
+				Grow:       1,
+				Handler:    &mock,
+			},
+		),
+	)
+
+	flex.Update()
+	flex.Draw(nil)
+
+	assert.Equal(t, image.Rect(0, 0, 1000, 1000), mock.Frame)
 }
 
 func flexItemBounds(parent *View, child *View) image.Rectangle {
