@@ -59,3 +59,11 @@ type MouseLeftButtonHandler interface {
 	// The parameter (x, y) is the location relative to the window (0,0).
 	HandleJustReleasedMouseButtonLeft(x, y int)
 }
+
+// SwipeHandler represents different swipe directions.
+type SwipeDirection int
+
+const (
+	SwipeDirectionLeft SwipeDirection = iota
+	SwipeDirectionRight
+)

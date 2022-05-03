@@ -48,70 +48,24 @@ func (ct *containerEmbed) Draw(screen *ebiten.Image) {
 func (ct *containerEmbed) HandleJustPressedTouchID(
 	touchID ebiten.TouchID, x, y int,
 ) bool {
-	result := false
 	for c := len(ct.children) - 1; c >= 0; c-- {
 		child := ct.children[c]
 		childFrame := ct.childFrame(child)
-		touchHandler, ok := child.item.Handler.(TouchHandler)
-		if ok && touchHandler != nil {
-			if !result && isInside(childFrame, x, y) {
-				if touchHandler.HandleJustPressedTouchID(touchID, x, y) {
-					child.handledTouchID = touchID
-					result = true
-					break
-				}
-			}
+		if child.HandleJustPressedTouchID(childFrame, touchID, x, y) {
+			return true
 		}
-
-		button, ok := child.item.Handler.(ButtonHandler)
-		if ok && button != nil {
-			if !result && isInside(childFrame, x, y) {
-				if !child.isButtonPressed {
-					child.isButtonPressed = true
-					child.handledTouchID = touchID
-					button.HandlePress(x, y, touchID)
-				}
-				result = true
-			} else if child.handledTouchID == touchID {
-				child.handledTouchID = -1
-			}
-		}
-
-		if !result && child.item.HandleJustPressedTouchID(touchID, x, y) {
-			result = true
-			break
+		if child.item.HandleJustPressedTouchID(touchID, x, y) {
+			return true
 		}
 	}
-	return result
+	return false
 }
 
 func (ct *containerEmbed) HandleJustReleasedTouchID(touchID ebiten.TouchID, x, y int) {
 	for c := len(ct.children) - 1; c >= 0; c-- {
 		child := ct.children[c]
-		touchHandler, ok := child.item.Handler.(TouchHandler)
-		if ok && touchHandler != nil {
-			if child.handledTouchID == touchID {
-				touchHandler.HandleJustReleasedTouchID(touchID, x, y)
-				child.handledTouchID = -1
-			}
-		}
-
-		button, ok := child.item.Handler.(ButtonHandler)
-		if ok && button != nil {
-			if child.handledTouchID == touchID {
-				if child.isButtonPressed {
-					child.isButtonPressed = false
-					child.handledTouchID = -1
-					if x == 0 && y == 0 {
-						button.HandleRelease(x, y, false)
-					} else {
-						button.HandleRelease(x, y,
-							!isInside(ct.childFrame(child), x, y))
-					}
-				}
-			}
-		}
-
+		childFrame := ct.childFrame(child)
+		child.HandleJustReleasedTouchID(childFrame, touchID, x, y)
 		child.item.HandleJustReleasedTouchID(touchID, x, y)
 	}
 }
@@ -129,7 +83,6 @@ func (ct *containerEmbed) HandleMouse(x, y int) bool {
 				}
 			}
 		}
-
 		if !result && child.item.HandleMouse(x, y) {
 			result = true
 		}
