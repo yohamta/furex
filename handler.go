@@ -66,4 +66,13 @@ type SwipeDirection int
 const (
 	SwipeDirectionLeft SwipeDirection = iota
 	SwipeDirectionRight
+	SwipeDirectionUp
+	SwipeDirectionDown
 )
+
+// SwipeHandler represents a component that handle swipe.
+type SwipeHandler interface {
+	// HandleSwipe handle swipe. It returns true
+	// if it handles the swipe event
+	HandleSwipe(dir SwipeDirection)
+}
