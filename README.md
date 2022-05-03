@@ -20,6 +20,7 @@ When I was developing React Native apps, I thought the Flexbox layout was a very
 - Mouse click / Mouse move handling
   - Able to handle left click by implementing `MouseHandler` interface. See the [GoDoc](https://pkg.go.dev/github.com/yohamta/furex/v2#MouseHandler).
   - Able to handle mouse move by implementing `MouseLeftButtonHandler` interface. See the [GoDoc](https://pkg.go.dev/github.com/yohamta/furex/v2#MouseLeftButtonHandler).
+- Swipe gesture handling
   - Able to swipe gesture by implementing `SwipeHandler` interface. See the [GoDoc](https://pkg.go.dev/github.com/yohamta/furex/v2#SwipeHandler).
 - Margin
 - Nesting
