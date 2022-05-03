@@ -59,3 +59,20 @@ type MouseLeftButtonHandler interface {
 	// The parameter (x, y) is the location relative to the window (0,0).
 	HandleJustReleasedMouseButtonLeft(x, y int)
 }
+
+// SwipeHandler represents different swipe directions.
+type SwipeDirection int
+
+const (
+	SwipeDirectionLeft SwipeDirection = iota
+	SwipeDirectionRight
+	SwipeDirectionUp
+	SwipeDirectionDown
+)
+
+// SwipeHandler represents a component that handle swipe.
+type SwipeHandler interface {
+	// HandleSwipe handle swipe. It returns true
+	// if it handles the swipe event
+	HandleSwipe(dir SwipeDirection)
+}

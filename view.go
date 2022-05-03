@@ -117,11 +117,3 @@ func (v *View) addChild(cv *View) *View {
 	cv.hasParent = true
 	return v
 }
-
-type child struct {
-	item                     *View
-	bounds                   image.Rectangle
-	isButtonPressed          bool
-	isMouseLeftButtonHandler bool
-	handledTouchID           ebiten.TouchID
-}
