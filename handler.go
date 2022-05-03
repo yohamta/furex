@@ -72,7 +72,6 @@ const (
 
 // SwipeHandler represents a component that handle swipe.
 type SwipeHandler interface {
-	// HandleSwipe handle swipe. It returns true
-	// if it handles the swipe event
+	// HandleSwipe handles swipes.
 	HandleSwipe(dir SwipeDirection)
 }
