@@ -29,10 +29,10 @@ type swipe struct {
 func (c *child) HandleJustPressedTouchID(
 	frame *image.Rectangle, touchID ebiten.TouchID, x, y int) bool {
 	var result = false
-	if c.checkTouchHandlerStart(frame, touchID, x, y) {
+	if c.checkButtonHandlerStart(frame, touchID, x, y) {
 		result = true
 	}
-	if c.checkButtonHandlerStart(frame, touchID, x, y) {
+	if !result && c.checkTouchHandlerStart(frame, touchID, x, y) {
 		result = true
 	}
 	c.checkSwipeHandlerStart(frame, touchID, x, y)
