@@ -1,43 +1,31 @@
-# furex
+# Furex
 
-A simple and flexible UI framework for [Ebiten](https://ebiten.org/) with a subset of flexbox layout specifications.
-[GoDoc](https://pkg.go.dev/github.com/yohamta/furex/v2)
-
-## Motivation
-
-When I was developing React Native apps, I thought the Flexbox layout was a very intuitive UI, so I thought it would be great if I could use the same concept for the UI of the games I make with Ebiten. I hope this library will help others with the same idea. Any types of Issue/PRs are welcomed :)
+Furex is a minimal GUI framework for [Ebiten](https://ebiten.org/) that supports Flexbox layout specifications. [GoDoc](https://pkg.go.dev/github.com/yohamta/furex/v2)
 
 ## Features
 
-- Flexbox layout
-  - Supports a subset of flexbox layout spec.
-- Custom component
-  - Supports any component that implements `DrawHandler` or `UpdateHandler`. See the [example](https://github.com/yohamta/furex/blob/master/components/box.go).
-- Button component
-  - Able to handle touch ID by implementing `ButtonHandler` interface. See the [example](https://github.com/yohamta/furex/blob/master/components/button.go).
-- Touch event handling
-  - Able to handle touch ID by implementing `TouchHandler` interface. See the [GoDoc](https://pkg.go.dev/github.com/yohamta/furex/v2#TouchHandler).
-- Mouse click / Mouse move handling
-  - Able to handle left click by implementing `MouseHandler` interface. See the [GoDoc](https://pkg.go.dev/github.com/yohamta/furex/v2#MouseHandler).
-  - Able to handle mouse move by implementing `MouseLeftButtonHandler` interface. See the [GoDoc](https://pkg.go.dev/github.com/yohamta/furex/v2#MouseLeftButtonHandler).
-- Swipe gesture handling
-  - Able to swipe gesture by implementing `SwipeHandler` interface. See the [GoDoc](https://pkg.go.dev/github.com/yohamta/furex/v2#SwipeHandler).
-- Margin
-- Nesting
-- Wrap
-- Flex grow
-- Align stretch
-- Absolute-position with Left and Top
-- Method chaning
+| Feature            | How to use                                                                                                                                                                                                                                                                                                                                              | Example                                                                       |
+|--------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------|
+| Flexbox layout     | The layout can be adjusted by specifying the properties of each [View](https://pkg.go.dev/github.com/yohamta/furex/v2#View). Views can have a recursive structure by design. It can be tiled or nested.                                                                                                                                                 | [Example](https://github.com/yohamta/furex/blob/master/examples/wrap/main.go) |
+| Custom UI          | It supports any type of UI component. To create one, you can create a handler implements [DrawHandler](https://pkg.go.dev/github.com/yohamta/furex/v2#DrawHandler) or [UpdateHandler](https://pkg.go.dev/github.com/yohamta/furex/v2#UpdateHandler) interface. A [View](https://pkg.go.dev/github.com/yohamta/furex/v2#View) can have one handler each. | [Example](https://github.com/yohamta/furex/blob/master/components/button.go)  |
+| Button             | To create a button, you can implement [ButtonHandler](https://pkg.go.dev/github.com/yohamta/furex/v2#ButtonHandler). It supports both touch and mouse.                                                                                                                                                                                                  | [Example](https://github.com/yohamta/furex/blob/master/components/button.go). |
+| Touch events       | To handle touch events and positions, you can implement [TouchHandler](https://pkg.go.dev/github.com/yohamta/furex/v2#TouchHandler).                                                                                                                                                                                                                    |                                                                               |
+| Mouse click events | To handle mouse click events, you can implement [MouseLeftButtonHandler](https://pkg.go.dev/github.com/yohamta/furex/v2#MouseLeftButtonHandler).                                                                                                                                                                                                        |                                                                               |
+| Mouse move events  | To detect mouse positions, you can implement [MouseHandler](https://pkg.go.dev/github.com/yohamta/furex/v2#MouseHandler).                                                                                                                                                                                                                               |                                                                               |
+| Swipe gesture      | It supports swipe gestures in four directions. To handle swipe events, you can implement [SwipeHandler](https://pkg.go.dev/github.com/yohamta/furex/v2#SwipeHandler)..                                                                                                                                                                                  |                                                                               |
+| Margin             | A [View](https://pkg.go.dev/github.com/yohamta/furex/v2#View) can have margins by setting `MarginLeft`, `MarginTop`, `MarginRight`, `MarginBottom`.                                                                                                                                                                                                                                                            |                                                                               |
+| Absolute Positions | A [View](https://pkg.go.dev/github.com/yohamta/furex/v2#View) position can be fixed by setting `PositionAbsolute` to the `Position` field, `Left`, and `Top` positions.                                                                                                                                                                                                                                      |                                                                               |
 
-## Examples
-To check all examples, visit [this page](https://github.com/yohamta/furex/tree/main/examples).
-
-## Simple Usage
+## Install
 
 ```sh
 go get github.com/yohamta/furex/v2
 ```
+
+## Examples
+To check all examples, visit [this page](https://github.com/yohamta/furex/tree/main/examples).
+
+### Simple example
 
 [Full source code of simple usage example](https://github.com/yohamta/furex/blob/master/examples/wrap/main.go)
 
@@ -95,11 +83,11 @@ var colors = []color.Color{
 }
 ```
 
-### Result
-
 <image src="https://user-images.githubusercontent.com/1475839/133445715-b94b8c7f-bcd3-4aef-b7a4-b58bbb29d556.png" width="500px" />
 
-## Method chaining example
+### Method chaining
+
+View's `AddChild()` method can be chained like below; method chaining can be used to reduce the definition of unnecessary variables.
 
 [Full source code of the example](https://github.com/yohamta/furex/blob/master/examples/nesting/main.go)
 
@@ -170,13 +158,9 @@ func (g *Game) setupUI() {
 }
 ```
 
-### Result
-
 <image src="https://user-images.githubusercontent.com/1475839/165524288-53827304-731e-4f33-81cd-26bb6a42e0d4.png" width="500px" />
-
 
 ## How to contribute?
 
 Feel free to contribute in any way you want. Share ideas, submit issues, create pull requests. 
 Thank you!
-
