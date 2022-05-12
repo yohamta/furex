@@ -359,6 +359,42 @@ func TestMargin(t *testing.T) {
 	}
 }
 
+func TestMarginedItemPosition(t *testing.T) {
+	flex := &View{
+		Width:      200,
+		Height:     200,
+		Direction:  Column,
+		Justify:    JustifyStart,
+		AlignItems: AlignItemCenter,
+	}
+
+	mocks := [2]mockHandler{}
+
+	view1 := &View{
+		Width:      200,
+		Height:     50,
+		MarginTop:  10,
+		Direction:  Column,
+		Justify:    JustifyStart,
+		AlignItems: AlignItemCenter,
+		Handler:    &mocks[0],
+	}
+	flex.addChild(view1)
+
+	view2 := &View{
+		Width:   200,
+		Height:  10,
+		Handler: &mocks[1],
+	}
+	view1.addChild(view2)
+
+	flex.Update()
+	flex.Draw(nil)
+
+	require.Equal(t, image.Rect(0, 10, 200, 60), mocks[0].Frame)
+	require.Equal(t, image.Rect(0, 10, 200, 20), mocks[1].Frame)
+}
+
 func TestMultiMarginedWrapRowItems(t *testing.T) {
 	flex := &View{
 		Width:        200,
