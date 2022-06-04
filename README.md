@@ -4,7 +4,7 @@ furex is a minimal GUI libray for [Ebiten](https://ebiten.org/) that supports Fl
 
 ## Motivation
 
-[Flexbox](https://www.w3.org/TR/css-flexbox/) is a good mechanism for laying out items of different sizes. Since I have experience with the Web and ReactNative, I wanted to use the same concept for games written with Ebiten, so I have developed this library. I hope this helps other people with similar ideas.
+[Flexbox](https://www.w3.org/TR/css-flexbox/) is a good mechanism for laying out items of different sizes. I wanted to use the same concept for game UI because I have experience in Web and ReactNative projects. I hope the library helps other people with the same thoughts.
 
 ## Features
 
@@ -27,11 +27,11 @@ go get github.com/yohamta/furex/v2
 ```
 
 ## Examples
-To check all examples, visit [this page](https://github.com/yohamta/furex/tree/main/examples).
+To check all examples, visit [here](examples).
 
 ### Simple example
 
-[Full source code of simple usage example](https://github.com/yohamta/furex/blob/master/examples/wrap/main.go)
+[Full source code](examples/wrap/main.go)
 
 ```go
 import "github.com/yohamta/furex/v2"
@@ -91,7 +91,7 @@ var colors = []color.Color{
 
 ### Method chaining
 
-View's `AddChild()` method can be chained like below; method chaining can be used to reduce the definition of unnecessary variables.
+View's `AddChild()` method returns itself, so it can be chained.
 
 [Full source code of the example](https://github.com/yohamta/furex/blob/master/examples/nesting/main.go)
 
