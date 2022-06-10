@@ -1,6 +1,6 @@
 # furex
 
-furex is a minimal GUI libray for [Ebiten](https://ebiten.org/) that supports Flexbox layout specifications. [GoDoc](https://pkg.go.dev/github.com/yohamta/furex/v2)
+furex is a minimal GUI libray for [Ebitengine](https://ebiten.org/) that supports Flexbox layout specifications. [GoDoc](https://pkg.go.dev/github.com/yohamta/furex/v2)
 
 ## Motivation
 
