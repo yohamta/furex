@@ -1,6 +1,8 @@
-# furex
+# Furex
 
-furex is a minimal GUI libray for [Ebitengine](https://ebiten.org/) that supports Flexbox layout specifications. [GoDoc](https://pkg.go.dev/github.com/yohamta/furex/v2)
+Furex is a minimal GUI framework for [Ebitengine](https://ebiten.org/) that supports Flexbox layout specifications. [GoDoc](https://pkg.go.dev/github.com/yohamta/furex/v2)
+
+For now, Furex is not a component library but a framework for positioning and stacking virtual components, handling button and touch events. How they are rendered is completely up to the user.
 
 ## Motivation
 
