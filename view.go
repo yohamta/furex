@@ -55,6 +55,17 @@ func (v *View) Update() {
 	}
 }
 
+// UpdateWithSize the view with modified height and width
+func (v *View) UpdateWithSize(width, height int) {
+	if !v.hasParent && (v.Width != width || v.Height != height) {
+		v.Height = height
+		v.Width = width
+		v.isDirty = true
+	}
+
+	v.Update()
+}
+
 // Draw draws the view
 func (v *View) Draw(screen *ebiten.Image) {
 	v.containerEmbed.Draw(screen)

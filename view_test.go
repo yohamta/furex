@@ -35,6 +35,31 @@ func TestAddChildUpdateRemove(t *testing.T) {
 	require.Equal(t, 0, len(view.children))
 }
 
+func TestUpdateWithSize(t *testing.T) {
+	view := &View{
+		Width:      100,
+		Height:     100,
+		Direction:  Row,
+		Justify:    JustifyCenter,
+		AlignItems: AlignItemCenter,
+	}
+
+	mock := &mockHandler{}
+	child := &View{
+		Width:   10,
+		Height:  10,
+		Handler: mock,
+	}
+	require.Equal(t, view, view.AddChild(child))
+
+	view.UpdateWithSize(200, 200)
+	require.True(t, mock.IsUpdated)
+
+	view.Draw(nil)
+	require.Equal(t, image.Rect(95, 95, 105, 105), mock.Frame)
+
+}
+
 func TestAddToParent(t *testing.T) {
 	root := &View{
 		Width:      100,
