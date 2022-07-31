@@ -49,7 +49,8 @@ func (g *Game) Update() error {
     g.init = true
     g.setupUI()
   }
-  g.gameUI.Update()
+  g.gameUI.UpdateWithSize(ebiten.WindowSize())
+  // g.gameUI.Update() // Update() is an alternate method for updating the UI and handling events.
   return nil
 }
 
