@@ -111,6 +111,8 @@ func (g *Game) setupUI() {
 func main() {
 	ebiten.SetWindowSize(480, 640)
 
+	furex.Debug = true
+
 	game, err := NewGame()
 	if err != nil {
 		panic(err)

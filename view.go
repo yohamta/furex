@@ -62,13 +62,16 @@ func (v *View) UpdateWithSize(width, height int) {
 		v.Width = width
 		v.isDirty = true
 	}
-
 	v.Update()
 }
 
 // Draw draws the view
 func (v *View) Draw(screen *ebiten.Image) {
 	v.containerEmbed.Draw(screen)
+
+	if Debug {
+		debugBorders(screen, v.containerEmbed)
+	}
 }
 
 // AddTo add itself to a parent view
