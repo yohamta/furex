@@ -2,7 +2,6 @@ package furex
 
 import (
 	"image"
-	"image/color"
 
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
@@ -22,26 +21,12 @@ func (ct *containerEmbed) processEvent() {
 
 // Draw draws it's children
 func (ct *containerEmbed) Draw(screen *ebiten.Image) {
-	if Debug {
-		G.DrawRect(screen, &DrawRectOpts{
-			Rect:        ct.frame,
-			Color:       color.RGBA{0xff, 0xff, 0, 0xff},
-			StrokeWidth: 2,
-		})
-	}
 	for _, c := range ct.children {
 		b := c.bounds.Add(ct.frame.Min)
 		if c.item.Handler != nil {
 			c.item.Handler.HandleDraw(screen, b)
 		}
 		c.item.Draw(screen)
-		if Debug {
-			G.DrawRect(screen, &DrawRectOpts{
-				Rect:        b,
-				Color:       color.RGBA{0xff, 0, 0xff, 0xff},
-				StrokeWidth: 2,
-			})
-		}
 	}
 }
 
