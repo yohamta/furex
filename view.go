@@ -69,7 +69,7 @@ func (v *View) UpdateWithSize(width, height int) {
 func (v *View) Draw(screen *ebiten.Image) {
 	v.containerEmbed.Draw(screen)
 
-	if Debug {
+	if Debug && !v.hasParent {
 		debugBorders(screen, v.containerEmbed)
 	}
 }
