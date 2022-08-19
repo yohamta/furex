@@ -169,6 +169,13 @@ func (g *Game) setupUI() {
 
 <image src="https://user-images.githubusercontent.com/1475839/165524288-53827304-731e-4f33-81cd-26bb6a42e0d4.png" width="500px" />
 
+## Debug
+
+You can turn on the Debug Mode by setting the variable below.
+```go
+furex.Debug = true
+```
+
 ## How to contribute?
 
 Feel free to contribute in any way you want. Share ideas, submit issues, create pull requests, adding examples, or adding components. Thank you!
