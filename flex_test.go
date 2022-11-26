@@ -567,6 +567,39 @@ func TestNestedChildGrow(t *testing.T) {
 	assert.Equal(t, image.Rect(0, 0, 1000, 1000), mock.Frame)
 }
 
+func TestMerginWithChild(t *testing.T) {
+	flex := &View{
+		Width:      1000,
+		Height:     1000,
+		Direction:  Column,
+		AlignItems: AlignItemEnd,
+		Justify:    JustifyEnd,
+	}
+
+	mock := mockHandler{}
+
+	flex.AddChild(
+		(&View{
+			MarginRight:  50,
+			MarginBottom: 100,
+			Direction:    Column,
+			AlignItems:   AlignItemEnd,
+			Justify:      JustifyEnd,
+		}).AddChild(
+			&View{
+				Width:   100,
+				Height:  100,
+				Handler: &mock,
+			},
+		),
+	)
+
+	flex.Update()
+	flex.Draw(nil)
+
+	assert.Equal(t, image.Rect(850, 800, 950, 900), mock.Frame)
+}
+
 func flexItemBounds(parent *View, child *View) image.Rectangle {
 	mock := &mockHandler{}
 	child.Handler = mock
