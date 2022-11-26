@@ -190,10 +190,11 @@ func (f *flexEmbed) layout(width, height int, container *containerEmbed) {
 			remFreeSpace := float64(f.mainSize(width, height))
 			unfrozenFlexFactor := 0.0
 			for _, child := range line.child {
+				mainMargin := child.mainMargin[0] + child.mainMargin[1]
 				if child.frozen {
-					remFreeSpace -= child.mainSize
+					remFreeSpace -= (child.mainSize + mainMargin)
 				} else {
-					remFreeSpace -= float64(f.mainSize(child.node.item.Width, child.node.item.Height))
+					remFreeSpace -= (float64(f.mainSize(child.node.item.Width, child.node.item.Height)) + mainMargin)
 					if grow {
 						unfrozenFlexFactor += child.node.item.Grow
 					} else {
@@ -307,7 +308,8 @@ func (f *flexEmbed) layout(width, height int, container *containerEmbed) {
 			if f.AlignItems == AlignItemStretch &&
 				f.crossSize(child.node.item.Width, child.node.item.Height) == 0 &&
 				child.crossSize < line.crossSize {
-				child.crossSize = line.crossSize
+				crossMargin := child.crossMargin[0] + child.crossMargin[1]
+				child.crossSize = line.crossSize - crossMargin
 			}
 		}
 	}

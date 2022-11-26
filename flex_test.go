@@ -576,7 +576,8 @@ func TestMerginWithChild(t *testing.T) {
 		Justify:    JustifyEnd,
 	}
 
-	mock := mockHandler{}
+	mock1 := mockHandler{}
+	mock2 := mockHandler{}
 
 	flex.AddChild(
 		(&View{
@@ -585,11 +586,13 @@ func TestMerginWithChild(t *testing.T) {
 			Direction:    Column,
 			AlignItems:   AlignItemEnd,
 			Justify:      JustifyEnd,
+			Handler:      &mock1,
 		}).AddChild(
 			&View{
+				Grow:    1,
 				Width:   100,
 				Height:  100,
-				Handler: &mock,
+				Handler: &mock2,
 			},
 		),
 	)
@@ -597,7 +600,142 @@ func TestMerginWithChild(t *testing.T) {
 	flex.Update()
 	flex.Draw(nil)
 
-	assert.Equal(t, image.Rect(850, 800, 950, 900), mock.Frame)
+	assert.Equal(t, image.Rect(950, 900, 950, 900), mock1.Frame)
+	assert.Equal(t, image.Rect(850, 800, 950, 900), mock2.Frame)
+}
+
+func TestStretchAndMargin(t *testing.T) {
+	flex := &View{
+		Width:      1000,
+		Height:     1000,
+		AlignItems: AlignItemStretch,
+	}
+
+	mock1 := mockHandler{}
+	mock2 := mockHandler{}
+
+	flex.AddChild(
+		(&View{
+			MarginRight:  50,
+			MarginBottom: 100,
+			Grow:         1,
+			Direction:    Column,
+			AlignItems:   AlignItemEnd,
+			Justify:      JustifyEnd,
+			Handler:      &mock1,
+		}).AddChild(
+			&View{
+				Width:   100,
+				Height:  100,
+				Handler: &mock2,
+			},
+		),
+	)
+
+	flex.Update()
+	flex.Draw(nil)
+
+	assert.Equal(t, image.Rect(0, 0, 950, 900), mock1.Frame)
+	assert.Equal(t, image.Rect(850, 800, 950, 900), mock2.Frame)
+}
+
+func TestStretchAndMarginItems(t *testing.T) {
+	flex := &View{
+		Width:      1000,
+		Height:     1000,
+		AlignItems: AlignItemStretch,
+	}
+
+	mock1 := mockHandler{}
+	mock2 := mockHandler{}
+
+	flex.AddChild(
+		&View{
+			MarginRight: 50,
+			Grow:        1,
+			Handler:     &mock1,
+		},
+		&View{
+			MarginLeft: 50,
+			Grow:       1,
+			Handler:    &mock2,
+		},
+	)
+
+	flex.Update()
+	flex.Draw(nil)
+
+	assert.Equal(t, image.Rect(0, 0, 450, 1000), mock1.Frame)
+	assert.Equal(t, image.Rect(550, 0, 1000, 1000), mock2.Frame)
+}
+
+func TestStretchAndMarginItemsMain(t *testing.T) {
+	flex := &View{
+		Width:      1000,
+		Height:     1000,
+		AlignItems: AlignItemStretch,
+		Wrap:       Wrap,
+		Direction:  Column,
+	}
+
+	mock1 := mockHandler{}
+	mock2 := mockHandler{}
+
+	flex.AddChild(
+		&View{
+			Width:        1000,
+			MarginBottom: 50,
+			Grow:         1,
+			Handler:      &mock1,
+		},
+		&View{
+			Width:        1000,
+			MarginBottom: 50,
+			Grow:         1,
+			Handler:      &mock2,
+		},
+	)
+
+	flex.Update()
+	flex.Draw(nil)
+
+	assert.Equal(t, image.Rect(0, 0, 1000, 450), mock1.Frame)
+	assert.Equal(t, image.Rect(0, 500, 1000, 950), mock2.Frame)
+}
+
+func TestStretchAndMarginItemsCross(t *testing.T) {
+	flex := &View{
+		Width:        1000,
+		Height:       1000,
+		AlignItems:   AlignItemStretch,
+		AlignContent: AlignContentStretch,
+		Wrap:         Wrap,
+		Direction:    Row,
+	}
+
+	mock1 := mockHandler{}
+	mock2 := mockHandler{}
+
+	flex.AddChild(
+		&View{
+			Width:        1000,
+			MarginBottom: 50,
+			Grow:         1,
+			Handler:      &mock1,
+		},
+		&View{
+			Width:        1000,
+			MarginBottom: 50,
+			Grow:         1,
+			Handler:      &mock2,
+		},
+	)
+
+	flex.Update()
+	flex.Draw(nil)
+
+	assert.Equal(t, image.Rect(0, 0, 1000, 450), mock1.Frame)
+	assert.Equal(t, image.Rect(0, 500, 1000, 950), mock2.Frame)
 }
 
 func flexItemBounds(parent *View, child *View) image.Rectangle {
