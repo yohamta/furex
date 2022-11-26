@@ -2,6 +2,7 @@ package furex
 
 import (
 	"image"
+	"sync"
 
 	"github.com/hajimehoshi/ebiten/v2"
 )
@@ -31,17 +32,13 @@ type View struct {
 	containerEmbed
 	flexEmbed
 	hasParent bool
+	lock      sync.Mutex
 }
 
 // Update updates the view
 func (v *View) Update() {
 	if v.isDirty {
-		if !v.hasParent {
-			v.frame = image.Rect(v.Left, v.Top, v.Left+v.Width, v.Top+v.Height)
-		}
-		v.flexEmbed.View = v
-		v.layout(v.frame.Dx(), v.frame.Dy(), &v.containerEmbed)
-		v.isDirty = false
+		v.startLayout()
 	}
 	for _, v := range v.children {
 		v.item.Update()
@@ -53,6 +50,17 @@ func (v *View) Update() {
 	if !v.hasParent {
 		v.processEvent()
 	}
+}
+
+func (v *View) startLayout() {
+	v.lock.Lock()
+	defer v.lock.Unlock()
+	if !v.hasParent {
+		v.frame = image.Rect(v.Left, v.Top, v.Left+v.Width, v.Top+v.Height)
+	}
+	v.flexEmbed.View = v
+	v.layout(v.frame.Dx(), v.frame.Dy(), &v.containerEmbed)
+	v.isDirty = false
 }
 
 // UpdateWithSize the view with modified height and width
@@ -67,8 +75,10 @@ func (v *View) UpdateWithSize(width, height int) {
 
 // Draw draws the view
 func (v *View) Draw(screen *ebiten.Image) {
+	if v.isDirty {
+		v.startLayout()
+	}
 	v.containerEmbed.Draw(screen)
-
 	if Debug && !v.hasParent {
 		debugBorders(screen, v.containerEmbed)
 	}
