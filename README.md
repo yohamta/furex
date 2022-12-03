@@ -16,7 +16,7 @@ For now, Furex is not a component library but a framework for positioning and st
 | ------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Flexbox layout           | The UI layout can be configured via the properties of [View](https://pkg.go.dev/github.com/yohamta/furex/v2#View) instances. We can think of a `View` as a `DIV` element in HTML, which can be stacked or nested.                                                                                                                 |
 | Custom widgets           | A `View` can receive a `Handler` which draws and updates the `View`. We can have implement any type of UI components by implementing the handler interfaces (e.g., [DrawHandler](https://pkg.go.dev/github.com/yohamta/furex/v2#DrawHandler), [UpdateHandler](https://pkg.go.dev/github.com/yohamta/furex/v2#UpdateHandler), etc) |
-| Buttons                  | To create a `Button`, you can implement the [ButtonHandler](https://pkg.go.dev/github.com/yohamta/furex/v2#ButtonHandler). It supports both touch and mouse. See the [Example Button](https://github.com/yohamta/furex/blob/master/examples/common/../../../../../../../../examples/common/widgets/button.go) for more details.          |
+| Buttons                  | To create a `Button`, you can implement the [ButtonHandler](https://pkg.go.dev/github.com/yohamta/furex/v2#ButtonHandler). It supports both touch and mouse. See the [Example Button](https://github.com/yohamta/furex/blob/master/examples/common/../../../../../../../../examples/util/widgets/button.go) for more details.          |
 | Touch events             | To handle `Touch` events and touch positions, you can implement [TouchHandler](https://pkg.go.dev/github.com/yohamta/furex/v2#TouchHandler).                                                                                                                                                                                      |
 | Mouse click events       | To handle `MouseClick` events, you can implement [MouseLeftButtonHandler](https://pkg.go.dev/github.com/yohamta/furex/v2#MouseLeftButtonHandler).                                                                                                                                                                                 |
 | Mouse move events        | To detect `Mouse` position events, you can implement [MouseHandler](https://pkg.go.dev/github.com/yohamta/furex/v2#MouseHandler).                                                                                                                                                                                                 |
@@ -36,74 +36,77 @@ To check all examples, visit [here](examples).
 
 [Full source code of the example](examples/buttons/main.go)
 
+<p align="center">
+<img width="480" height="640" src="./assets/example.gif"></img>
+</p>
+
+## Usage
+
+[Full source code of the example](examples/simple/main.go)
+
 ```go
+type Game struct {
+	initOnce sync.Once
+	screen   screen
+	gameUI   *furex.View
+}
+
+func (g *Game) Update() error {
+	g.initOnce.Do(func() {
+		g.setupUI()
+	})
+	return nil
+}
+
+func (g *Game) Draw(screen *ebiten.Image) {
+	g.gameUI.Draw(screen)
+}
+
 func (g *Game) setupUI() {
-	newButton := func() *furex.View {
-		return &furex.View{
-			Width:        100,
-			Height:       100,
-			MarginTop:    5,
-			MarginBottom: 10,
-			MarginLeft:   5,
-			MarginRight:  5,
-			Handler: &widgets.Button{
-				Text:    "Button",
-				OnClick: func() { println("button clicked") },
-			},
-		}
+	screen.Fill(color.RGBA{0x3d, 0x55, 0x0c, 0xff})
+	colors := []color.Color{
+		color.RGBA{0x3d, 0x55, 0x0c, 0xff},
+		color.RGBA{0x81, 0xb6, 0x22, 0xff},
+		color.RGBA{0xec, 0xf8, 0x7f, 0xff},
 	}
 
-	g.gameUI = (&furex.View{
-		Width:      g.screen.Width,
-		Height:     g.screen.Height,
-		Direction:  furex.Column,
-		Justify:    furex.JustifySpaceBetween,
-		AlignItems: furex.AlignItemCenter,
-	}).AddChild(
-		(&furex.View{
-			Width:      g.screen.Width - 20,
-			Height:     70,
-			Justify:    furex.JustifySpaceBetween,
-			AlignItems: furex.AlignItemCenter,
-		}).AddChild(
-			&furex.View{
-				Width:   100,
-				Height:  100,
-				Handler: &widgets.Box{Color: color.RGBA{0xff, 0, 0, 0xff}},
+	g.gameUI = &furex.View{
+		Width:        g.screen.Width,
+		Height:       g.screen.Height,
+		Direction:    furex.Row,
+		Justify:      furex.JustifyCenter,
+		AlignItems:   furex.AlignItemCenter,
+		AlignContent: furex.AlignContentCenter,
+		Wrap:         furex.Wrap,
+	}
+
+	for i := 0; i < 20; i++ {
+		g.gameUI.AddChild(&furex.View{
+			Width:  100,
+			Height: 100,
+			Handler: &Box{
+				Color: colors[i%len(colors)],
 			},
-			&furex.View{
-				Width:   200,
-				Height:  60,
-				Handler: &widgets.Box{Color: color.RGBA{0xff, 0xff, 0xff, 0xff}},
-			},
-			&furex.View{
-				Width:   100,
-				Height:  100,
-				Handler: &widgets.Box{Color: color.RGBA{0, 0xff, 0, 0xff}},
-			},
-		),
-	).AddChild(&furex.View{
-		Width:  200,
-		Height: 50,
-		Handler: &widgets.Button{
-			Text:    "Button",
-			OnClick: func() { println("button clicked") },
-		},
-	}).AddChild((&furex.View{
-		Width:      g.screen.Width,
-		Height:     140,
-		Justify:    furex.JustifyCenter,
-		AlignItems: furex.AlignItemEnd,
-	}).AddChild(
-		newButton(),
-		newButton(),
-		newButton(),
-		newButton(),
-	))
+		})
+	}
+}
+
+type Box struct {
+	Color color.Color
+}
+
+var _ furex.DrawHandler = (*Box)(nil)
+
+func (b *Box) HandleDraw(screen *ebiten.Image, frame image.Rectangle) {
+	graphic.FillRect(screen, &graphic.FillRectOpts{
+		Rect: frame, Color: b.Color,
+	})
 }
 ```
 
-<image src="https://user-images.githubusercontent.com/1475839/165524288-53827304-731e-4f33-81cd-26bb6a42e0d4.png" width="500px" />
+<p align="center">
+<img width="480" height="640" src="./assets/greens.png"></img>
+</p>
 
 ## Debug
 

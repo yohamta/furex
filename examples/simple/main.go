@@ -7,7 +7,7 @@ import (
 
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/yohamta/furex/v2"
-	"github.com/yohamta/furex/v2/examples/common/graphic"
+	"github.com/yohamta/furex/v2/examples/util/graphic"
 )
 
 type Game struct {
@@ -30,6 +30,7 @@ func (g *Game) Update() error {
 }
 
 func (g *Game) Draw(screen *ebiten.Image) {
+	screen.Fill(color.RGBA{0x3d, 0x55, 0x0c, 0xff})
 	g.gameUI.Draw(screen)
 }
 
@@ -46,9 +47,9 @@ func NewGame() (*Game, error) {
 
 func (g *Game) setupUI() {
 	colors := []color.Color{
-		color.RGBA{0xaa, 0, 0, 0xff},
-		color.RGBA{0, 0xaa, 0, 0xff},
-		color.RGBA{0, 0, 0xaa, 0xff},
+		color.RGBA{0x59, 0x98, 0x1a, 0xff},
+		color.RGBA{0x81, 0xb6, 0x22, 0xff},
+		color.RGBA{0xec, 0xf8, 0x7f, 0xff},
 	}
 
 	g.gameUI = &furex.View{
