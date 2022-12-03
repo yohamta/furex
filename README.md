@@ -46,61 +46,61 @@ Assets by [Kenney](https://kenney.nl). Fonts by [00ff](http://www17.plala.or.jp/
 
 ```go
 type Game struct {
-	initOnce sync.Once
-	screen   screen
-	gameUI   *furex.View
+  initOnce sync.Once
+  screen   screen
+  gameUI   *furex.View
 }
 
 func (g *Game) Update() error {
-	g.initOnce.Do(func() {
-		g.setupUI()
-	})
-	return nil
+  g.initOnce.Do(func() {
+    g.setupUI()
+  })
+  return nil
 }
 
 func (g *Game) Draw(screen *ebiten.Image) {
-	g.gameUI.Draw(screen)
+  g.gameUI.Draw(screen)
 }
 
 func (g *Game) setupUI() {
-	screen.Fill(color.RGBA{0x3d, 0x55, 0x0c, 0xff})
-	colors := []color.Color{
-		color.RGBA{0x3d, 0x55, 0x0c, 0xff},
-		color.RGBA{0x81, 0xb6, 0x22, 0xff},
-		color.RGBA{0xec, 0xf8, 0x7f, 0xff},
-	}
+  screen.Fill(color.RGBA{0x3d, 0x55, 0x0c, 0xff})
+  colors := []color.Color{
+    color.RGBA{0x3d, 0x55, 0x0c, 0xff},
+    color.RGBA{0x81, 0xb6, 0x22, 0xff},
+    color.RGBA{0xec, 0xf8, 0x7f, 0xff},
+  }
 
-	g.gameUI = &furex.View{
-		Width:        g.screen.Width,
-		Height:       g.screen.Height,
-		Direction:    furex.Row,
-		Justify:      furex.JustifyCenter,
-		AlignItems:   furex.AlignItemCenter,
-		AlignContent: furex.AlignContentCenter,
-		Wrap:         furex.Wrap,
-	}
+  g.gameUI = &furex.View{
+    Width:        g.screen.Width,
+    Height:       g.screen.Height,
+    Direction:    furex.Row,
+    Justify:      furex.JustifyCenter,
+    AlignItems:   furex.AlignItemCenter,
+    AlignContent: furex.AlignContentCenter,
+    Wrap:         furex.Wrap,
+  }
 
-	for i := 0; i < 20; i++ {
-		g.gameUI.AddChild(&furex.View{
-			Width:  100,
-			Height: 100,
-			Handler: &Box{
-				Color: colors[i%len(colors)],
-			},
-		})
-	}
+  for i := 0; i < 20; i++ {
+    g.gameUI.AddChild(&furex.View{
+      Width:  100,
+      Height: 100,
+      Handler: &Box{
+        Color: colors[i%len(colors)],
+      },
+    })
+  }
 }
 
 type Box struct {
-	Color color.Color
+  Color color.Color
 }
 
 var _ furex.DrawHandler = (*Box)(nil)
 
 func (b *Box) HandleDraw(screen *ebiten.Image, frame image.Rectangle) {
-	graphic.FillRect(screen, &graphic.FillRectOpts{
-		Rect: frame, Color: b.Color,
-	})
+  graphic.FillRect(screen, &graphic.FillRectOpts{
+    Rect: frame, Color: b.Color,
+  })
 }
 ```
 
@@ -116,7 +116,7 @@ furex.Debug = true
 ```
 
 <p align="center">
-  <img height="780" src="./assets/debug.png">
+  <img width="592" src="./assets/debug.png">
 </p>
 
 ## How to contribute?
