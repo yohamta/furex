@@ -30,9 +30,7 @@ func (ct *containerEmbed) Draw(screen *ebiten.Image) {
 	}
 }
 
-func (ct *containerEmbed) HandleJustPressedTouchID(
-	touchID ebiten.TouchID, x, y int,
-) bool {
+func (ct *containerEmbed) HandleJustPressedTouchID(touchID ebiten.TouchID, x, y int) bool {
 	for c := len(ct.children) - 1; c >= 0; c-- {
 		child := ct.children[c]
 		childFrame := ct.childFrame(child)
