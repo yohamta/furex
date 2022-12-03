@@ -1,4 +1,4 @@
-package components
+package widgets
 
 import (
 	"image"
@@ -7,6 +7,7 @@ import (
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
 	"github.com/yohamta/furex/v2"
+	"github.com/yohamta/furex/v2/examples/common/graphic"
 )
 
 type Button struct {
@@ -16,9 +17,11 @@ type Button struct {
 	OnClick   func()
 }
 
-var _ furex.ButtonHandler = (*Button)(nil)
-var _ furex.DrawHandler = (*Button)(nil)
-var _ furex.MouseEnterLeaveHandler = (*Button)(nil)
+var (
+	_ furex.ButtonHandler          = (*Button)(nil)
+	_ furex.DrawHandler            = (*Button)(nil)
+	_ furex.MouseEnterLeaveHandler = (*Button)(nil)
+)
 
 func (b *Button) HandlePress(x, y int, t ebiten.TouchID) {
 	b.pressed = true
@@ -35,15 +38,15 @@ func (b *Button) HandleRelease(x, y int, isCancel bool) {
 
 func (b *Button) HandleDraw(screen *ebiten.Image, frame image.Rectangle) {
 	if b.pressed {
-		furex.G.FillRect(screen, &furex.FillRectOpts{
+		graphic.FillRect(screen, &graphic.FillRectOpts{
 			Rect: frame, Color: color.RGBA{0xaa, 0, 0, 0xff},
 		})
 	} else if b.mouseover {
-		furex.G.FillRect(screen, &furex.FillRectOpts{
+		graphic.FillRect(screen, &graphic.FillRectOpts{
 			Rect: frame, Color: color.RGBA{0xaa, 0xaa, 0, 0xff},
 		})
 	} else {
-		furex.G.FillRect(screen, &furex.FillRectOpts{
+		graphic.FillRect(screen, &graphic.FillRectOpts{
 			Rect: frame, Color: color.RGBA{0, 0xaa, 0, 0xff},
 		})
 	}

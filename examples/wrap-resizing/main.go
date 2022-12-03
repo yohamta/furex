@@ -5,7 +5,7 @@ import (
 
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/yohamta/furex/v2"
-	"github.com/yohamta/furex/v2/components"
+	"github.com/yohamta/furex/v2/examples/common/widgets"
 )
 
 type Game struct {
@@ -64,7 +64,7 @@ func (g *Game) setupUI() {
 		g.gameUI.AddChild(&furex.View{
 			Width:  100,
 			Height: 100,
-			Handler: &components.Box{
+			Handler: &widgets.Box{
 				Color: colors[i%len(colors)],
 			},
 		})

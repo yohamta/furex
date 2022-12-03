@@ -5,7 +5,7 @@ import (
 
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/yohamta/furex/v2"
-	"github.com/yohamta/furex/v2/components"
+	"github.com/yohamta/furex/v2/examples/common/widgets"
 )
 
 type Game struct {
@@ -52,7 +52,7 @@ func (g *Game) setupUI() {
 			MarginBottom: 10,
 			MarginLeft:   5,
 			MarginRight:  5,
-			Handler: &components.Button{
+			Handler: &widgets.Button{
 				Text:    "Button",
 				OnClick: func() { println("button clicked") },
 			},
@@ -75,23 +75,23 @@ func (g *Game) setupUI() {
 			&furex.View{
 				Width:   100,
 				Height:  100,
-				Handler: &components.Box{Color: color.RGBA{0xff, 0, 0, 0xff}},
+				Handler: &widgets.Box{Color: color.RGBA{0xff, 0, 0, 0xff}},
 			},
 			&furex.View{
 				Width:   200,
 				Height:  60,
-				Handler: &components.Box{Color: color.RGBA{0xff, 0xff, 0xff, 0xff}},
+				Handler: &widgets.Box{Color: color.RGBA{0xff, 0xff, 0xff, 0xff}},
 			},
 			&furex.View{
 				Width:   100,
 				Height:  100,
-				Handler: &components.Box{Color: color.RGBA{0, 0xff, 0, 0xff}},
+				Handler: &widgets.Box{Color: color.RGBA{0, 0xff, 0, 0xff}},
 			},
 		),
 	).AddChild(&furex.View{
 		Width:  200,
 		Height: 50,
-		Handler: &components.Button{
+		Handler: &widgets.Button{
 			Text:    "Button",
 			OnClick: func() { println("button clicked") },
 		},
