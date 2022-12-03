@@ -1,12 +1,13 @@
 package main
 
 import (
+	"image"
 	"image/color"
 	"sync"
 
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/yohamta/furex/v2"
-	"github.com/yohamta/furex/v2/examples/common/widgets"
+	"github.com/yohamta/furex/v2/examples/common/graphic"
 )
 
 type Game struct {
@@ -64,16 +65,28 @@ func (g *Game) setupUI() {
 		g.gameUI.AddChild(&furex.View{
 			Width:  100,
 			Height: 100,
-			Handler: &widgets.Box{
+			Handler: &Box{
 				Color: colors[i%len(colors)],
 			},
 		})
 	}
 }
 
+type Box struct {
+	Color color.Color
+}
+
+var _ furex.DrawHandler = (*Box)(nil)
+
+func (b *Box) HandleDraw(screen *ebiten.Image, frame image.Rectangle) {
+	// TODO: replace with ebiten/vector utility functions
+	graphic.FillRect(screen, &graphic.FillRectOpts{
+		Rect: frame, Color: b.Color,
+	})
+}
+
 func main() {
 	ebiten.SetWindowSize(480, 640)
-
 	ebiten.SetWindowResizingMode(ebiten.WindowResizingModeEnabled)
 
 	game, err := NewGame()
