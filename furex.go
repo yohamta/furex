@@ -4,6 +4,7 @@ import (
 	"image/color"
 
 	"github.com/hajimehoshi/ebiten/v2"
+	"github.com/yohamta/furex/v2/internal/graphic"
 )
 
 var (
@@ -23,7 +24,7 @@ func debugBorders(screen *ebiten.Image, root containerEmbed) {
 			curr := queue[0]
 			queue = queue[1:]
 
-			G.DrawRect(screen, &DrawRectOpts{
+			graphic.DrawRect(screen, &graphic.DrawRectOpts{
 				Rect:        curr.frame,
 				Color:       renderColor,
 				StrokeWidth: 2,

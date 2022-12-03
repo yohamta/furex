@@ -203,8 +203,8 @@ func testMouchClick(t *testing.T, flex *View, h *mockHandler, frame image.Rectan
 		t.Run(tt.Scenario, func(t *testing.T) {
 			h.Init()
 
-			flex.HandleJustPressedMouseButtonLeft(tt.Start.X, tt.Start.Y)
-			flex.HandleJustReleasedMouseButtonLeft(tt.End.X, tt.End.Y)
+			flex.handleMouseButtonLeftPressed(tt.Start.X, tt.Start.Y)
+			flex.handleMouseButtonLeftReleased(tt.End.X, tt.End.Y)
 
 			assert.Equal(t, tt.Want, result{h.IsPressed, h.IsReleased, h.IsCancel})
 		})
@@ -257,7 +257,7 @@ func testMouseMove(t *testing.T, flex *View, h *mockHandler, frame image.Rectang
 		t.Run(tt.Scenario, func(t *testing.T) {
 			h.Init()
 
-			flex.HandleMouse(tt.Point.X, tt.Point.Y)
+			flex.handleMouse(tt.Point.X, tt.Point.Y)
 
 			assert.Equal(t, tt.Want, result{h.IsMouseMoved, h.MousePoint})
 		})

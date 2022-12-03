@@ -738,6 +738,92 @@ func TestStretchAndMarginItemsCross(t *testing.T) {
 	assert.Equal(t, image.Rect(0, 500, 1000, 950), mock2.Frame)
 }
 
+func TestNestedFlex(t *testing.T) {
+	flex := &View{
+		Width:      1000,
+		Height:     1000,
+		Justify:    JustifyCenter,
+		AlignItems: AlignItemCenter,
+	}
+
+	mock1 := mockHandler{}
+	mock2 := mockHandler{}
+	mock3 := mockHandler{}
+
+	flex.AddChild(
+		(&View{
+			Width:      800,
+			Height:     800,
+			Justify:    JustifyCenter,
+			AlignItems: AlignItemCenter,
+			Handler:    &mock1,
+		}).AddChild(
+			(&View{
+				Width:      100,
+				Height:     100,
+				Justify:    JustifyCenter,
+				AlignItems: AlignItemCenter,
+				Handler:    &mock2,
+			}).AddChild(
+				&View{
+					Width:   10,
+					Height:  10,
+					Handler: &mock3,
+				},
+			),
+		),
+	)
+
+	flex.Update()
+	flex.Draw(nil)
+
+	assert.Equal(t, image.Rect(100, 100, 900, 900), mock1.Frame)
+	assert.Equal(t, image.Rect(100+350, 100+350, 100+450, 100+450), mock2.Frame)
+	assert.Equal(t, image.Rect(100+350+45, 100+350+45, 100+350+55, 100+350+55), mock3.Frame)
+}
+
+func TestAbsoluteViewChildren(t *testing.T) {
+	flex := &View{
+		Width:      1000,
+		Height:     1000,
+		Justify:    JustifyCenter,
+		AlignItems: AlignItemCenter,
+	}
+
+	mock1 := mockHandler{}
+	mock2 := mockHandler{}
+	mock3 := mockHandler{}
+
+	flex.AddChild(
+		(&View{
+			Width:   800,
+			Height:  800,
+			Handler: &mock1,
+		}).AddChild(
+			(&View{
+				Width:    100,
+				Height:   100,
+				Position: PositionAbsolute,
+				Handler:  &mock2,
+			}).AddChild(
+				&View{
+					Width:    10,
+					Height:   10,
+					Position: PositionAbsolute,
+					Handler:  &mock3,
+				},
+			),
+		),
+	)
+
+	flex.Update()
+	flex.Draw(nil)
+
+	assert.Equal(t, image.Rect(100, 100, 900, 900), mock1.Frame)
+	assert.Equal(t, image.Rect(100, 100, 200, 200), mock2.Frame)
+	assert.Equal(t, image.Rect(100, 100, 110, 110), mock3.Frame)
+}
+
 func flexItemBounds(parent *View, child *View) image.Rectangle {
 	mock := &mockHandler{}
 	child.Handler = mock

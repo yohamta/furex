@@ -94,11 +94,16 @@ func (f *flexEmbed) layout(width, height int, container *containerEmbed) {
 	for _, c := range container.children {
 		if c.item.Position == PositionAbsolute {
 			c.bounds = image.Rect(
-				c.item.Left, c.item.Top, c.item.Left+c.item.Width, c.item.Top+c.item.Height,
+				container.frame.Min.X+c.item.Left,
+				container.frame.Min.Y+c.item.Top,
+				container.frame.Min.X+c.item.Left+c.item.Width,
+				container.frame.Min.Y+c.item.Top+c.item.Height,
 			)
 			c.item.frame = c.bounds
+			c.absolute = true
 			continue
 		}
+		c.absolute = false
 		children = append(children, element{
 			flexBaseSize: float64(f.flexBaseSize(c)),
 			node:         c,

@@ -1,23 +1,26 @@
-package furex
+package graphic
 
 import (
 	"image"
 	"image/color"
+	"sync"
 
 	"github.com/hajimehoshi/ebiten/v2"
 )
 
-var G graphic
+var (
+	g    graphic
+	once sync.Once
+)
 
 type graphic struct {
-	init        bool
 	imgOfAPixel *ebiten.Image
 }
 
 func (g *graphic) setup() {
-	if !g.init {
+	once.Do(func() {
 		g.imgOfAPixel = ebiten.NewImage(1, 1)
-	}
+	})
 }
 
 type FillRectOpts struct {
@@ -25,7 +28,7 @@ type FillRectOpts struct {
 	Color color.Color
 }
 
-func (g *graphic) FillRect(target *ebiten.Image, opts *FillRectOpts) {
+func FillRect(target *ebiten.Image, opts *FillRectOpts) {
 	g.setup()
 	r, c := &opts.Rect, &opts.Color
 	g.imgOfAPixel.Fill(*c)
@@ -42,19 +45,19 @@ type DrawRectOpts struct {
 	StrokeWidth int
 }
 
-func (g *graphic) DrawRect(target *ebiten.Image, opts *DrawRectOpts) {
+func DrawRect(target *ebiten.Image, opts *DrawRectOpts) {
 	g.setup()
 	r, c, sw := &opts.Rect, &opts.Color, opts.StrokeWidth
-	g.FillRect(target, &FillRectOpts{
+	FillRect(target, &FillRectOpts{
 		Rect: image.Rect(r.Min.X, r.Min.Y, r.Min.X+sw, r.Max.Y), Color: *c,
 	})
-	g.FillRect(target, &FillRectOpts{
+	FillRect(target, &FillRectOpts{
 		Rect: image.Rect(r.Min.X, r.Min.Y, r.Min.X+sw, r.Max.Y), Color: *c,
 	})
-	g.FillRect(target, &FillRectOpts{
+	FillRect(target, &FillRectOpts{
 		Rect: image.Rect(r.Min.X, r.Min.Y, r.Max.X, r.Min.Y+sw), Color: *c,
 	})
-	g.FillRect(target, &FillRectOpts{
+	FillRect(target, &FillRectOpts{
 		Rect: image.Rect(r.Min.X, r.Max.Y-sw, r.Max.X, r.Max.Y), Color: *c,
 	})
 }
