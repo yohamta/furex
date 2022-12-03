@@ -2,7 +2,7 @@
 
 Furex is a minimal GUI framework for [Ebitengine](https://ebiten.org/) that supports a subset of [Flex Layout Algorithm](https://www.w3.org/TR/css-flexbox-1/#layout-algorithm).
 
-For now, Furex is not a component library but a framework for positioning and stacking virtual components, handling button and touch events. How they are rendered is completely up to the user.
+For now, Furex is not a component library but a framework for positioning and stacking virtual widgets, handling button and touch events. How they are rendered is completely up to the user.
 
 [GoDoc](https://pkg.go.dev/github.com/yohamta/furex/v2)
 
@@ -14,9 +14,9 @@ For now, Furex is not a component library but a framework for positioning and st
 
 | Feature            | How to use                                                                                                                                                                                                                                                                                                                                              | Example                                                                       |
 |--------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------|
-| Flexbox layout     | The layout can be adjusted by settings the properties of a [View](https://pkg.go.dev/github.com/yohamta/furex/v2#View). You can think of a View as a `div` in HTML. Views can be tiled or nested.                                                                                                                                                 | [Example](https://github.com/yohamta/furex/blob/master/examples/wrap/main.go) |
-| Custom UI          | It supports any type of UI component. To create one, you can create a handler implements [DrawHandler](https://pkg.go.dev/github.com/yohamta/furex/v2#DrawHandler) or [UpdateHandler](https://pkg.go.dev/github.com/yohamta/furex/v2#UpdateHandler) interface. Each [View](https://pkg.go.dev/github.com/yohamta/furex/v2#View) can have one handler. | [Example](https://github.com/yohamta/furex/blob/master/components/button.go)  |
-| Buttons            | To create a button, you can implement [ButtonHandler](https://pkg.go.dev/github.com/yohamta/furex/v2#ButtonHandler). It supports both touch and mouse.                                                                                                                                                                                                  | [Example](https://github.com/yohamta/furex/blob/master/components/button.go) |
+| Flexbox layout     | The flex layout can be configured via the properties of a [View](https://pkg.go.dev/github.com/yohamta/furex/v2#View) instance. We can think of a `View` as a `div` element in HTML, which can be stacked or nested.
+| Custom UI          | A `View` can receive a `Handler` instance. We can create any type of UI components by implementing the [DrawHandler](https://pkg.go.dev/github.com/yohamta/furex/v2#DrawHandler) and/or the [UpdateHandler](https://pkg.go.dev/github.com/yohamta/furex/v2#UpdateHandler) interface. |
+| Buttons            | To create a button, you can implement the [ButtonHandler](https://pkg.go.dev/github.com/yohamta/furex/v2#ButtonHandler). It supports both touch and mouse.                                                                                                                                                                                                  | [Example](https://github.com/yohamta/furex/blob/master/widgets/button.go) |
 | Touch events       | To handle touch events and positions, you can implement [TouchHandler](https://pkg.go.dev/github.com/yohamta/furex/v2#TouchHandler).                                                                                                                                                                                                                    |                                                                               |
 | Mouse click events | To handle mouse click events, you can implement [MouseLeftButtonHandler](https://pkg.go.dev/github.com/yohamta/furex/v2#MouseLeftButtonHandler).                                                                                                                                                                                                        |                                                                               |
 | Mouse move events  | To detect mouse positions, you can implement [MouseHandler](https://pkg.go.dev/github.com/yohamta/furex/v2#MouseHandler).                                                                                                                                                                                                                               |                                                                               |
@@ -74,7 +74,7 @@ func (g *Game) setupUI() {
     g.gameUI.AddChild(&furex.View{
       Width:  100,
       Height: 100,
-      Handler: &components.Box{
+      Handler: &widgets.Box{
         Color: colors[i%len(colors)],
       },
     })
@@ -111,7 +111,7 @@ func (g *Game) setupUI() {
 			MarginBottom: 10,
 			MarginLeft:   5,
 			MarginRight:  5,
-			Handler: &components.Button{
+			Handler: &widgets.Button{
 				Text:    "Button",
 				OnClick: func() { println("button clicked") },
 			},
@@ -134,23 +134,23 @@ func (g *Game) setupUI() {
 			&furex.View{
 				Width:   100,
 				Height:  100,
-				Handler: &components.Box{Color: color.RGBA{0xff, 0, 0, 0xff}},
+				Handler: &widgets.Box{Color: color.RGBA{0xff, 0, 0, 0xff}},
 			},
 			&furex.View{
 				Width:   200,
 				Height:  60,
-				Handler: &components.Box{Color: color.RGBA{0xff, 0xff, 0xff, 0xff}},
+				Handler: &widgets.Box{Color: color.RGBA{0xff, 0xff, 0xff, 0xff}},
 			},
 			&furex.View{
 				Width:   100,
 				Height:  100,
-				Handler: &components.Box{Color: color.RGBA{0, 0xff, 0, 0xff}},
+				Handler: &widgets.Box{Color: color.RGBA{0, 0xff, 0, 0xff}},
 			},
 		),
 	).AddChild(&furex.View{
 		Width:  200,
 		Height: 50,
-		Handler: &components.Button{
+		Handler: &widgets.Button{
 			Text:    "Button",
 			OnClick: func() { println("button clicked") },
 		},
@@ -179,4 +179,4 @@ furex.Debug = true
 
 ## How to contribute?
 
-Feel free to contribute in any way you want. Share ideas, submit issues, create pull requests, adding examples, or adding components. Thank you!
+Feel free to contribute in any way you want. Share ideas, submit issues, create pull requests, adding examples, or adding widgets. Thank you!
