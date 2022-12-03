@@ -738,6 +738,49 @@ func TestStretchAndMarginItemsCross(t *testing.T) {
 	assert.Equal(t, image.Rect(0, 500, 1000, 950), mock2.Frame)
 }
 
+func TestAbsoluteViewChildren(t *testing.T) {
+	flex := &View{
+		Width:  1000,
+		Height: 1000,
+	}
+
+	mock1 := mockHandler{}
+	mock2 := mockHandler{}
+	mock3 := mockHandler{}
+
+	flex.AddChild(
+		(&View{
+			Width:    100,
+			Height:   100,
+			Position: PositionAbsolute,
+			Left:     100,
+			Top:      100,
+			Handler:  &mock1,
+		}).AddChild(
+			&View{
+				Width:    10,
+				Height:   10,
+				Position: PositionAbsolute,
+				Left:     10,
+				Top:      10,
+				Handler:  &mock2,
+			},
+			&View{
+				Width:   10,
+				Height:  10,
+				Handler: &mock3,
+			},
+		),
+	)
+
+	flex.Update()
+	flex.Draw(nil)
+
+	assert.Equal(t, image.Rect(100, 100, 200, 200), mock1.Frame)
+	assert.Equal(t, image.Rect(110, 110, 120, 120), mock2.Frame)
+	assert.Equal(t, image.Rect(100, 100, 110, 110), mock3.Frame)
+}
+
 func flexItemBounds(parent *View, child *View) image.Rectangle {
 	mock := &mockHandler{}
 	child.Handler = mock
