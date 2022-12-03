@@ -32,13 +32,11 @@ go get github.com/yohamta/furex/v2
 ```
 
 ## Example
-To check all examples, visit [here](examples).
+[Full source code of the example](examples/game/main.go)
 
-[Full source code of the example](examples/buttons/main.go)
+Assets by [Kenney](https://kenney.nl).
 
-<p align="center">
-<img width="480" height="640" src="./assets/example.gif"></img>
-</p>
+![](./assets/example.gif)
 
 ## Usage
 
@@ -104,9 +102,7 @@ func (b *Box) HandleDraw(screen *ebiten.Image, frame image.Rectangle) {
 }
 ```
 
-<p align="center">
-<img width="480" height="640" src="./assets/greens.png"></img>
-</p>
+![](./assets/greens.png)
 
 ## Debug
 
