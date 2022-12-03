@@ -9,6 +9,7 @@ import (
 )
 
 type child struct {
+	absolute                 bool
 	item                     *View
 	bounds                   image.Rectangle
 	isButtonPressed          bool

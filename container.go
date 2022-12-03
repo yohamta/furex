@@ -22,7 +22,10 @@ func (ct *containerEmbed) processEvent() {
 // Draw draws it's children
 func (ct *containerEmbed) Draw(screen *ebiten.Image) {
 	for _, c := range ct.children {
-		b := c.bounds.Add(ct.frame.Min)
+		b := c.bounds
+		if !c.absolute {
+			b = c.bounds.Add(ct.frame.Min)
+		}
 		if c.item.Handler != nil {
 			c.item.Handler.HandleDraw(screen, b)
 		}
@@ -210,8 +213,11 @@ func (ct *containerEmbed) setFrame(frame image.Rectangle) {
 }
 
 func (ct *containerEmbed) childFrame(c *child) *image.Rectangle {
-	r := c.bounds.Add(ct.frame.Min)
-	return &r
+	if !c.absolute {
+		r := c.bounds.Add(ct.frame.Min)
+		return &r
+	}
+	return &c.bounds
 }
 
 type touchPosition struct {
