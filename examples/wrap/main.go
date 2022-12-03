@@ -24,7 +24,7 @@ func (g *Game) Update() error {
 		g.init = true
 		g.setupUI()
 	}
-	g.gameUI.Update()
+	g.gameUI.UpdateWithSize(ebiten.WindowSize())
 	return nil
 }
 
@@ -73,6 +73,8 @@ func (g *Game) setupUI() {
 
 func main() {
 	ebiten.SetWindowSize(480, 640)
+
+	ebiten.SetWindowResizingMode(ebiten.WindowResizingModeEnabled)
 
 	game, err := NewGame()
 	if err != nil {
