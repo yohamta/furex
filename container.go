@@ -54,23 +54,22 @@ func (ct *containerEmbed) HandleJustReleasedTouchID(touchID ebiten.TouchID, x, y
 }
 
 func (ct *containerEmbed) HandleMouse(x, y int) bool {
-	result := false
 	for c := len(ct.children) - 1; c >= 0; c-- {
 		child := ct.children[c]
 		childFrame := ct.childFrame(child)
 		mouseHandler, ok := child.item.Handler.(MouseHandler)
 		if ok && mouseHandler != nil {
-			if !result && isInside(childFrame, x, y) {
+			if isInside(childFrame, x, y) {
 				if mouseHandler.HandleMouse(x, y) {
-					result = true
+					return true
 				}
 			}
 		}
-		if !result && child.item.HandleMouse(x, y) {
-			result = true
+		if child.item.HandleMouse(x, y) {
+			return true
 		}
 	}
-	return result
+	return false
 }
 
 func (ct *containerEmbed) HandleJustPressedMouseButtonLeft(x, y int) bool {
