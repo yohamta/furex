@@ -50,7 +50,7 @@ func (c *child) HandleJustReleasedTouchID(
 
 func (c *child) checkTouchHandlerStart(frame *image.Rectangle, touchID ebiten.TouchID, x, y int) bool {
 	touchHandler, ok := c.item.Handler.(TouchHandler)
-	if ok && touchHandler != nil {
+	if ok {
 		if isInside(frame, x, y) {
 			if touchHandler.HandleJustPressedTouchID(touchID, x, y) {
 				c.handledTouchID = touchID
@@ -63,7 +63,7 @@ func (c *child) checkTouchHandlerStart(frame *image.Rectangle, touchID ebiten.To
 
 func (c *child) checkTouchHandlerEnd(frame *image.Rectangle, touchID ebiten.TouchID, x, y int) {
 	touchHandler, ok := c.item.Handler.(TouchHandler)
-	if ok && touchHandler != nil {
+	if ok {
 		if c.handledTouchID == touchID {
 			touchHandler.HandleJustReleasedTouchID(touchID, x, y)
 			c.handledTouchID = -1
@@ -72,8 +72,8 @@ func (c *child) checkTouchHandlerEnd(frame *image.Rectangle, touchID ebiten.Touc
 }
 
 func (c *child) checkSwipeHandlerStart(frame *image.Rectangle, touchID ebiten.TouchID, x, y int) bool {
-	swipeHandler, ok := c.item.Handler.(SwipeHandler)
-	if ok && swipeHandler != nil {
+	_, ok := c.item.Handler.(SwipeHandler)
+	if ok {
 		if isInside(frame, x, y) {
 			c.swipeTouchID = touchID
 			c.swipe.downTime = time.Now()
@@ -86,7 +86,7 @@ func (c *child) checkSwipeHandlerStart(frame *image.Rectangle, touchID ebiten.To
 
 func (c *child) checkSwipeHandlerEnd(frame *image.Rectangle, touchID ebiten.TouchID, x, y int) bool {
 	swipeHandler, ok := c.item.Handler.(SwipeHandler)
-	if ok && swipeHandler != nil {
+	if ok {
 		if c.swipeTouchID != touchID {
 			return false
 		}
@@ -135,16 +135,24 @@ func (c *child) checkSwipe() bool {
 
 func (c *child) checkButtonHandlerStart(frame *image.Rectangle, touchID ebiten.TouchID, x, y int) bool {
 	button, ok := c.item.Handler.(ButtonHandler)
-	if ok && button != nil {
-		if isInside(frame, x, y) {
-			if !c.isButtonPressed {
-				c.isButtonPressed = true
-				c.handledTouchID = touchID
-				button.HandlePress(x, y, touchID)
+	if ok {
+		for {
+			if button, ok := c.item.Handler.(NotButton); ok {
+				if !button.IsButton() {
+					break
+				}
 			}
-			return true
-		} else if c.handledTouchID == touchID {
-			c.handledTouchID = -1
+			if isInside(frame, x, y) {
+				if !c.isButtonPressed {
+					c.isButtonPressed = true
+					c.handledTouchID = touchID
+					button.HandlePress(x, y, touchID)
+				}
+				return true
+			} else if c.handledTouchID == touchID {
+				c.handledTouchID = -1
+			}
+			break
 		}
 	}
 	return false
@@ -152,7 +160,7 @@ func (c *child) checkButtonHandlerStart(frame *image.Rectangle, touchID ebiten.T
 
 func (c *child) checkButtonHandlerEnd(frame *image.Rectangle, touchID ebiten.TouchID, x, y int) {
 	button, ok := c.item.Handler.(ButtonHandler)
-	if ok && button != nil {
+	if ok {
 		if c.handledTouchID == touchID {
 			if c.isButtonPressed {
 				c.isButtonPressed = false
