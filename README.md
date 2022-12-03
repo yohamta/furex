@@ -34,7 +34,7 @@ go get github.com/yohamta/furex/v2
 ## Example
 [Full source code of the example](examples/game/main.go)
 
-Assets by [Kenney](https://kenney.nl).
+Assets by [Kenney](https://kenney.nl). Fonts by [00ff](http://www17.plala.or.jp/xxxxxxx/00ff/)
 
 <p align="center">
   <img width="480" src="./assets/example.gif">

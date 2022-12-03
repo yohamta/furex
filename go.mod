@@ -10,6 +10,7 @@ require (
 	github.com/hajimehoshi/file2byteslice v1.0.0 // indirect
 	github.com/jezek/xgb v1.1.0 // indirect
 	github.com/stretchr/testify v1.8.1
+	github.com/tinne26/etxt v0.0.7
 	github.com/yohamta/ganim8/v2 v2.1.24 // indirect
 	golang.org/x/exp/shiny v0.0.0-20221126150942-6ab00d035af9 // indirect
 	golang.org/x/mobile v0.0.0-20221110043201-43a038452099 // indirect
