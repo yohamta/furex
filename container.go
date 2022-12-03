@@ -30,9 +30,7 @@ func (ct *containerEmbed) Draw(screen *ebiten.Image) {
 	}
 }
 
-func (ct *containerEmbed) HandleJustPressedTouchID(
-	touchID ebiten.TouchID, x, y int,
-) bool {
+func (ct *containerEmbed) HandleJustPressedTouchID(touchID ebiten.TouchID, x, y int) bool {
 	for c := len(ct.children) - 1; c >= 0; c-- {
 		child := ct.children[c]
 		childFrame := ct.childFrame(child)
@@ -56,19 +54,45 @@ func (ct *containerEmbed) HandleJustReleasedTouchID(touchID ebiten.TouchID, x, y
 }
 
 func (ct *containerEmbed) HandleMouse(x, y int) bool {
-	result := false
 	for c := len(ct.children) - 1; c >= 0; c-- {
 		child := ct.children[c]
 		childFrame := ct.childFrame(child)
 		mouseHandler, ok := child.item.Handler.(MouseHandler)
 		if ok && mouseHandler != nil {
-			if !result && isInside(childFrame, x, y) {
+			if isInside(childFrame, x, y) {
 				if mouseHandler.HandleMouse(x, y) {
-					result = true
+					return true
 				}
 			}
 		}
-		if !result && child.item.HandleMouse(x, y) {
+		if child.item.HandleMouse(x, y) {
+			return true
+		}
+	}
+	return false
+}
+
+func (ct *containerEmbed) HandleMouseEnterLeave(x, y int) bool {
+	result := false
+	for c := len(ct.children) - 1; c >= 0; c-- {
+		child := ct.children[c]
+		childFrame := ct.childFrame(child)
+		mouseHandler, ok := child.item.Handler.(MouseEnterLeaveHandler)
+		if ok {
+			if !result && !child.isMouseEntered && isInside(childFrame, x, y) {
+				if mouseHandler.HandleMouseEnter(x, y) {
+					result = true
+					child.isMouseEntered = true
+				}
+			}
+
+			if child.isMouseEntered && !isInside(childFrame, x, y) {
+				child.isMouseEntered = false
+				mouseHandler.HandleMouseLeave()
+			}
+		}
+
+		if child.item.HandleMouseEnterLeave(x, y) {
 			result = true
 		}
 	}
@@ -82,7 +106,7 @@ func (ct *containerEmbed) HandleJustPressedMouseButtonLeft(x, y int) bool {
 		child := ct.children[c]
 		childFrame := ct.childFrame(child)
 		mouseLeftClickHandler, ok := child.item.Handler.(MouseLeftButtonHandler)
-		if ok && mouseLeftClickHandler != nil {
+		if ok {
 			if !result && isInside(childFrame, x, y) {
 				if mouseLeftClickHandler.HandleJustPressedMouseButtonLeft(x, y) {
 					result = true
@@ -92,7 +116,7 @@ func (ct *containerEmbed) HandleJustPressedMouseButtonLeft(x, y int) bool {
 		}
 
 		button, ok := child.item.Handler.(ButtonHandler)
-		if ok && button != nil {
+		if ok {
 			if !result && isInside(childFrame, x, y) {
 				if !child.isButtonPressed {
 					child.isButtonPressed = true
@@ -114,7 +138,7 @@ func (ct *containerEmbed) HandleJustReleasedMouseButtonLeft(x, y int) {
 	for c := len(ct.children) - 1; c >= 0; c-- {
 		child := ct.children[c]
 		mouseLeftClickHandler, ok := child.item.Handler.(MouseLeftButtonHandler)
-		if ok && mouseLeftClickHandler != nil {
+		if ok {
 			if child.isMouseLeftButtonHandler {
 				child.isMouseLeftButtonHandler = false
 				mouseLeftClickHandler.HandleJustReleasedMouseButtonLeft(x, y)
@@ -122,7 +146,7 @@ func (ct *containerEmbed) HandleJustReleasedMouseButtonLeft(x, y int) {
 		}
 
 		button, ok := child.item.Handler.(ButtonHandler)
-		if ok && button != nil {
+		if ok {
 			if child.isButtonPressed && child.isMouseLeftButtonHandler {
 				child.isButtonPressed = false
 				child.isMouseLeftButtonHandler = false
@@ -171,6 +195,7 @@ func (ct *containerEmbed) handleTouch() {
 func (ct *containerEmbed) handleMouse() {
 	x, y := ebiten.CursorPosition()
 	ct.HandleMouse(x, y)
+	ct.HandleMouseEnterLeave(x, y)
 	if inpututil.IsMouseButtonJustPressed((ebiten.MouseButtonLeft)) {
 		ct.HandleJustPressedMouseButtonLeft(x, y)
 	}

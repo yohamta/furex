@@ -60,6 +60,14 @@ type MouseLeftButtonHandler interface {
 	HandleJustReleasedMouseButtonLeft(x, y int)
 }
 
+// MouseEnterHandler represets a component that handle mouse enter.
+type MouseEnterLeaveHandler interface {
+	// HandleMouseEnter handles the mouse enter.
+	HandleMouseEnter(x, y int) bool
+	// HandleMouseLeave handles the mouse leave.
+	HandleMouseLeave()
+}
+
 // SwipeHandler represents different swipe directions.
 type SwipeDirection int
 
