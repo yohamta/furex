@@ -106,7 +106,7 @@ func (ct *containerEmbed) HandleJustPressedMouseButtonLeft(x, y int) bool {
 		child := ct.children[c]
 		childFrame := ct.childFrame(child)
 		mouseLeftClickHandler, ok := child.item.Handler.(MouseLeftButtonHandler)
-		if ok && mouseLeftClickHandler != nil {
+		if ok {
 			if !result && isInside(childFrame, x, y) {
 				if mouseLeftClickHandler.HandleJustPressedMouseButtonLeft(x, y) {
 					result = true
@@ -116,7 +116,7 @@ func (ct *containerEmbed) HandleJustPressedMouseButtonLeft(x, y int) bool {
 		}
 
 		button, ok := child.item.Handler.(ButtonHandler)
-		if ok && button != nil {
+		if ok {
 			if !result && isInside(childFrame, x, y) {
 				if !child.isButtonPressed {
 					child.isButtonPressed = true
@@ -138,7 +138,7 @@ func (ct *containerEmbed) HandleJustReleasedMouseButtonLeft(x, y int) {
 	for c := len(ct.children) - 1; c >= 0; c-- {
 		child := ct.children[c]
 		mouseLeftClickHandler, ok := child.item.Handler.(MouseLeftButtonHandler)
-		if ok && mouseLeftClickHandler != nil {
+		if ok {
 			if child.isMouseLeftButtonHandler {
 				child.isMouseLeftButtonHandler = false
 				mouseLeftClickHandler.HandleJustReleasedMouseButtonLeft(x, y)
@@ -146,7 +146,7 @@ func (ct *containerEmbed) HandleJustReleasedMouseButtonLeft(x, y int) {
 		}
 
 		button, ok := child.item.Handler.(ButtonHandler)
-		if ok && button != nil {
+		if ok {
 			if child.isButtonPressed && child.isMouseLeftButtonHandler {
 				child.isButtonPressed = false
 				child.isMouseLeftButtonHandler = false
