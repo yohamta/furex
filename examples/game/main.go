@@ -60,8 +60,8 @@ func NewGame() (*Game, error) {
 func (g *Game) setupUI() {
 	newButton := func() *furex.View {
 		return (&furex.View{
-			Width:        76,
-			Height:       35,
+			Width:        45,
+			Height:       49,
 			MarginTop:    5,
 			MarginBottom: 10,
 			MarginLeft:   5,

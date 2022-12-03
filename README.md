@@ -105,7 +105,7 @@ func (b *Box) HandleDraw(screen *ebiten.Image, frame image.Rectangle) {
 ```
 
 <p align="center">
-  <img width="480" height="640" src="./assets/greens.png">
+  <img width="592" height="780" src="./assets/greens.png">
 </p>
 
 ## Debug
@@ -114,6 +114,10 @@ You can turn on the Debug Mode by setting the variable below.
 ```go
 furex.Debug = true
 ```
+
+<p align="center">
+  <img width="592" height="780" src="./assets/debug.png">
+</p>
 
 ## How to contribute?
 
