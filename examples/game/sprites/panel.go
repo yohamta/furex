@@ -8,9 +8,6 @@ import (
 )
 
 func createPanels(img *ebiten.Image, r image.Rectangle, border int) map[string]*ganim8.Sprite {
-	// h := g.Height()
-	// w := g.Width()
-	// f := g.Frames()[0]
 	ret := map[string]*ganim8.Sprite{}
 
 	// top left
