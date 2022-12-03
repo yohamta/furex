@@ -1,4 +1,4 @@
-package graphic
+package main
 
 import (
 	"image"
@@ -7,6 +7,8 @@ import (
 
 	"github.com/hajimehoshi/ebiten/v2"
 )
+
+// TODO: replace with ebiten/vector utility functions
 
 var (
 	g    graphic
