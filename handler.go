@@ -61,15 +61,11 @@ type MouseLeftButtonHandler interface {
 }
 
 // MouseEnterHandler represets a component that handle mouse enter.
-type MouseEnterHandler interface {
+type MouseEnterLeaveHandler interface {
 	// HandleMouseEnter handles the mouse enter.
 	HandleMouseEnter(x, y int) bool
-}
-
-// MouseLeaveHandler represets a component that handle mouse leave.
-type MouseLeaveHandler interface {
 	// HandleMouseLeave handles the mouse leave.
-	HandleMouseLeave() bool
+	HandleMouseLeave()
 }
 
 // SwipeHandler represents different swipe directions.
