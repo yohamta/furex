@@ -33,6 +33,13 @@ type ButtonHandler interface {
 	HandleRelease(x, y int, isCancel bool)
 }
 
+// NotButton represents a component that is not a button.
+// TODO: update HandlePress to return bool in the next major version.
+type NotButton interface {
+	// IsButton returns true if the handler is a button.
+	IsButton() bool
+}
+
 // TouchHandler represents a component that handle touches.
 type TouchHandler interface {
 	// HandleJustPressedTouchID handles the touchID just pressed and returns true if it handles the TouchID

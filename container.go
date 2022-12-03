@@ -132,13 +132,21 @@ func (ct *containerEmbed) handleMouseButtonLeftPressed(x, y int) bool {
 
 		button, ok := child.item.Handler.(ButtonHandler)
 		if ok {
-			if !result && isInside(childFrame, x, y) {
-				if !child.isButtonPressed {
-					child.isButtonPressed = true
-					child.isMouseLeftButtonHandler = true
-					result = true
-					button.HandlePress(x, y, -1)
+			for {
+				if button, ok := child.item.Handler.(NotButton); ok {
+					if !button.IsButton() {
+						break
+					}
 				}
+				if !result && isInside(childFrame, x, y) {
+					if !child.isButtonPressed {
+						child.isButtonPressed = true
+						child.isMouseLeftButtonHandler = true
+						result = true
+						button.HandlePress(x, y, -1)
+					}
+				}
+				break
 			}
 		}
 
