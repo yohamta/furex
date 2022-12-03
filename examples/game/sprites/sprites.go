@@ -26,17 +26,12 @@ type subTexture struct {
 	Height int    `xml:"height,attr"`
 }
 
-type PanelOpts struct {
-	Name   string
-	Border int
-}
-
 type LoadOpts struct {
-	PanelOpts []PanelOpts
+	PanelOpts map[string]PanelOpts
 }
 
-func LoadSprites(opts LoadOpts) {
-	dat, err := os.ReadFile("assets/uipack_rpg_sheet.xml")
+func LoadSprites(xmlPath string, imgPath string, opts LoadOpts) {
+	dat, err := os.ReadFile(xmlPath)
 	if err != nil {
 		panic(err)
 	}
@@ -45,7 +40,7 @@ func LoadSprites(opts LoadOpts) {
 		panic(err)
 	}
 
-	img, _, err := ebitenutil.NewImageFromFile("assets/uipack_rpg_sheet.png")
+	img, _, err := ebitenutil.NewImageFromFile(imgPath)
 	if err != nil {
 		panic(err)
 	}
@@ -58,14 +53,14 @@ func LoadSprites(opts LoadOpts) {
 		rects[s.Name] = rect
 	}
 
-	for _, o := range opts.PanelOpts {
-		r, ok := rects[o.Name]
+	for k, o := range opts.PanelOpts {
+		r, ok := rects[k]
 		if !ok {
-			panic("panel not found: " + o.Name)
+			panic("panel not found: " + k)
 		}
-		panels := createPanels(img, r, o.Border)
-		for k, v := range panels {
-			sprites[fmt.Sprintf("%s_%s", o.Name, k)] = v
+		panels := createPanels(img, r, o)
+		for kk, v := range panels {
+			sprites[fmt.Sprintf("%s_%s", k, kk)] = v
 		}
 	}
 }

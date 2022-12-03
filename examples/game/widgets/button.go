@@ -2,16 +2,19 @@ package widgets
 
 import (
 	"image"
+	"image/color"
 
 	"github.com/hajimehoshi/ebiten/v2"
-	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
+	"github.com/tinne26/etxt"
 	"github.com/yohamta/furex/v2"
 	"github.com/yohamta/furex/v2/examples/game/sprites"
+	"github.com/yohamta/furex/v2/examples/game/text"
 	"github.com/yohamta/ganim8/v2"
 )
 
 type Button struct {
 	Text          string
+	Color         color.Color
 	OnClick       func()
 	Sprite        string
 	SpritePressed string
@@ -52,8 +55,14 @@ func (b *Button) HandleDraw(screen *ebiten.Image, frame image.Rectangle) {
 		ganim8.DrawSpriteWithOpts(screen, sprites.Get(b.Sprite), 0, opts, nil)
 	}
 
-	ebitenutil.DebugPrintAt(screen, b.Text,
-		frame.Min.X+((frame.Dx()-len(b.Text)*6)/2), frame.Min.Y+frame.Dy()/2-8)
+	text.R.SetAlign(etxt.YCenter, etxt.XCenter)
+	text.R.SetTarget(screen)
+	if b.Color != nil {
+		text.R.SetColor(b.Color)
+	} else {
+		text.R.SetColor(color.White)
+	}
+	text.R.Draw(b.Text, int(x), int(y))
 }
 
 func (b *Button) HandleMouseEnter(x, y int) bool {

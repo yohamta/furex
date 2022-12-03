@@ -5,8 +5,10 @@ import (
 	"sync"
 
 	"github.com/hajimehoshi/ebiten/v2"
+	"github.com/tinne26/etxt"
 	"github.com/yohamta/furex/v2"
 	"github.com/yohamta/furex/v2/examples/game/sprites"
+	"github.com/yohamta/furex/v2/examples/game/text"
 	"github.com/yohamta/furex/v2/examples/game/widgets"
 )
 
@@ -41,33 +43,53 @@ func (g *Game) Layout(outsideWidth, outsideHeight int) (int, int) {
 }
 
 func NewGame() (*Game, error) {
-	sprites.LoadSprites(sprites.LoadOpts{
-		PanelOpts: []sprites.PanelOpts{
-			{
-				Name:   "panelInset_beige.png",
-				Border: 32,
+	text.LoadFonts()
+	sprites.LoadSprites(
+		"assets/images/uipack_rpg_sheet.xml",
+		"assets/images/uipack_rpg_sheet.png",
+		sprites.LoadOpts{
+			PanelOpts: map[string]sprites.PanelOpts{
+				"panelInset_beige.png": {
+					Border: 32,
+					Center: 36,
+				},
+				"panel_brown.png": {
+					Border: 32,
+					Center: 36,
+				},
 			},
-			{
-				Name:   "panel_brown.png",
-				Border: 32,
+		})
+	sprites.LoadSprites(
+		"assets/images/uipackSpace_sheet.xml",
+		"assets/images/uipackSpace_sheet.png",
+		sprites.LoadOpts{
+			PanelOpts: map[string]sprites.PanelOpts{
+				"glassPanel_corners.png": {
+					Border: 40,
+					Center: 20,
+				},
+				"glassPanel_projection.png": {
+					Border: 20,
+					Center: 10,
+				},
 			},
-		},
-	})
+		})
 	game := &Game{}
 	return game, nil
 }
 
 func (g *Game) setupUI() {
-	newButton := func() *furex.View {
+	newButton := func(txt string) *furex.View {
 		return (&furex.View{
 			Width:        45,
 			Height:       49,
 			MarginTop:    5,
 			MarginBottom: 10,
-			MarginLeft:   5,
-			MarginRight:  5,
+			MarginLeft:   20,
+			MarginRight:  20,
 			Handler: &widgets.Button{
-				Text:          "Button",
+				Text:          txt,
+				Color:         color.RGBA{210, 178, 144, 255},
 				Sprite:        "buttonSquare_brown.png",
 				SpritePressed: "buttonSquare_brown_pressed.png",
 				OnClick:       func() { println("button clicked") },
@@ -93,6 +115,8 @@ func (g *Game) setupUI() {
 			(&furex.View{
 				Width:      300,
 				Height:     300,
+				MarginTop:  120,
+				MarginLeft: 130,
 				Handler:    &widgets.Panel{Sprite: "panel_brown.png"},
 				Direction:  furex.Column,
 				AlignItems: furex.AlignItemCenter,
@@ -121,6 +145,7 @@ func (g *Game) setupUI() {
 							Width:        180,
 							MarginBottom: 2,
 							Handler: &widgets.Text{
+								Color: color.RGBA{50, 48, 41, 255},
 								Value: "Health",
 							},
 						},
@@ -146,6 +171,7 @@ func (g *Game) setupUI() {
 							Width:        180,
 							MarginBottom: 2,
 							Handler: &widgets.Text{
+								Color: color.RGBA{50, 48, 41, 255},
 								Value: "Mana",
 							},
 						},
@@ -195,8 +221,10 @@ func (g *Game) setupUI() {
 				// close button
 				(&furex.View{
 					Position: furex.PositionAbsolute,
-					Left:     296,
-					Top:      4,
+					Left:     300 - 35/2,
+					Top:      4 - 38/2,
+					Width:    35,
+					Height:   38,
 					Handler: &widgets.Button{
 						Sprite:  "buttonRound_blue.png",
 						OnClick: func() { println("button clicked") },
@@ -204,8 +232,8 @@ func (g *Game) setupUI() {
 				}).AddChild(
 					&furex.View{
 						Position: furex.PositionAbsolute,
-						Left:     1,
-						Top:      -2,
+						Left:     18,
+						Top:      17,
 						Handler: &widgets.Sprite{
 							Sprite: "iconCross_beige.png",
 						},
@@ -222,10 +250,68 @@ func (g *Game) setupUI() {
 			AlignItems:   furex.AlignItemEnd,
 			MarginBottom: 20,
 		}).AddChild(
-			newButton(),
-			newButton(),
-			newButton(),
-			newButton(),
+			newButton("A"),
+			newButton("B"),
+			newButton("C"),
+			newButton("D"),
+		),
+	).AddChild(
+		(&furex.View{
+			Position: furex.PositionAbsolute,
+			Left:     20,
+			Top:      52,
+		}).AddChild(
+			// panel
+			(&furex.View{
+				Width:      260,
+				Height:     140,
+				Handler:    &widgets.Panel{Sprite: "glassPanel_corners.png"},
+				Direction:  furex.Column,
+				AlignItems: furex.AlignItemCenter,
+				Justify:    furex.JustifyCenter,
+			}).AddChild(
+				&furex.View{
+					Width:        100,
+					Height:       8,
+					MarginBottom: 20,
+					Direction:    furex.Row,
+					AlignItems:   furex.AlignItemCenter,
+					Justify:      furex.JustifyCenter,
+					Handler: &widgets.Text{
+						Color:     color.RGBA{45, 73, 94, 255},
+						Value:     "PLAY THE GAME?",
+						HorzAlign: etxt.XCenter,
+						VertAlign: etxt.YCenter,
+					},
+				},
+				(&furex.View{
+					Width:      100,
+					Height:     50,
+					Direction:  furex.Row,
+					AlignItems: furex.AlignItemCenter,
+					Justify:    furex.JustifyCenter,
+				}).AddChild(
+					&furex.View{
+						Width:  100,
+						Height: 50,
+						Handler: &widgets.Panel{
+							Sprite:  "glassPanel_projection.png",
+							Text:    "YES",
+							OnClick: func() { println("button clicked") },
+						},
+					},
+					&furex.View{
+						Width:      100,
+						Height:     50,
+						MarginLeft: 20,
+						Handler: &widgets.Panel{
+							Sprite:  "glassPanel_projection.png",
+							Text:    "NO",
+							OnClick: func() { println("button clicked") },
+						},
+					},
+				),
+			),
 		),
 	).AddChild(
 		// panels that draws mouse cursor

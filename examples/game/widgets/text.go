@@ -6,11 +6,17 @@ import (
 
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
+	"github.com/tinne26/etxt"
 	"github.com/yohamta/furex/v2"
+	"github.com/yohamta/furex/v2/examples/game/text"
 )
 
 type Text struct {
-	Value string
+	Color     color.Color
+	Value     string
+	Shadow    bool
+	HorzAlign etxt.HorzAlign
+	VertAlign etxt.VertAlign
 }
 
 var (
@@ -18,8 +24,23 @@ var (
 )
 
 func (t *Text) HandleDraw(screen *ebiten.Image, frame image.Rectangle) {
-	ebitenutil.DrawRect(
-		screen, float64(frame.Min.X), float64(frame.Min.Y), float64(len(t.Value)*6+4), float64(frame.Dy()), color.RGBA{0, 0, 0, 50})
-	ebitenutil.DebugPrintAt(screen, t.Value,
-		frame.Min.X+2, frame.Min.Y+frame.Dy()/2-8)
+	if t.Shadow {
+		ebitenutil.DrawRect(
+			screen, float64(frame.Min.X), float64(frame.Min.Y), float64(len(t.Value)*6+4), float64(frame.Dy()), color.RGBA{0, 0, 0, 50})
+	}
+	x, y := frame.Min.X+frame.Dx()/2, frame.Min.Y+frame.Dy()/2
+	if t.HorzAlign == etxt.Left {
+		x = frame.Min.X
+	}
+	if t.VertAlign == etxt.Top {
+		y = frame.Min.Y
+	}
+	if t.Color != nil {
+		text.R.SetColor(t.Color)
+	} else {
+		text.R.SetColor(color.White)
+	}
+	text.R.SetAlign(t.VertAlign, t.HorzAlign)
+	text.R.SetTarget(screen)
+	text.R.Draw(t.Value, x, y)
 }
