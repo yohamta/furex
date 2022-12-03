@@ -36,7 +36,9 @@ go get github.com/yohamta/furex/v2
 
 Assets by [Kenney](https://kenney.nl).
 
-![](./assets/example.gif)
+<p align="center">
+  <img width="480" height="640" src="./assets/example.gif">
+</p>
 
 ## Usage
 
@@ -102,7 +104,9 @@ func (b *Box) HandleDraw(screen *ebiten.Image, frame image.Rectangle) {
 }
 ```
 
-![](./assets/greens.png)
+<p align="center">
+  <img width="480" height="640" src="./assets/greens.png">
+</p>
 
 ## Debug
 
