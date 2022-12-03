@@ -23,7 +23,7 @@ For now, Furex is not a component library but a framework for positioning and st
 | Mouse enter/leave events | To detect `MouseEnter`/`MouseLeave` events, you can implement [MouseEnterLeaveHandler](https://pkg.go.dev/github.com/yohamta/furex/v2#MouseEnterLeaveHandler).                                                                                                                                                                    |
 | Swipe gestures           | To detect `Swipe` gestures you can implement [SwipeHandler](https://pkg.go.dev/github.com/yohamta/furex/v2#SwipeHandler).                                                                                                                                                                                                         |
 | Margins                  | A `View`'s margin can be configured by setting the field values, `MarginLeft`, `MarginTop`, `MarginRight`, and `MarginBottom`                                                                                                                                                                                                     |
-| Absolute Positions       | It is possible to place a `View` to an absolute position by setting `PositionAbsolute` to the `Position` property. Also you can set `Left`, and `Top` property values to set the `View` to specify a certain position.                                                                                                            |
+| Absolute positions       | It is possible to place a `View` to an absolute position by setting `PositionAbsolute` to the `Position` property. Also you can set `Left`, and `Top` property values to set the `View` to specify a certain position.                                                                                                            |
 
 ## Install
 
@@ -31,80 +31,15 @@ For now, Furex is not a component library but a framework for positioning and st
 go get github.com/yohamta/furex/v2
 ```
 
-## Examples
+## Example
 To check all examples, visit [here](examples).
 
-### Simple example
-
-[Full source code](examples/wrap/main.go)
-
-```go
-import "github.com/yohamta/furex/v2"
-
-type Game struct {
-  init   bool
-  screen screen
-  gameUI *furex.View
-}
-
-func (g *Game) Update() error {
-  if !g.init {
-    g.init = true
-    g.setupUI()
-  }
-  g.gameUI.UpdateWithSize(ebiten.WindowSize())
-  // g.gameUI.Update() // Update() is an alternate method for updating the UI and handling events.
-  return nil
-}
-
-func (g *Game) setupUI() {
-  // create a root view
-  g.gameUI = &furex.View{
-    Width:        g.screen.Width,
-    Height:       g.screen.Height,
-    Direction:    furex.Row,
-    Justify:      furex.JustifyCenter,
-    AlignItems:   furex.AlignItemCenter,
-    AlignContent: furex.AlignContentCenter,
-    Wrap:         furex.Wrap,
-  }
-
-  // create a child view
-  for i := 0; i < 20; i++ {
-    g.gameUI.AddChild(&furex.View{
-      Width:  100,
-      Height: 100,
-      Handler: &widgets.Box{
-        Color: colors[i%len(colors)],
-      },
-    })
-  }
-}
-
-func (g *Game) Draw(screen *ebiten.Image) {
-  // Draw the UI tree
-  g.gameUI.Draw(screen)
-}
-
-var colors = []color.Color{
-  color.RGBA{0xaa, 0, 0, 0xff},
-  color.RGBA{0, 0xaa, 0, 0xff},
-  color.RGBA{0, 0, 0xaa, 0xff},
-}
-```
-
-<image src="https://user-images.githubusercontent.com/1475839/133445715-b94b8c7f-bcd3-4aef-b7a4-b58bbb29d556.png" width="500px" />
-
-### Method chaining
-
-View's `AddChild()` method returns itself, so it can be chained.
-
-[Full source code of the example](https://github.com/yohamta/furex/blob/master/examples/nesting/main.go)
+[Full source code of the example](examples/buttons/main.go)
 
 ```go
 func (g *Game) setupUI() {
 	newButton := func() *furex.View {
-		return (&furex.View{
+		return &furex.View{
 			Width:        100,
 			Height:       100,
 			MarginTop:    5,
@@ -115,7 +50,7 @@ func (g *Game) setupUI() {
 				Text:    "Button",
 				OnClick: func() { println("button clicked") },
 			},
-		})
+		}
 	}
 
 	g.gameUI = (&furex.View{

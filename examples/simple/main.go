@@ -2,6 +2,7 @@ package main
 
 import (
 	"image/color"
+	"sync"
 
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/yohamta/furex/v2"
@@ -9,9 +10,9 @@ import (
 )
 
 type Game struct {
-	init   bool
-	screen screen
-	gameUI *furex.View
+	initOnce sync.Once
+	screen   screen
+	gameUI   *furex.View
 }
 
 type screen struct {
@@ -20,10 +21,9 @@ type screen struct {
 }
 
 func (g *Game) Update() error {
-	if !g.init {
-		g.init = true
+	g.initOnce.Do(func() {
 		g.setupUI()
-	}
+	})
 	g.gameUI.Update()
 	return nil
 }
