@@ -22,7 +22,9 @@ Full source code of the example is [here](examples/game/main.go).
 
 ## Motivation
 
-[Flexbox](https://www.w3.org/TR/css-flexbox/) is a popular layout mechanism in web development, used for creating responsive and flexible user interfaces. With Furex, we can bring this same concept to game development using Go and Ebitengine. This library aims to make it easier for developers with experience in web or ReactNative projects to create dynamic, user-friendly game UI.
+[Flexbox](https://www.w3.org/TR/css-flexbox/) is a popular layout mechanism in web development, used for creating responsive and flexible user interfaces. With Furex, we can bring this same concept to game development using Go and Ebitengine. This library aims to make it easier for developers with experience in web or React projects to create dynamic, user-friendly game UI.
+
+If you are not familiar with Flexbox Layout, you can learn about it at this [website](https://flexboxfroggy.com/).
 
 ## Features
 
@@ -32,7 +34,7 @@ Here are some of the key features of Furex:
 
 - Custom widgets: `View` instances can receive a `Handler` which is responsible for drawing and updating the view. This allows users to create any type of UI component by implementing the appropriate handler interfaces, such as [DrawHandler](https://pkg.go.dev/github.com/yohamta/furex/v2#DrawHandler), [UpdateHandler](https://pkg.go.dev/github.com/yohamta/furex/v2#UpdateHandler), and more.
 
-- Button support: To create a button, users can implement the [ButtonHandler](https://pkg.go.dev/github.com/yohamta/furex/v2#ButtonHandler) interface. This supports both touch and mouse input for button actions. See the Example Button for more details.
+- Button support: To create a button, users can implement the [ButtonHandler](https://pkg.go.dev/github.com/yohamta/furex/v2#ButtonHandler) interface. This supports both touch and mouse input for button actions. See the [Example Button](./examples/game/widgets/button.go) for more details.
 
 - Touch and mouse events: Furex provides support for handling touch events and positions using the [TouchHandler](https://pkg.go.dev/github.com/yohamta/furex/v2#TouchHandler) interface, and mouse click events using the [MouseLeftButtonHandler](https://pkg.go.dev/github.com/yohamta/furex/v2#MouseLeftButtonHandler) interface. It also offers support for detecting mouse position events using the [MouseHandler](https://pkg.go.dev/github.com/yohamta/furex/v2#MouseHandler) interface, and mouse enter/leave events using the [MouseEnterLeaveHandler](https://pkg.go.dev/github.com/yohamta/furex/v2#MouseEnterLeaveHandler) interface.
 
