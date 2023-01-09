@@ -6,25 +6,28 @@ import (
 	"sync"
 
 	"github.com/hajimehoshi/ebiten/v2"
+	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
 	"github.com/yohamta/furex/v2"
 )
 
-type Game struct {
-	initOnce sync.Once
-	screen   screen
-	gameUI   *furex.View
-}
-
-type screen struct {
+type ScreenSize struct {
 	Width  int
 	Height int
+}
+
+type Game struct {
+	initOnce   sync.Once
+	screenSize ScreenSize
+	gameUI     *furex.View
 }
 
 func (g *Game) Update() error {
 	g.initOnce.Do(func() {
 		g.setupUI()
 	})
-	g.gameUI.UpdateWithSize(ebiten.WindowSize())
+
+	width, height := ebiten.WindowSize()
+	g.gameUI.UpdateWithSize(width, height)
 	return nil
 }
 
@@ -34,9 +37,9 @@ func (g *Game) Draw(screen *ebiten.Image) {
 }
 
 func (g *Game) Layout(outsideWidth, outsideHeight int) (int, int) {
-	g.screen.Width = outsideWidth
-	g.screen.Height = outsideHeight
-	return g.screen.Width, g.screen.Height
+	g.screenSize.Width = outsideWidth
+	g.screenSize.Height = outsideHeight
+	return g.screenSize.Width, g.screenSize.Height
 }
 
 func NewGame() (*Game, error) {
@@ -45,48 +48,53 @@ func NewGame() (*Game, error) {
 }
 
 func (g *Game) setupUI() {
-	colors := []color.Color{
-		color.RGBA{0x59, 0x98, 0x1a, 0xff},
-		color.RGBA{0x81, 0xb6, 0x22, 0xff},
-		color.RGBA{0xec, 0xf8, 0x7f, 0xff},
-	}
-
 	g.gameUI = &furex.View{
-		Width:        g.screen.Width,
-		Height:       g.screen.Height,
-		Direction:    furex.Row,
-		Justify:      furex.JustifyCenter,
-		AlignItems:   furex.AlignItemCenter,
-		AlignContent: furex.AlignContentCenter,
-		Wrap:         furex.Wrap,
+		Width:      g.screenSize.Width,
+		Height:     g.screenSize.Height,
+		Direction:  furex.Column,
+		Justify:    furex.JustifyCenter,
+		AlignItems: furex.AlignItemStretch,
 	}
 
-	for i := 0; i < 20; i++ {
-		g.gameUI.AddChild(&furex.View{
-			Width:  100,
-			Height: 100,
-			Handler: &Box{
-				Color: colors[i%len(colors)],
-			},
-		})
-	}
+	g.gameUI.AddChild(&furex.View{
+		Height: 50,
+		Handler: &Box{
+			Color: color.RGBA{0xdd, 0xdd, 0xdd, 0xff},
+		},
+	})
+
+	g.gameUI.AddChild(&furex.View{
+		Grow: 1,
+		Handler: &Box{
+			Color: color.RGBA{0x81, 0xb6, 0x22, 0xff},
+		},
+	})
+
+	g.gameUI.AddChild(&furex.View{
+		Height: 50,
+		Handler: &Box{
+			Color: color.RGBA{0xff, 0xff, 0xff, 0xff},
+		},
+	})
 }
 
 type Box struct {
 	Color color.Color
 }
 
-var _ furex.DrawHandler = (*Box)(nil)
-
 func (b *Box) HandleDraw(screen *ebiten.Image, frame image.Rectangle) {
-	// TODO: replace with ebiten/vector utility functions
-	FillRect(screen, &FillRectOpts{
-		Rect: frame, Color: b.Color,
-	})
+	ebitenutil.DrawRect(
+		screen,
+		float64(frame.Min.X),
+		float64(frame.Min.Y),
+		float64(frame.Size().X),
+		float64(frame.Size().Y),
+		b.Color,
+	)
 }
 
 func main() {
-	ebiten.SetWindowSize(480, 640)
+	ebiten.SetWindowSize(800, 600)
 	ebiten.SetWindowResizingMode(ebiten.WindowResizingModeEnabled)
 
 	game, err := NewGame()
