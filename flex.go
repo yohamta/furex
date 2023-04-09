@@ -466,7 +466,7 @@ func (f *flexEmbed) layout(width, height int, container *containerEmbed) {
 		min := math.Inf(1)
 		max := -1.
 		for _, child := range line.child {
-			if min == -1 || child.crossOffset < min {
+			if child.crossOffset < min {
 				min = child.crossOffset
 			}
 			if max == -1 || child.crossOffset+child.crossSize > max {
@@ -479,6 +479,7 @@ func (f *flexEmbed) layout(width, height int, container *containerEmbed) {
 	}
 	f.setCrossSize(int(intrinsicCrossSize))
 
+	// TODO: Calculate min-content/max-content cross size for multi-line flex container.
 	// For a multi-line flex container, the min-content/max-content cross size is
 	// the sum of the flex line cross sizes resulting from sizing the flex container
 	// under a cross-axis min-content constraint/max-content constraint (respectively).
