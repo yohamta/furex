@@ -16,6 +16,9 @@ type containerEmbed struct {
 	isDirty  bool
 	frame    image.Rectangle
 	touchIDs []ebiten.TouchID
+
+	calculatedWidth  int
+	calculatedHeight int
 }
 
 func (ct *containerEmbed) processEvent() {

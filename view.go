@@ -59,6 +59,13 @@ func (v *View) startLayout() {
 		v.frame = image.Rect(v.Left, v.Top, v.Left+v.Width, v.Top+v.Height)
 	}
 	v.flexEmbed.View = v
+
+	for _, child := range v.children {
+		if child.item.Position == PositionStatic {
+			child.item.startLayout()
+		}
+	}
+
 	v.layout(v.frame.Dx(), v.frame.Dy(), &v.containerEmbed)
 	v.isDirty = false
 }
@@ -140,4 +147,18 @@ func (v *View) addChild(cv *View) *View {
 	v.isDirty = true
 	cv.hasParent = true
 	return v
+}
+
+func (v *View) width() int {
+	if v.Width == 0 {
+		return v.calculatedWidth
+	}
+	return v.Width
+}
+
+func (v *View) height() int {
+	if v.Height == 0 {
+		return v.calculatedHeight
+	}
+	return v.Height
 }

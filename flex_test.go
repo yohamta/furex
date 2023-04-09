@@ -600,7 +600,7 @@ func TestMerginWithChild(t *testing.T) {
 	flex.Update()
 	flex.Draw(nil)
 
-	assert.Equal(t, image.Rect(950, 900, 950, 900), mock1.Frame)
+	assert.Equal(t, image.Rect(850, 800, 950, 900), mock1.Frame)
 	assert.Equal(t, image.Rect(850, 800, 950, 900), mock2.Frame)
 }
 
@@ -822,6 +822,54 @@ func TestAbsoluteViewChildren(t *testing.T) {
 	assert.Equal(t, image.Rect(100, 100, 900, 900), mock1.Frame)
 	assert.Equal(t, image.Rect(100, 100, 200, 200), mock2.Frame)
 	assert.Equal(t, image.Rect(100, 100, 110, 110), mock3.Frame)
+}
+
+func TestAutoHeightCalculation(t *testing.T) {
+	flex := &View{
+		Width:      1000,
+		Height:     1000,
+		Grow:       0,
+		Shrink:     0,
+		AlignItems: AlignItemStart,
+		Justify:    JustifyStart,
+		Direction:  Column,
+	}
+
+	mock1 := mockHandler{}
+	mock2 := mockHandler{}
+
+	firstRow := &View{
+		Direction: Column,
+		Grow:      0,
+		Shrink:    0,
+		Width:     100,
+		Handler:   &mock1,
+	}
+
+	firstRow.AddChild(&View{
+		Width:  100,
+		Height: 100,
+	})
+
+	secondRow := &View{
+		Direction: Row,
+		Width:     200,
+		Height:    200,
+		Grow:      0,
+		Shrink:    0,
+		Handler:   &mock2,
+	}
+
+	flex.AddChild(
+		firstRow,
+		secondRow,
+	)
+
+	flex.Update()
+	flex.Draw(nil)
+
+	assert.Equal(t, image.Rect(0, 0, 100, 100), mock1.Frame)
+	assert.Equal(t, image.Rect(0, 100, 200, 300), mock2.Frame)
 }
 
 func flexItemBounds(parent *View, child *View) image.Rectangle {
