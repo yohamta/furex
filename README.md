@@ -17,7 +17,7 @@ Full source code of the example is [here](examples/game/main.go).
 - [Features](#features)
 - [Getting Started](#getting-started)
 - [Usage](#usage)
-- [Use HTML for building UI](#use-html-for-building-ui)
+- [Building UI with HTML](#building-ui-with-html)
 - [Debugging](#debugging)
 - [Contributions](#contributions)
 
@@ -121,7 +121,7 @@ func (b *Box) HandleDraw(screen *ebiten.Image, frame image.Rectangle) {
   <img width="592" src="./assets/greens.png">
 </p>
 
-## Use HTML for building UI
+## Building UI with HTML
 
 Sometimes making a complex UI tree in Go can be cumbersome. You can use HTML to construct the UI tree more easily.
 
