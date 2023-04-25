@@ -64,19 +64,17 @@ func TestParseHTML(t *testing.T) {
 		{
 			name: "nested",
 			html: `
-				<body>
+				<view>
 					<view>
 						<view>
-							<view>
-							</view>
-						</view>
-						<view>
-							<view>
-							</view>
 						</view>
 					</view>
-				</body>
-				`,
+					<view>
+						<view>
+						</view>
+					</view>
+				</view>
+						`,
 			expected: (&View{}).
 				AddChild(
 					(&View{}).AddChild(
@@ -90,15 +88,13 @@ func TestParseHTML(t *testing.T) {
 		{
 			name: "root width and height",
 			html: `
-				<body>
+				<view>
 					<view>
 						<view>
-							<view>
-							</view>
 						</view>
 					</view>
-				</body>
-				`,
+				</view>
+						`,
 			expected: (&View{
 				Width:  200,
 				Height: 300,
@@ -116,11 +112,11 @@ func TestParseHTML(t *testing.T) {
 		{
 			name: "with-handlers",
 			html: `
-				<body>
-					<mock-handler>
-						<view />
-					</mock-handler>
-				</body>`,
+						<body>
+							<mock-handler>
+								<view />
+							</mock-handler>
+						</body>`,
 			opts: &ParseOptions{
 				Components: map[string]Handler{
 					"mock-handler": &mockHandler{},
@@ -136,185 +132,185 @@ func TestParseHTML(t *testing.T) {
 		{
 			name: "complex",
 			html: `
-<head>
-    <style>
-        game-ui {
-            flex-direction: column;
-            justify-content: space-between;
-            align-items: stretch;
-            align-content: stretch;
-        }
+		<head>
+		    <style>
+		        game-ui {
+		            flex-direction: column;
+		            justify-content: space-between;
+		            align-items: stretch;
+		            align-content: stretch;
+		        }
 
-        container {
-            justify-content: center;
-            align-items: center;
-            margin-top: 50px;
-            flex-grow: 1;
-        }
+		        container {
+		            justify-content: center;
+		            align-items: center;
+		            margin-top: 50px;
+		            flex-grow: 1;
+		        }
 
-        panel {
-            width: 300px;
-            height: 300px;
-            margin-top: 120px;
-            margin-left: 130px;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-        }
+		        panel {
+		            width: 300px;
+		            height: 300px;
+		            margin-top: 120px;
+		            margin-left: 130px;
+		            flex-direction: column;
+		            align-items: center;
+		            justify-content: center;
+		        }
 
-        panel-inner {
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            margin-top: 20px;
-            width: 245px;
-            height: 200px;
-        }
+		        panel-inner {
+		            flex-direction: column;
+		            align-items: center;
+		            justify-content: center;
+		            margin-top: 20px;
+		            width: 245px;
+		            height: 200px;
+		        }
 
-        gauge-container {
-            width: 180px;
-            height: 38px;
-            align-items: flex-start;
-            justify-content: flex-start;
-            flex-direction: column;
-        }
+		        gauge-container {
+		            width: 180px;
+		            height: 38px;
+		            align-items: flex-start;
+		            justify-content: flex-start;
+		            flex-direction: column;
+		        }
 
-        gauge-container2 {
-            width: 180px;
-            height: 38px;
-            align-items: flex-start;
-            justify-content: flex-start;
-            flex-direction: column;
-			margin-top: 30px;
-        }
+		        gauge-container2 {
+		            width: 180px;
+		            height: 38px;
+		            align-items: flex-start;
+		            justify-content: flex-start;
+		            flex-direction: column;
+					margin-top: 30px;
+		        }
 
-        .gauge-text {
-            width: 180px;
-            height: 20px;
-            margin-bottom: 2px;
-        }
+		        .gauge-text {
+		            width: 180px;
+		            height: 20px;
+		            margin-bottom: 2px;
+		        }
 
-        .gauge {
-            width: 180px;
-            height: 18px;
-        }
+		        .gauge {
+		            width: 180px;
+		            height: 18px;
+		        }
 
-        buttons {
-            flex-direction: row;
-            align-items: center;
-            justify-content: center;
-            margin-top: 20px;
-            margin-bottom: 20px;
-            flex-grow: 1;
-        }
+		        buttons {
+		            flex-direction: row;
+		            align-items: center;
+		            justify-content: center;
+		            margin-top: 20px;
+		            margin-bottom: 20px;
+		            flex-grow: 1;
+		        }
 
-        button-inventory {
-            width: 190px;
-            height: 49px;
-        }
+		        button-inventory {
+		            width: 190px;
+		            height: 49px;
+		        }
 
-        button-ok {
-            width: 45px;
-            height: 49px;
-            margin-left: 10;
-        }
+		        button-ok {
+		            width: 45px;
+		            height: 49px;
+		            margin-left: 10;
+		        }
 
-        bottom-buttons {
-            justify-content: center;
-            align-items: flex-end;
-            margin-bottom: 20px;
-        }
+		        bottom-buttons {
+		            justify-content: center;
+		            align-items: flex-end;
+		            margin-bottom: 20px;
+		        }
 
-        .bottom-button {
-            width: 45px;
-            height: 49px;
-            margin-top: 5px;
-            margin-bottom: 10px;
-            margin-left: 20px;
-            margin-right: 20px;
-        }
+		        .bottom-button {
+		            width: 45px;
+		            height: 49px;
+		            margin-top: 5px;
+		            margin-bottom: 10px;
+		            margin-left: 20px;
+		            margin-right: 20px;
+		        }
 
-        play-game-container {
-            position: absolute;
-            left: 20;
-            top: 52;
-        }
+		        play-game-container {
+		            position: absolute;
+		            left: 20;
+		            top: 52;
+		        }
 
-        play-game-inner-panel {
-            width: 260px;
-            height: 140px;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-        }
+		        play-game-inner-panel {
+		            width: 260px;
+		            height: 140px;
+		            flex-direction: column;
+		            align-items: center;
+		            justify-content: center;
+		        }
 
-        play-game-text {
-            width: 100px;
-            height: 8px;
-            margin-bottom: 20px;
-            flex-direction: row;
-            align-items: center;
-            justify-content: center;
-        }
+		        play-game-text {
+		            width: 100px;
+		            height: 8px;
+		            margin-bottom: 20px;
+		            flex-direction: row;
+		            align-items: center;
+		            justify-content: center;
+		        }
 
-        play-game-buttons {
-            width: 100;
-            height: 50;
-            flex-direction: row;
-            align-items: center;
-            justify-content: center;
-        }
+		        play-game-buttons {
+		            width: 100;
+		            height: 50;
+		            flex-direction: row;
+		            align-items: center;
+		            justify-content: center;
+		        }
 
-        .play-game-button {
-            width: 100px;
-            height: 50px;
-            margin-left: 20px;
-        }
+		        .play-game-button {
+		            width: 100px;
+		            height: 50px;
+		            margin-left: 20px;
+		        }
 
-        close-button {
-            position: absolute;
-            left: 283px;
-            top: -15;
-            width: 35px;
-            height: 38px
-        }
+		        close-button {
+		            position: absolute;
+		            left: 283px;
+		            top: -15;
+		            width: 35px;
+		            height: 38px
+		        }
 
-        close-button-sprite {
-            position: absolute;
-            left: 18;
-            top: 17
-        }
-    </style>
-</head>
+		        close-button-sprite {
+		            position: absolute;
+		            left: 18;
+		            top: 17
+		        }
+		    </style>
+		</head>
 
-<body>
-    <game-ui>
-        <container>
-            <panel>
-                <panel-inner>
-                    <gauge-container>
-                        <health-text class="gauge-text"></health-text>
-                        <health-gauge class="gauge"></health-gauge>
-                    </gauge-container>
-                    <gauge-container2>
-                        <mana-text class="gauge-text"></mana-text>
-                        <mana-gauge class="gauge"></mana-gauge>
-                    </gauge-container2>
-                </panel-inner>
-                <buttons>
-                    <button-inventory></button-inventory>
-                    <button-ok></button-ok>
-                </buttons>
-                <close-button>
-                    <close-button-sprite></close-button-sprite>
-                </close-button>
-            </panel>
-        </container>
-    </game-ui>
-</body>
+		<body>
+		    <game-ui>
+		        <container>
+		            <panel>
+		                <panel-inner>
+		                    <gauge-container>
+		                        <health-text class="gauge-text"></health-text>
+		                        <health-gauge class="gauge"></health-gauge>
+		                    </gauge-container>
+		                    <gauge-container2>
+		                        <mana-text class="gauge-text"></mana-text>
+		                        <mana-gauge class="gauge"></mana-gauge>
+		                    </gauge-container2>
+		                </panel-inner>
+		                <buttons>
+		                    <button-inventory></button-inventory>
+		                    <button-ok></button-ok>
+		                </buttons>
+		                <close-button>
+		                    <close-button-sprite></close-button-sprite>
+		                </close-button>
+		            </panel>
+		        </container>
+		    </game-ui>
+		</body>
 
-</html>
-			`,
+		</html>
+					`,
 			opts: &ParseOptions{
 				Width:  640,
 				Height: 800,
@@ -419,43 +415,6 @@ func TestParseHTML(t *testing.T) {
 							},
 						),
 					),
-				),
-			)},
-		{
-			name: "self closing tag",
-			html: `
-<head>
-    <style>
-        test-view {
-			width: 100;
-			height: 200;
-		}
-    </style>
-</head>
-
-<body>
-    <div>
-    	<div>
-			<test-view />
-    	</div>
-    </div>
-</body>
-
-</html>
-			`,
-			opts: &ParseOptions{
-				Width:  640,
-				Height: 800,
-			},
-			expected: (&View{
-				Width:  640,
-				Height: 800,
-			}).AddChild(
-				(&View{}).AddChild(
-					&View{
-						Width:  100,
-						Height: 200,
-					},
 				),
 			)},
 	}

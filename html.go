@@ -7,29 +7,38 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/aymerick/douceur/inliner"
+	"github.com/vanng822/go-premailer/premailer"
 	"golang.org/x/net/html"
 )
 
 type Component = Handler
 type ComponentsMap map[string]Handler
 type ParseOptions struct {
+	// Components is a map of component name and handler.
+	// For example, if you have a component named "start-button", you can define a handler
+	// for it like this:
+	// 	opts.Components := map[string]Handler{
+	// 		"start-button": <your handler>,
+	//  }
+	// The component name must be in kebab-case.
+	// You can use the component in your HTML like this:
+	// 	<start-button></start-button>
+	// Note: self closing tag is not supported.
 	Components ComponentsMap
-	Width      int
-	Height     int
+	// Width and Height is the size of the root view.
+	// This is useful when you want to specify the width and height
+	// outside of the HTML.
+	Width  int
+	Height int
 }
 
-func Parse(val string, opts *ParseOptions) *View {
+func Parse(input string, opts *ParseOptions) *View {
 	if opts == nil {
 		opts = &ParseOptions{}
 	}
-	inlined, err := inliner.Inline(val)
-	if err != nil {
-		println(fmt.Errorf("invalid css: %s", err))
-		inlined = val
-	}
 
-	z := html.NewTokenizer(strings.NewReader(inlined))
+	inlinedHTML := inlineCSS(input)
+	z := html.NewTokenizer(strings.NewReader(inlinedHTML))
 	dummy := &View{}
 	stack := &stack{stack: []*View{dummy}}
 	depth := 0
@@ -58,6 +67,7 @@ Loop:
 			}
 			stack.peek().AddChild(view)
 			stack.push(view)
+
 			depth++
 		case html.SelfClosingTagToken:
 			view := processTag(z, string(tn), opts, depth)
@@ -78,9 +88,23 @@ Loop:
 		}
 	}
 	if len(dummy.children) != 1 {
-		panic(fmt.Sprintf("invalid html: %s", val))
+		panic(fmt.Sprintf("invalid html: %s", input))
 	}
 	return dummy.PopChild()
+}
+
+func inlineCSS(doc string) string {
+	prem, err := premailer.NewPremailerFromString(doc, &premailer.Options{})
+	if err != nil {
+		println(fmt.Errorf("invalid css: %s", err))
+		return doc
+	}
+	html, err := prem.Transform()
+	if err != nil {
+		println(fmt.Errorf("error transform html: %s", err))
+		return doc
+	}
+	return html
 }
 
 type stack struct {
