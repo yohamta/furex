@@ -6,6 +6,11 @@ import (
 	"github.com/hajimehoshi/ebiten/v2"
 )
 
+// Handler represents a component that can be added to a container.
+type Handler interface {
+	DrawHandler
+}
+
 // DrawHandler represents a component that can be added to a container.
 type DrawHandler interface {
 	// HandleDraw function draws the content of the component inside the frame.

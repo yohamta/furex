@@ -11,6 +11,8 @@ import (
 // You can set flex options, size, position and so on.
 // Handlers can be set to create custom component such as button or list.
 type View struct {
+	// TODO: Remove these fields in the future.
+	ID           string
 	Left         int
 	Top          int
 	Width        int
@@ -20,7 +22,6 @@ type View struct {
 	MarginRight  int
 	MarginBottom int
 	Position     Position
-	Handler      DrawHandler
 	Direction    Direction
 	Wrap         FlexWrap
 	Justify      Justify
@@ -28,6 +29,9 @@ type View struct {
 	AlignContent AlignContent
 	Grow         float64
 	Shrink       float64
+	Raw          string
+
+	Handler DrawHandler
 
 	containerEmbed
 	flexEmbed
@@ -138,6 +142,7 @@ func (v *View) PopChild() *View {
 	c := v.children[len(v.children)-1]
 	v.children = v.children[:len(v.children)-1]
 	v.isDirty = true
+	c.item.hasParent = false
 	return c.item
 }
 
@@ -161,4 +166,62 @@ func (v *View) height() int {
 		return v.calculatedHeight
 	}
 	return v.Height
+}
+
+func (v *View) getChildren() []*View {
+	if v == nil || v.children == nil {
+		return nil
+	}
+	ret := make([]*View, len(v.children))
+	for i, child := range v.children {
+		ret[i] = child.item
+	}
+	return ret
+}
+
+// This is for debugging and testing.
+type ViewConfig struct {
+	Left         int
+	Top          int
+	Width        int
+	Height       int
+	MarginLeft   int
+	MarginTop    int
+	MarginRight  int
+	MarginBottom int
+	Position     Position
+	Direction    Direction
+	Wrap         FlexWrap
+	Justify      Justify
+	AlignItems   AlignItem
+	AlignContent AlignContent
+	Grow         float64
+	Shrink       float64
+	children     []*ViewConfig
+}
+
+func (v *View) Config() *ViewConfig {
+	cfg := &ViewConfig{
+		Left:         v.Left,
+		Top:          v.Top,
+		Width:        v.Width,
+		Height:       v.Height,
+		MarginLeft:   v.MarginLeft,
+		MarginTop:    v.MarginTop,
+		MarginRight:  v.MarginRight,
+		MarginBottom: v.MarginBottom,
+		Position:     v.Position,
+		Direction:    v.Direction,
+		Wrap:         v.Wrap,
+		Justify:      v.Justify,
+		AlignItems:   v.AlignItems,
+		AlignContent: v.AlignContent,
+		Grow:         v.Grow,
+		Shrink:       v.Shrink,
+		children:     []*ViewConfig{},
+	}
+	for _, child := range v.getChildren() {
+		cfg.children = append(cfg.children, child.Config())
+	}
+	return cfg
 }
