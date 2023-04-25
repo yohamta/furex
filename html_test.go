@@ -1,7 +1,6 @@
 package furex
 
 import (
-	"fmt"
 	"testing"
 
 	"github.com/stretchr/testify/require"
@@ -422,12 +421,47 @@ func TestParseHTML(t *testing.T) {
 					),
 				),
 			)},
+		{
+			name: "self closing tag",
+			html: `
+<head>
+    <style>
+        test-view {
+			width: 100;
+			height: 200;
+		}
+    </style>
+</head>
+
+<body>
+    <div>
+    	<div>
+			<test-view />
+    	</div>
+    </div>
+</body>
+
+</html>
+			`,
+			opts: &ParseOptions{
+				Width:  640,
+				Height: 800,
+			},
+			expected: (&View{
+				Width:  640,
+				Height: 800,
+			}).AddChild(
+				(&View{}).AddChild(
+					&View{
+						Width:  100,
+						Height: 200,
+					},
+				),
+			)},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			v := Parse(tt.html, tt.opts)
-			cfg := v.Config()
-			println(fmt.Sprintf("%+v", cfg))
 			testViewStyle(t, v, tt.expected)
 		})
 	}
