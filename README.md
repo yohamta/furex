@@ -160,7 +160,7 @@ Here's how to create a view tree from HTML:
     Width: 480,
     Height: 600,
     Components: map[string]furex.Component{
-    		"character": &widgets.Sprite{SpriteID: "mario.png"},
+      "character": &widgets.Sprite{SpriteID: "mario.png"},
     },
   })
   ```
