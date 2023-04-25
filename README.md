@@ -17,7 +17,8 @@ Full source code of the example is [here](examples/game/main.go).
 - [Features](#features)
 - [Getting Started](#getting-started)
 - [Usage](#usage)
-- [Debug](#debug)
+- [Use HTML for building UI](#use-html-for-building-ui)
+- [Debugging](#debugging)
 - [Contributions](#contributions)
 
 ## Motivation
@@ -120,9 +121,75 @@ func (b *Box) HandleDraw(screen *ebiten.Image, frame image.Rectangle) {
   <img width="592" src="./assets/greens.png">
 </p>
 
-## Debug
+## Use HTML for building UI
 
-You can turn on the Debug Mode by setting the variable below.
+Sometimes making a complex UI tree in Go can be cumbersome. You can use HTML to construct the UI tree more easily.
+
+Here's how to create a view tree from HTML:
+
+- ui.html
+  ```html
+  <html>
+    <head>
+      <style>
+        container {
+          align-items: center;
+          justify-content: center;
+        }
+        .sprite {
+          width: 64px;
+          height: 64px;
+        }
+      </style>
+    </head>
+    <body>
+      <container>
+        <character class="sprite"></character>
+      </container>
+    </body>
+  </html>
+  ```
+
+- ui.go
+
+  ```go
+  //go:embed assets/html/ui.html
+  var html string
+
+  view := furex.Parse(html, &furex.ParseOptions{
+    Width: 480,
+    Height: 600,
+    Components: map[string]furex.Component{
+    		"character": &widgets.Sprite{SpriteID: "mario.png"},
+    },
+  })
+  ```
+
+  Note: The `<body>` tag itself won't be converted as a `View`, but its children will be converted to `View` instances.
+
+This example is equivalent to the following Go code. By using HTML for styling the UI, the code becomes more maintainable.
+
+```go
+view := (&furex.View{
+  Width: 480,
+  Height: 600,
+  AlignItems: furex.AlignItemsCenter,
+  Justify: furex.JustifyCenter,
+}).AddChild(
+  &furex.View{
+    Width: 64,
+    Height: 64,
+    Handler: &widgets.Sprite{SpriteID: "mario.png"},
+  },
+)
+```
+
+For a more extensive example, check out the [example here](examples/game/main.go).
+
+## Debugging
+
+You can enable Debug Mode by setting the variable below.
+
 ```go
 furex.Debug = true
 ```
