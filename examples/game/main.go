@@ -89,7 +89,6 @@ func (g *Game) setupUI() {
 		Height: g.screen.Height,
 		Components: map[string]furex.Component{
 			"panel":        &widgets.Panel{},
-			"panel-inner":  &widgets.Panel{},
 			"gauge-text":   &widgets.Text{Color: color.RGBA{50, 48, 41, 255}},
 			"health-gauge": &widgets.Bar{Color: "Green", Value: .8},
 			"mana-gauge":   &widgets.Bar{Color: "Blue", Value: .8},
