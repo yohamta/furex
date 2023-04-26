@@ -92,6 +92,11 @@ func (v *View) UpdateWithSize(width, height int) {
 	v.Update()
 }
 
+// Layout marks the view as dirty
+func (v *View) Layout() {
+	v.isDirty = true
+}
+
 // Draw draws the view
 func (v *View) Draw(screen *ebiten.Image) {
 	if v.isDirty {
