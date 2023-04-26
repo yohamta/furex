@@ -11,8 +11,19 @@ import (
 	"golang.org/x/net/html"
 )
 
-type Component = Handler
-type ComponentsMap map[string]Handler
+// The Component can be either a handler instance (e.g., DrawHandler) or
+// a factory function func() furex.Handler. This allows flexibility in usage:
+// If you want to reuse the same handler instance for multiple HTML tags, pass the instance;
+// otherwise, pass the factory function to create separate handler instances for each tag.
+type Component interface{}
+
+// ComponentsMap is a type alias for a dictionary that associates
+// custom HTML tags with their respective components.
+// This enables a convenient way to manage and reference components
+// based on their corresponding HTML tags.
+type ComponentsMap map[string]Component
+
+// ParseOptions represents options for parsing HTML.
 type ParseOptions struct {
 	// Components is a map of component name and handler.
 	// For example, if you have a component named "start-button", you can define a handler
@@ -75,6 +86,10 @@ Loop:
 				continue
 			}
 			stack.peek().AddChild(view)
+		case html.TextToken:
+			if stack.len() > 0 {
+				stack.peek().Text = strings.TrimSpace(string(z.Text()))
+			}
 		case html.EndTagToken:
 			if string(tn) == "body" {
 				inBody = false
@@ -115,6 +130,10 @@ func (s *stack) push(v *View) {
 	s.stack = append(s.stack, v)
 }
 
+func (s *stack) len() int {
+	return len(s.stack)
+}
+
 func (s *stack) peek() *View {
 	return s.stack[len(s.stack)-1]
 }
@@ -143,7 +162,15 @@ func processTag(z *html.Tokenizer, tagName string, opts *ParseOptions, depth int
 	view.Raw = string(z.Raw())
 
 	if c, ok := opts.Components[tagName]; ok {
-		view.Handler = c
+		if reflect.TypeOf(c).Kind() == reflect.Func {
+			if c, ok := c.(func() Handler); ok {
+				view.Handler = c()
+			} else {
+				panic(fmt.Sprintf("invalid component: %s", tagName))
+			}
+		} else {
+			view.Handler = c
+		}
 	}
 
 	return view
@@ -417,12 +444,16 @@ func parseString(val string) (any, error) {
 type attrs struct {
 	id    string
 	style string
+	miscs map[string]interface{}
 }
 
 func readAttrs(z *html.Tokenizer) attrs {
-	attr := attrs{}
+	attr := attrs{
+		miscs: make(map[string]interface{}),
+	}
 	for {
 		key, val, more := z.TagAttr()
+		attr.miscs[string(key)] = string(val)
 		switch string(key) {
 		case "id":
 			attr.id = string(val)

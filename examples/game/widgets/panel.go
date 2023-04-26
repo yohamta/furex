@@ -15,7 +15,6 @@ import (
 
 type Panel struct {
 	Sprite  string
-	Text    string
 	Color   color.Color
 	OnClick func()
 
@@ -26,11 +25,11 @@ type Panel struct {
 var (
 	_ furex.ButtonHandler          = (*Panel)(nil)
 	_ furex.NotButton              = (*Panel)(nil)
-	_ furex.DrawHandler            = (*Panel)(nil)
+	_ furex.DrawHandlerWithView    = (*Panel)(nil)
 	_ furex.MouseEnterLeaveHandler = (*Panel)(nil)
 )
 
-func (p *Panel) HandleDraw(screen *ebiten.Image, frame image.Rectangle) {
+func (p *Panel) HandleDraw(screen *ebiten.Image, frame image.Rectangle, view *furex.View) {
 	// This code is just for demo.
 	// It's dirty and not optimized.
 
@@ -93,7 +92,7 @@ func (p *Panel) HandleDraw(screen *ebiten.Image, frame image.Rectangle) {
 	opts = ganim8.DrawOpts(float64(frame.Max.X-border), float64(frame.Max.Y-border), 0, 1, 1, 0, 0)
 	p.drawSprite(screen, spr, opts)
 
-	if p.Text != "" {
+	if view.Text != "" {
 		x, y := float64(frame.Min.X+frame.Dx()/2), float64(frame.Min.Y+frame.Dy()/2)
 		text.R.SetAlign(etxt.YCenter, etxt.XCenter)
 		text.R.SetTarget(screen)
@@ -102,7 +101,7 @@ func (p *Panel) HandleDraw(screen *ebiten.Image, frame image.Rectangle) {
 		} else {
 			text.R.SetColor(color.White)
 		}
-		text.R.Draw(p.Text, int(x), int(y))
+		text.R.Draw(view.Text, int(x), int(y))
 	}
 }
 

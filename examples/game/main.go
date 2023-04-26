@@ -90,21 +90,22 @@ func (g *Game) setupUI() {
 		Components: map[string]furex.Component{
 			"panel":        &widgets.Panel{Sprite: "panel_brown.png"},
 			"panel-inner":  &widgets.Panel{Sprite: "panelInset_beige.png"},
-			"health-text":  &widgets.Text{Color: color.RGBA{50, 48, 41, 255}, Value: "Health"},
+			"gauge-text":   &widgets.Text{Color: color.RGBA{50, 48, 41, 255}},
 			"health-gauge": &widgets.Bar{Color: "Green", Value: .8},
-			"mana-text":    &widgets.Text{Color: color.RGBA{50, 48, 41, 255}, Value: "Mana"},
 			"mana-gauge":   &widgets.Bar{Color: "Blue", Value: .8},
-			"button-inventory": &widgets.Button{
-				Text:          "Inventory",
-				Sprite:        "buttonLong_blue.png",
-				SpritePressed: "buttonLong_blue_pressed.png",
-				OnClick:       func() { println("button clicked") },
+			"button-big": func() furex.Handler {
+				return &widgets.Button{
+					Sprite:        "buttonLong_blue.png",
+					SpritePressed: "buttonLong_blue_pressed.png",
+					OnClick:       func() { println("button clicked") },
+				}
 			},
-			"button-ok": &widgets.Button{
-				Text:          "OK",
-				Sprite:        "buttonSquare_blue.png",
-				SpritePressed: "buttonSquare_blue_pressed.png",
-				OnClick:       func() { println("button clicked") },
+			"button-small": func() furex.Handler {
+				return &widgets.Button{
+					Sprite:        "buttonSquare_blue.png",
+					SpritePressed: "buttonSquare_blue_pressed.png",
+					OnClick:       func() { println("button clicked") },
+				}
 			},
 			"close-button": &widgets.Button{
 				Sprite:  "buttonRound_blue.png",
@@ -113,48 +114,23 @@ func (g *Game) setupUI() {
 			"close-button-sprite": &widgets.Sprite{
 				Sprite: "iconCross_beige.png",
 			},
-			"button-a": &widgets.Button{
-				Text:          "A",
-				Color:         color.RGBA{210, 178, 144, 255},
-				Sprite:        "buttonSquare_brown.png",
-				SpritePressed: "buttonSquare_brown_pressed.png",
-				OnClick:       func() { println("button clicked") },
-			},
-			"button-b": &widgets.Button{
-				Text:          "B",
-				Color:         color.RGBA{210, 178, 144, 255},
-				Sprite:        "buttonSquare_brown.png",
-				SpritePressed: "buttonSquare_brown_pressed.png",
-				OnClick:       func() { println("button clicked") },
-			},
-			"button-c": &widgets.Button{
-				Text:          "C",
-				Color:         color.RGBA{210, 178, 144, 255},
-				Sprite:        "buttonSquare_brown.png",
-				SpritePressed: "buttonSquare_brown_pressed.png",
-				OnClick:       func() { println("button clicked") },
-			},
-			"button-d": &widgets.Button{
-				Text:          "D",
-				Color:         color.RGBA{210, 178, 144, 255},
-				Sprite:        "buttonSquare_brown.png",
-				SpritePressed: "buttonSquare_brown_pressed.png",
-				OnClick:       func() { println("button clicked") },
+			"bottom-button": func() furex.Handler {
+				return &widgets.Button{
+					Color:         color.RGBA{210, 178, 144, 255},
+					Sprite:        "buttonSquare_brown.png",
+					SpritePressed: "buttonSquare_brown_pressed.png",
+					OnClick:       func() { println("button clicked") },
+				}
 			},
 			"play-game-inner-panel": &widgets.Panel{Sprite: "glassPanel_corners.png"},
-			"button-yes": &widgets.Panel{
-				Sprite:  "glassPanel_projection.png",
-				Text:    "YES",
-				OnClick: func() { println("button clicked") },
-			},
-			"button-no": &widgets.Panel{
-				Sprite:  "glassPanel_projection.png",
-				Text:    "NO",
-				OnClick: func() { println("button clicked") },
+			"glass-button": func() furex.Handler {
+				return &widgets.Panel{
+					Sprite:  "glassPanel_projection.png",
+					OnClick: func() { println("button clicked") },
+				}
 			},
 			"play-game-text": &widgets.Text{
 				Color:     color.RGBA{45, 73, 94, 255},
-				Value:     "PLAY THE GAME?",
 				HorzAlign: etxt.XCenter,
 				VertAlign: etxt.YCenter,
 			},

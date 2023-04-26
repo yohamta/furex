@@ -13,20 +13,19 @@ import (
 
 type Text struct {
 	Color     color.Color
-	Value     string
 	Shadow    bool
 	HorzAlign etxt.HorzAlign
 	VertAlign etxt.VertAlign
 }
 
 var (
-	_ furex.DrawHandler = (*Text)(nil)
+	_ furex.DrawHandlerWithView = (*Text)(nil)
 )
 
-func (t *Text) HandleDraw(screen *ebiten.Image, frame image.Rectangle) {
+func (t *Text) HandleDraw(screen *ebiten.Image, frame image.Rectangle, view *furex.View) {
 	if t.Shadow {
 		ebitenutil.DrawRect(
-			screen, float64(frame.Min.X), float64(frame.Min.Y), float64(len(t.Value)*6+4), float64(frame.Dy()), color.RGBA{0, 0, 0, 50})
+			screen, float64(frame.Min.X), float64(frame.Min.Y), float64(len(view.Text)*6+4), float64(frame.Dy()), color.RGBA{0, 0, 0, 50})
 	}
 	x, y := frame.Min.X+frame.Dx()/2, frame.Min.Y+frame.Dy()/2
 	if t.HorzAlign == etxt.Left {
@@ -42,5 +41,5 @@ func (t *Text) HandleDraw(screen *ebiten.Image, frame image.Rectangle) {
 	}
 	text.R.SetAlign(t.VertAlign, t.HorzAlign)
 	text.R.SetTarget(screen)
-	text.R.Draw(t.Value, x, y)
+	text.R.Draw(view.Text, x, y)
 }

@@ -13,7 +13,6 @@ import (
 )
 
 type Button struct {
-	Text          string
 	Color         color.Color
 	OnClick       func()
 	Sprite        string
@@ -25,7 +24,7 @@ type Button struct {
 
 var (
 	_ furex.ButtonHandler          = (*Button)(nil)
-	_ furex.DrawHandler            = (*Button)(nil)
+	_ furex.DrawHandlerWithView    = (*Button)(nil)
 	_ furex.MouseEnterLeaveHandler = (*Button)(nil)
 )
 
@@ -42,7 +41,7 @@ func (b *Button) HandleRelease(x, y int, isCancel bool) {
 	}
 }
 
-func (b *Button) HandleDraw(screen *ebiten.Image, frame image.Rectangle) {
+func (b *Button) HandleDraw(screen *ebiten.Image, frame image.Rectangle, view *furex.View) {
 	x, y := float64(frame.Min.X+frame.Dx()/2), float64(frame.Min.Y+frame.Dy()/2)
 
 	opts := ganim8.DrawOpts(x, y, 0, 1, 1, .5, .5)
@@ -62,7 +61,7 @@ func (b *Button) HandleDraw(screen *ebiten.Image, frame image.Rectangle) {
 	} else {
 		text.R.SetColor(color.White)
 	}
-	text.R.Draw(b.Text, int(x), int(y))
+	text.R.Draw(view.Text, int(x), int(y))
 }
 
 func (b *Button) HandleMouseEnter(x, y int) bool {

@@ -52,7 +52,7 @@
             margin-top: 30px;
         }
 
-        .gauge-text {
+        gauge-text {
             width: 180px;
             height: 20px;
             margin-bottom: 2px;
@@ -72,12 +72,12 @@
             flex-grow: 1;
         }
 
-        button-inventory {
+        .button-inventory {
             width: 190px;
             height: 49px;
         }
 
-        button-ok {
+        .button-ok {
             width: 45px;
             height: 49px;
             margin-left: 10;
@@ -91,7 +91,7 @@
             margin-bottom: 20px;
         }
 
-        .bottom-button {
+        bottom-button {
             width: 45px;
             height: 49px;
             margin-top: 5px;
@@ -145,16 +145,11 @@
             justify-content: center;
         }
 
-        button-yes {
+        glass-button {
             width: 100;
             height: 50;
         }
 
-        button-no {
-            width: 100;
-            height: 50;
-            margin-left: 20px;
-        }
     </style>
 </head>
 
@@ -164,17 +159,17 @@
             <panel>
                 <panel-inner>
                     <gauge-container>
-                        <health-text class="gauge-text"></health-text>
+                        <gauge-text class="gauge-text">Health</gauge-text>
                         <health-gauge class="gauge"></health-gauge>
                     </gauge-container>
                     <gauge-container2>
-                        <mana-text class="gauge-text"></mana-text>
+                        <gauge-text class="gauge-text">Mana</gauge-text>
                         <mana-gauge class="gauge"></mana-gauge>
                     </gauge-container2>
                 </panel-inner>
                 <buttons>
-                    <button-inventory></button-inventory>
-                    <button-ok></button-ok>
+                    <button-big class="button-inventory">Inventory</button-big>
+                    <button-small class="button-ok">OK</button-small>
                 </buttons>
                 <close-button>
                     <close-button-sprite></close-button-sprite>
@@ -183,18 +178,18 @@
         </container>
 
         <bottom-buttons>
-            <button-a class="bottom-button"></button-a>
-            <button-b class="bottom-button"></button-b>
-            <button-c class="bottom-button"></button-c>
-            <button-d class="bottom-button"></button-d>
+            <bottom-button>A</bottom-button>
+            <bottom-button>B</bottom-button>
+            <bottom-button>C</bottom-button>
+            <bottom-button>D</bottom-button>
         </bottom-buttons>
 
         <play-game-container>
             <play-game-inner-panel>
-                <play-game-text></play-game-text>
+                <play-game-text>PLAY THE GAME?</play-game-text>
                 <play-game-buttons>
-                    <button-yes></button-yes>
-                    <button-no></button-no>
+                    <glass-button>YES</glass-button>
+                    <glass-button style="margin-left: 20px;">NO</glass-button>
                 </play-game-buttons>
             </play-game-inner-panel>
         </play-game-container>
