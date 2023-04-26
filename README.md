@@ -18,6 +18,8 @@ Full source code of the example is [here](examples/game/main.go).
 - [Getting Started](#getting-started)
 - [Usage](#usage)
 - [Building UI with HTML](#building-ui-with-html)
+  - [CSS Properties](#css-properties)
+  - [HTML Attributes](#html-attributes)
 - [Debugging](#debugging)
 - [Contributions](#contributions)
 
@@ -185,6 +187,39 @@ view := (&furex.View{
 ```
 
 For a more extensive example, check out the [example here](examples/game/main.go).
+
+### CSS Properties
+
+The following table lists the available CSS properties:
+
+| CSS Property | Type         | Available Values          |
+| -------------- | ------------ | ------------------------- |
+| `left`         | int          | Any integer value         |
+| `top`          | int          | Any integer value         |
+| `width`        | int          | Any integer value         |
+| `height`       | int          | Any integer value         |
+| `margin-left`  | int          | Any integer value         |
+| `margin-top`   | int          | Any integer value         |
+| `margin-right` | int          | Any integer value         |
+| `margin-bottom`| int          | Any integer value         |
+| `position`     | Position     | `static`, `absolute`      |
+| `flex-direction` | Direction    | `row`, `column`           |
+| `flex-wrap`    | FlexWrap     | `no-wrap`, `wrap`, `wrap-reverse` |
+| `justify-content` | Justify      | `start`, `end`, `center`, `space-between`, `space-around` |
+| `align-items`  | AlignItem    | `stretch`, `start`, `end`, `center` |
+| `align-content`| AlignContent | `start`, `end`, `center`, `space-between`, `space-around`, `stretch` |
+| `flex-grow`    | float64      | Any float64 value         |
+| `flex-shrink`  | float64      | Any float64 value         |
+| `display`      | Display      | `flex`, `none`            |
+
+### HTML Attributes
+
+The following table lists the available HTML attributes:
+
+| HTML Attribute | Type               | Available Values          |
+| -------------- | ------------------ | ------------------------- |
+| `id`           | string             | Any string value          |
+| `hidden`       | bool               | `true`, `false`           |
 
 ## Debugging
 
