@@ -14,7 +14,6 @@ import (
 )
 
 type Panel struct {
-	Sprite  string
 	Color   color.Color
 	OnClick func()
 
@@ -33,7 +32,7 @@ func (p *Panel) HandleDraw(screen *ebiten.Image, frame image.Rectangle, view *fu
 	// This code is just for demo.
 	// It's dirty and not optimized.
 
-	PanelName := p.Sprite
+	PanelName := view.Attrs["sprite"]
 	border := sprites.Get(fmt.Sprintf("%s_top_left", PanelName)).Width()
 	top := sprites.Get(fmt.Sprintf("%s_top", PanelName)).Height()
 	fborder := float64(border)

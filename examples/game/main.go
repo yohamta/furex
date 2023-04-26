@@ -88,8 +88,8 @@ func (g *Game) setupUI() {
 		Width:  g.screen.Width,
 		Height: g.screen.Height,
 		Components: map[string]furex.Component{
-			"panel":        &widgets.Panel{Sprite: "panel_brown.png"},
-			"panel-inner":  &widgets.Panel{Sprite: "panelInset_beige.png"},
+			"panel":        &widgets.Panel{},
+			"panel-inner":  &widgets.Panel{},
 			"gauge-text":   &widgets.Text{Color: color.RGBA{50, 48, 41, 255}},
 			"health-gauge": &widgets.Bar{Color: "Green", Value: .8},
 			"mana-gauge":   &widgets.Bar{Color: "Blue", Value: .8},
@@ -122,12 +122,9 @@ func (g *Game) setupUI() {
 					OnClick:       func() { println("button clicked") },
 				}
 			},
-			"play-game-inner-panel": &widgets.Panel{Sprite: "glassPanel_corners.png"},
+			"play-game-inner-panel": &widgets.Panel{},
 			"glass-button": func() furex.Handler {
-				return &widgets.Panel{
-					Sprite:  "glassPanel_projection.png",
-					OnClick: func() { println("button clicked") },
-				}
+				return &widgets.Panel{OnClick: func() { println("button clicked") }}
 			},
 			"play-game-text": &widgets.Text{
 				Color:     color.RGBA{45, 73, 94, 255},
