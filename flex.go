@@ -77,6 +77,14 @@ const (
 	PositionAbsolute
 )
 
+// Display is the 'display' property
+type Display uint8
+
+const (
+	DisplayFlex Display = iota
+	DisplayNone
+)
+
 type flexEmbed struct {
 	*View
 }
