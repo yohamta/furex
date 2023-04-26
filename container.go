@@ -33,7 +33,7 @@ func (ct *containerEmbed) Draw(screen *ebiten.Image) {
 		if !c.absolute {
 			b = c.bounds.Add(ct.frame.Min)
 		}
-		if c.item.Handler != nil {
+		if !c.item.Hidden && c.item.Handler != nil {
 			for {
 				if h, ok := c.item.Handler.(DrawHandler); ok {
 					h.HandleDraw(screen, b)
@@ -46,7 +46,9 @@ func (ct *containerEmbed) Draw(screen *ebiten.Image) {
 				break
 			}
 		}
-		c.item.Draw(screen)
+		if !c.item.Hidden {
+			c.item.Draw(screen)
+		}
 		if Debug {
 			pos := fmt.Sprintf("(%d, %d)-(%d, %d)", b.Min.X, b.Min.Y, b.Max.X, b.Max.Y)
 			graphic.FillRect(screen, &graphic.FillRectOpts{
