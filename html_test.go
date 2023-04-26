@@ -132,6 +132,28 @@ func TestParseHTML(t *testing.T) {
 			},
 		},
 		{
+			name: "hidden attribute",
+			html: `
+				<view>
+					<view id="test" hidden>
+					</view>
+				</view>
+						`,
+			expected: (&View{
+				Width:  200,
+				Height: 300,
+			}).AddChild((&View{})),
+			opts: &ParseOptions{
+				Width:  200,
+				Height: 300,
+			},
+			after: func(t *testing.T, v *View) {
+				elem, ok := v.GetByID("test")
+				require.True(t, ok)
+				require.Equal(t, true, elem.Hidden)
+			},
+		},
+		{
 			name: "complex",
 			html: `
 		<head>

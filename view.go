@@ -29,10 +29,11 @@ type View struct {
 	Grow         float64
 	Shrink       float64
 
-	ID    string
-	Raw   string
-	Text  string
-	Attrs map[string]string
+	ID     string
+	Raw    string
+	Text   string
+	Attrs  map[string]string
+	Hidden bool
 
 	Handler Handler
 
@@ -96,7 +97,9 @@ func (v *View) Draw(screen *ebiten.Image) {
 	if v.isDirty {
 		v.startLayout()
 	}
-	v.containerEmbed.Draw(screen)
+	if !v.Hidden {
+		v.containerEmbed.Draw(screen)
+	}
 	if Debug && !v.hasParent {
 		debugBorders(screen, v.containerEmbed)
 	}
@@ -198,6 +201,16 @@ func (v *View) GetByID(id string) (*View, bool) {
 		}
 	}
 	return nil, false
+}
+
+// MustGetByID returns the view with the specified id.
+// It panics if not found.
+func (v *View) MustGetByID(id string) *View {
+	vv, ok := v.GetByID(id)
+	if !ok {
+		panic("view not found")
+	}
+	return vv
 }
 
 // This is for debugging and testing.

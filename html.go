@@ -161,6 +161,7 @@ func processTag(z *html.Tokenizer, tagName string, opts *ParseOptions, depth int
 	view.ID = attrs.id
 	view.Raw = string(z.Raw())
 	view.Attrs = attrs.miscs
+	view.Hidden = attrs.hidden
 
 	if c, ok := opts.Components[tagName]; ok {
 		if reflect.TypeOf(c).Kind() == reflect.Func {
@@ -443,9 +444,10 @@ func parseString(val string) (any, error) {
 }
 
 type attrs struct {
-	id    string
-	style string
-	miscs map[string]string
+	id     string
+	style  string
+	hidden bool
+	miscs  map[string]string
 }
 
 func readAttrs(z *html.Tokenizer) attrs {
@@ -460,6 +462,8 @@ func readAttrs(z *html.Tokenizer) attrs {
 			attr.id = string(val)
 		case "style":
 			attr.style = string(val)
+		case "hidden":
+			attr.hidden = true
 		}
 		if !more {
 			break
