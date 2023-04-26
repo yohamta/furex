@@ -186,6 +186,20 @@ func (v *View) getChildren() []*View {
 	return ret
 }
 
+// GetByID returns the view with the specified id.
+// It returns nil if not found.
+func (v *View) GetByID(id string) (*View, bool) {
+	if v.ID == id {
+		return v, true
+	}
+	for _, child := range v.children {
+		if v, ok := child.item.GetByID(id); ok {
+			return v, true
+		}
+	}
+	return nil, false
+}
+
 // This is for debugging and testing.
 type ViewConfig struct {
 	Left         int
