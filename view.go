@@ -29,9 +29,10 @@ type View struct {
 	Grow         float64
 	Shrink       float64
 
-	ID   string
-	Raw  string
-	Text string
+	ID    string
+	Raw   string
+	Text  string
+	Attrs map[string]string
 
 	Handler Handler
 

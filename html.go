@@ -444,12 +444,16 @@ func parseString(val string) (any, error) {
 type attrs struct {
 	id    string
 	style string
+	miscs map[string]interface{}
 }
 
 func readAttrs(z *html.Tokenizer) attrs {
-	attr := attrs{}
+	attr := attrs{
+		miscs: make(map[string]interface{}),
+	}
 	for {
 		key, val, more := z.TagAttr()
+		attr.miscs[string(key)] = string(val)
 		switch string(key) {
 		case "id":
 			attr.id = string(val)
