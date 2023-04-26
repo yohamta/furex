@@ -118,8 +118,10 @@ func TestParseHTML(t *testing.T) {
 							</mock-handler>
 						</body>`,
 			opts: &ParseOptions{
-				Components: map[string]Handler{
-					"mock-handler": &mockHandler{},
+				Components: map[string]Component{
+					"mock-handler": func() Handler {
+						return &mockHandler{}
+					},
 				},
 			},
 			expected: (&View{}).AddChild((&View{})),

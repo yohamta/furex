@@ -7,9 +7,7 @@ import (
 )
 
 // Handler represents a component that can be added to a container.
-type Handler interface {
-	DrawHandler
-}
+type Handler interface{}
 
 // DrawHandler represents a component that can be added to a container.
 type DrawHandler interface {
@@ -18,10 +16,25 @@ type DrawHandler interface {
 	HandleDraw(screen *ebiten.Image, frame image.Rectangle)
 }
 
+// DrawHandlerWithView represents a component that can be added to a container.
+// The component can access the view itself.
+type DrawHandlerWithView interface {
+	// HandleDraw function draws the content of the component inside the frame.
+	// The frame parameter represents the location (x,y) and size (width,height) relative to the window (0,0).
+	HandleDraw(screen *ebiten.Image, frame image.Rectangle, v *View)
+}
+
 // UpdateHandler represents a component that updates by one tick.
 type UpdateHandler interface {
 	// Updater updates the state of the component by one tick.
 	HandleUpdate()
+}
+
+// UpdateHandlerWithView represents a component that updates by one tick.
+// The component can access the view itself.
+type UpdateHandlerWithView interface {
+	// Updater updates the state of the component by one tick.
+	HandleUpdate(v *View)
 }
 
 // ButtonHandler represents a button component.

@@ -34,7 +34,17 @@ func (ct *containerEmbed) Draw(screen *ebiten.Image) {
 			b = c.bounds.Add(ct.frame.Min)
 		}
 		if c.item.Handler != nil {
-			c.item.Handler.HandleDraw(screen, b)
+			for {
+				if h, ok := c.item.Handler.(DrawHandler); ok {
+					h.HandleDraw(screen, b)
+					break
+				}
+				if h, ok := c.item.Handler.(DrawHandlerWithView); ok {
+					h.HandleDraw(screen, b, c.item)
+					break
+				}
+				break
+			}
 		}
 		c.item.Draw(screen)
 		if Debug {

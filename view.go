@@ -12,7 +12,6 @@ import (
 // Handlers can be set to create custom component such as button or list.
 type View struct {
 	// TODO: Remove these fields in the future.
-	ID           string
 	Left         int
 	Top          int
 	Width        int
@@ -29,9 +28,12 @@ type View struct {
 	AlignContent AlignContent
 	Grow         float64
 	Shrink       float64
-	Raw          string
 
-	Handler DrawHandler
+	ID   string
+	Raw  string
+	Text string
+
+	Handler Handler
 
 	containerEmbed
 	flexEmbed
@@ -46,9 +48,13 @@ func (v *View) Update() {
 	}
 	for _, v := range v.children {
 		v.item.Update()
-		u, ok := v.item.Handler.(UpdateHandler)
-		if ok && u != nil {
+		if u, ok := v.item.Handler.(UpdateHandler); ok {
 			u.HandleUpdate()
+			continue
+		}
+		if u, ok := v.item.Handler.(UpdateHandlerWithView); ok {
+			u.HandleUpdate(v.item)
+			continue
 		}
 	}
 	if !v.hasParent {
