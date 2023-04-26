@@ -33,7 +33,7 @@ func (ct *containerEmbed) Draw(screen *ebiten.Image) {
 		if !c.absolute {
 			b = c.bounds.Add(ct.frame.Min)
 		}
-		if !c.item.Hidden && c.item.Handler != nil {
+		if !c.item.Hidden && c.item.Display != DisplayNone && c.item.Handler != nil {
 			for {
 				if h, ok := c.item.Handler.(DrawHandler); ok {
 					h.HandleDraw(screen, b)
@@ -46,9 +46,7 @@ func (ct *containerEmbed) Draw(screen *ebiten.Image) {
 				break
 			}
 		}
-		if !c.item.Hidden {
-			c.item.Draw(screen)
-		}
+		c.item.Draw(screen)
 		if Debug {
 			pos := fmt.Sprintf("(%d, %d)-(%d, %d)", b.Min.X, b.Min.Y, b.Max.X, b.Max.Y)
 			graphic.FillRect(screen, &graphic.FillRectOpts{
@@ -64,6 +62,9 @@ func (ct *containerEmbed) HandleJustPressedTouchID(touchID ebiten.TouchID, x, y 
 	for c := len(ct.children) - 1; c >= 0; c-- {
 		child := ct.children[c]
 		childFrame := ct.childFrame(child)
+		if child.item.Display == DisplayNone {
+			continue
+		}
 		if child.HandleJustPressedTouchID(childFrame, touchID, x, y) {
 			return true
 		}
@@ -87,6 +88,9 @@ func (ct *containerEmbed) handleMouse(x, y int) bool {
 	for c := len(ct.children) - 1; c >= 0; c-- {
 		child := ct.children[c]
 		childFrame := ct.childFrame(child)
+		if child.item.Display == DisplayNone {
+			continue
+		}
 		mouseHandler, ok := child.item.Handler.(MouseHandler)
 		if ok && mouseHandler != nil {
 			if isInside(childFrame, x, y) {
@@ -107,6 +111,9 @@ func (ct *containerEmbed) handleMouseEnterLeave(x, y int) bool {
 	for c := len(ct.children) - 1; c >= 0; c-- {
 		child := ct.children[c]
 		childFrame := ct.childFrame(child)
+		if child.item.Display == DisplayNone {
+			continue
+		}
 		mouseHandler, ok := child.item.Handler.(MouseEnterLeaveHandler)
 		if ok {
 			if !result && !child.isMouseEntered && isInside(childFrame, x, y) {
@@ -135,6 +142,9 @@ func (ct *containerEmbed) handleMouseButtonLeftPressed(x, y int) bool {
 	for c := len(ct.children) - 1; c >= 0; c-- {
 		child := ct.children[c]
 		childFrame := ct.childFrame(child)
+		if child.item.Display == DisplayNone {
+			continue
+		}
 		mouseLeftClickHandler, ok := child.item.Handler.(MouseLeftButtonHandler)
 		if ok {
 			if !result && isInside(childFrame, x, y) {

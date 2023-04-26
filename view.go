@@ -28,6 +28,7 @@ type View struct {
 	AlignContent AlignContent
 	Grow         float64
 	Shrink       float64
+	Display      Display
 
 	ID     string
 	Raw    string
@@ -102,7 +103,7 @@ func (v *View) Draw(screen *ebiten.Image) {
 	if v.isDirty {
 		v.startLayout()
 	}
-	if !v.Hidden {
+	if !v.Hidden && v.Display != DisplayNone {
 		v.containerEmbed.Draw(screen)
 	}
 	if Debug && !v.hasParent {

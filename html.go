@@ -292,8 +292,8 @@ var styleMapper = map[string]mapper[View]{
 		setFunc:   setFunc(func(v *View, val float64) { v.Shrink = val }),
 	},
 	"display": {
-		parseFunc: parseString,
-		setFunc:   setFunc(func(v *View, val string) { /* noop */ }),
+		parseFunc: parseDisplay,
+		setFunc:   setFunc(func(v *View, val Display) { v.Display = val }),
 	},
 }
 
@@ -439,8 +439,14 @@ func parseAlignContent(val string) (any, error) {
 	return AlignContentStart, fmt.Errorf("unknown align-content: %s", val)
 }
 
-func parseString(val string) (any, error) {
-	return val, nil
+func parseDisplay(val string) (any, error) {
+	switch val {
+	case "none":
+		return DisplayNone, nil
+	case "", "flex":
+		return DisplayFlex, nil
+	}
+	return DisplayFlex, fmt.Errorf("unknown display: %s", val)
 }
 
 type attrs struct {
