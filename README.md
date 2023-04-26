@@ -205,9 +205,9 @@ The following table lists the available CSS properties:
 | `position`     | Position     | `static`, `absolute`      |
 | `flex-direction` | Direction    | `row`, `column`           |
 | `flex-wrap`    | FlexWrap     | `no-wrap`, `wrap`, `wrap-reverse` |
-| `justify-content` | Justify      | `start`, `end`, `center`, `space-between`, `space-around` |
-| `align-items`  | AlignItem    | `stretch`, `start`, `end`, `center` |
-| `align-content`| AlignContent | `start`, `end`, `center`, `space-between`, `space-around`, `stretch` |
+| `justify-content` | Justify      | `flex-start`, `flex-end`, `center`, `space-between`, `space-around` |
+| `align-items`  | AlignItem    | `stretch`, `flex-start`, `flex-end`, `center` |
+| `align-content`| AlignContent | `flex-start`, `flex-end`, `center`, `space-between`, `space-around`, `stretch` |
 | `flex-grow`    | float64      | Any float64 value         |
 | `flex-shrink`  | float64      | Any float64 value         |
 | `display`      | Display      | `flex`, `none`            |
