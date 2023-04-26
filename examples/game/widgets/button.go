@@ -13,10 +13,8 @@ import (
 )
 
 type Button struct {
-	Color         color.Color
-	OnClick       func()
-	Sprite        string
-	SpritePressed string
+	Color   color.Color
+	OnClick func()
 
 	mouseover bool
 	pressed   bool
@@ -44,14 +42,17 @@ func (b *Button) HandleRelease(x, y int, isCancel bool) {
 func (b *Button) HandleDraw(screen *ebiten.Image, frame image.Rectangle, view *furex.View) {
 	x, y := float64(frame.Min.X+frame.Dx()/2), float64(frame.Min.Y+frame.Dy()/2)
 
+	sprite := view.Attrs["sprite"]
+	spritePressed := view.Attrs["sprite_pressed"]
+
 	opts := ganim8.DrawOpts(x, y, 0, 1, 1, .5, .5)
 	if b.mouseover {
 		opts.ColorM.Scale(1.1, 1.1, 1.1, 1)
 	}
-	if b.pressed && b.SpritePressed != "" {
-		ganim8.DrawSpriteWithOpts(screen, sprites.Get(b.SpritePressed), 0, opts, nil)
-	} else if b.Sprite != "" {
-		ganim8.DrawSpriteWithOpts(screen, sprites.Get(b.Sprite), 0, opts, nil)
+	if b.pressed && spritePressed != "" {
+		ganim8.DrawSpriteWithOpts(screen, sprites.Get(spritePressed), 0, opts, nil)
+	} else if sprite != "" {
+		ganim8.DrawSpriteWithOpts(screen, sprites.Get(sprite), 0, opts, nil)
 	}
 
 	text.R.SetAlign(etxt.YCenter, etxt.XCenter)

@@ -10,15 +10,15 @@ import (
 )
 
 type Sprite struct {
-	Sprite string
 }
 
 var (
-	_ furex.DrawHandler = (*Sprite)(nil)
+	_ furex.DrawHandlerWithView = (*Sprite)(nil)
 )
 
-func (t *Sprite) HandleDraw(screen *ebiten.Image, frame image.Rectangle) {
-	spr := sprites.Get(t.Sprite)
+func (t *Sprite) HandleDraw(screen *ebiten.Image, frame image.Rectangle, view *furex.View) {
+	sprite := view.Attrs["sprite"]
+	spr := sprites.Get(sprite)
 	x, y := float64(frame.Min.X)+float64(frame.Dx())/2, float64(frame.Min.Y)+float64(frame.Dy())/2
 	ganim8.DrawSprite(screen, spr, 0, x, y, 0, 1, 1, .5, .5)
 }
