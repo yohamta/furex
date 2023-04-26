@@ -469,11 +469,20 @@ func readAttrs(z *html.Tokenizer) attrs {
 		case "style":
 			attr.style = string(val)
 		case "hidden":
-			attr.hidden = true
+			v := string(val)
+			if v == "" {
+				attr.hidden = true
+			} else {
+				attr.hidden = parseBool(v)
+			}
 		}
 		if !more {
 			break
 		}
 	}
 	return attr
+}
+
+func parseBool(val string) bool {
+	return val == "true"
 }
