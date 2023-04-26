@@ -16,7 +16,7 @@
             flex-grow: 1;
         }
 
-        panel {
+        .panel-outer {
             width: 300px;
             height: 300px;
             margin-top: 120px;
@@ -26,7 +26,7 @@
             justify-content: center;
         }
 
-        panel-inner {
+        .panel-inner {
             flex-direction: column;
             align-items: center;
             justify-content: center;
@@ -120,7 +120,7 @@
             top: 52;
         }
 
-        play-game-inner-panel {
+        .play-game-panel {
             width: 260px;
             height: 140px;
             flex-direction: column;
@@ -156,8 +156,8 @@
 <body>
     <game-ui>
         <container>
-            <panel sprite="panel_brown.png">
-                <panel-inner sprite="panelInset_beige.png">
+            <panel class="panel-outer" sprite="panel_brown.png">
+                <panel class="panel-inner" sprite="panelInset_beige.png">
                     <gauge-container>
                         <gauge-text class="gauge-text">Health</gauge-text>
                         <health-gauge class="gauge"></health-gauge>
@@ -166,7 +166,7 @@
                         <gauge-text class="gauge-text">Mana</gauge-text>
                         <mana-gauge class="gauge"></mana-gauge>
                     </gauge-container2>
-                </panel-inner>
+                </panel>
                 <buttons>
                     <button-big class="button-inventory">Inventory</button-big>
                     <button-small class="button-ok">OK</button-small>
@@ -185,13 +185,13 @@
         </bottom-buttons>
 
         <play-game-container>
-            <play-game-inner-panel sprite="glassPanel_corners.png">
+            <panel class="play-game-panel" sprite="glassPanel_corners.png">
                 <play-game-text>PLAY THE GAME?</play-game-text>
                 <play-game-buttons>
                     <glass-button sprite="glassPanel_projection.png">YES</glass-button>
                     <glass-button sprite="glassPanel_projection.png" style="margin-left: 20px;">NO</glass-button>
                 </play-game-buttons>
-            </play-game-inner-panel>
+            </panel>
         </play-game-container>
     </game-ui>
 </body>
