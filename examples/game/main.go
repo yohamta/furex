@@ -121,7 +121,6 @@ func (g *Game) setupUI() {
 					OnClick:       func() { println("button clicked") },
 				}
 			},
-			"play-game-inner-panel": &widgets.Panel{},
 			"glass-button": func() furex.Handler {
 				return &widgets.Panel{OnClick: func() { println("button clicked") }}
 			},
