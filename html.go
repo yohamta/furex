@@ -470,7 +470,7 @@ func parseLength(val string) (any, error) {
 		if err != nil || v.(float64) <= 0 {
 			return cssLength{}, nil
 		}
-		return cssLength{unit: cssUnitPct, val: v.(float64) / 100}, nil
+		return cssLength{unit: cssUnitPct, val: v.(float64)}, nil
 	default:
 		val = strings.TrimSuffix(val, "px")
 		v, err := parseFloat(val)

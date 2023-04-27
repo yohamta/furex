@@ -233,23 +233,25 @@ func (f *flexEmbed) layout(width, height int, container *containerEmbed) {
 
 	switch f.Direction {
 	case Row:
-		totalWidthInRatio := 0.0
 		remWidth := width
 		for _, c := range children {
-			totalWidthInRatio += c.node.item.WidthInPct
 			remWidth -= c.node.item.Width
 		}
-		if remWidth > 0 && totalWidthInRatio > 0 {
+		if remWidth > 0 {
 			for _, c := range children {
-				w := c.widthInRatio / totalWidthInRatio * float64(remWidth)
-				c.node.item.calculatedWidth = int(w)
-				c.flexBaseSize = float64(f.flexBaseSize(c.node))
+				if c.widthInRatio > 0 {
+					w := c.widthInRatio * float64(remWidth) / 100
+					c.node.item.calculatedWidth = int(w)
+					c.flexBaseSize = float64(f.flexBaseSize(c.node))
+				}
 			}
 		}
 	case Column:
 		for _, c := range children {
-			c.node.item.calculatedWidth = width
-			c.flexBaseSize = float64(f.flexBaseSize(c.node))
+			if c.widthInRatio > 0 {
+				c.node.item.calculatedWidth = int(float64(width) * c.node.item.WidthInPct / 100)
+				c.flexBaseSize = float64(f.flexBaseSize(c.node))
+			}
 		}
 	default:
 		panic(fmt.Sprint("flex: bad direction ", f.Direction))

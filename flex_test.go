@@ -885,7 +885,7 @@ func TestWidthInRatioRow(t *testing.T) {
 
 	flex.AddChild(
 		&View{
-			WidthInPct: 1,
+			WidthInPct: 100,
 			Height:     100,
 			Handler:    &mock,
 		},
@@ -918,7 +918,7 @@ func TestWidthInRatioCol(t *testing.T) {
 			Height: 100,
 		},
 		&View{
-			WidthInPct: 1,
+			WidthInPct: 100,
 			Height:     100,
 			Handler:    &mock,
 		},
