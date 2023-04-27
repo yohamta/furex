@@ -30,11 +30,12 @@ type View struct {
 	Shrink       float64
 	Display      Display
 
-	ID     string
-	Raw    string
-	Text   string
-	Attrs  map[string]string
-	Hidden bool
+	ID      string
+	Raw     string
+	TagName string
+	Text    string
+	Attrs   map[string]string
+	Hidden  bool
 
 	Handler Handler
 

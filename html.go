@@ -159,6 +159,7 @@ func processTag(z *html.Tokenizer, tagName string, opts *ParseOptions, depth int
 
 	parseStyle(view, attrs.style, opts.Components)
 	view.ID = attrs.id
+	view.TagName = tagName
 	view.Raw = string(z.Raw())
 	view.Attrs = attrs.miscs
 	view.Hidden = attrs.hidden
