@@ -1,7 +1,9 @@
 package furex
 
 import (
+	"fmt"
 	"image"
+	"strings"
 	"sync"
 
 	"github.com/hajimehoshi/ebiten/v2"
@@ -220,29 +222,10 @@ func (v *View) MustGetByID(id string) *View {
 	return vv
 }
 
-// This is for debugging and testing.
-type ViewConfig struct {
-	Left         int
-	Top          int
-	Width        int
-	Height       int
-	MarginLeft   int
-	MarginTop    int
-	MarginRight  int
-	MarginBottom int
-	Position     Position
-	Direction    Direction
-	Wrap         FlexWrap
-	Justify      Justify
-	AlignItems   AlignItem
-	AlignContent AlignContent
-	Grow         float64
-	Shrink       float64
-	children     []*ViewConfig
-}
-
-func (v *View) Config() *ViewConfig {
-	cfg := &ViewConfig{
+func (v *View) Config() ViewConfig {
+	cfg := ViewConfig{
+		TagName:      v.TagName,
+		ID:           v.ID,
 		Left:         v.Left,
 		Top:          v.Top,
 		Width:        v.Width,
@@ -259,10 +242,57 @@ func (v *View) Config() *ViewConfig {
 		AlignContent: v.AlignContent,
 		Grow:         v.Grow,
 		Shrink:       v.Shrink,
-		children:     []*ViewConfig{},
+		children:     []ViewConfig{},
 	}
 	for _, child := range v.getChildren() {
 		cfg.children = append(cfg.children, child.Config())
 	}
 	return cfg
+}
+
+// This is for debugging and testing.
+type ViewConfig struct {
+	TagName      string
+	ID           string
+	Left         int
+	Top          int
+	Width        int
+	Height       int
+	MarginLeft   int
+	MarginTop    int
+	MarginRight  int
+	MarginBottom int
+	Position     Position
+	Direction    Direction
+	Wrap         FlexWrap
+	Justify      Justify
+	AlignItems   AlignItem
+	AlignContent AlignContent
+	Grow         float64
+	Shrink       float64
+	children     []ViewConfig
+}
+
+func (cfg ViewConfig) Tree() string {
+	return cfg.tree("")
+}
+
+func (cfg ViewConfig) tree(indent string) string {
+	sb := &strings.Builder{}
+	sb.WriteString(fmt.Sprintf("%s<%s ", indent, cfg.TagName))
+	if cfg.ID != "" {
+		sb.WriteString(fmt.Sprintf("id=\"%s\" ", cfg.ID))
+	}
+	sb.WriteString("style=\"")
+	sb.WriteString(
+		fmt.Sprintf("left: %d, top: %d, width: %d, height: %d, marginLeft: %d, marginTop: %d, marginRight: %d, marginBottom: %d, position: %s, direction: %s, wrap: %s, justify: %s, alignItems: %s, alignContent: %s, grow: %f, shrink: %f",
+			cfg.Left, cfg.Top, cfg.Width, cfg.Height, cfg.MarginLeft, cfg.MarginTop, cfg.MarginRight, cfg.MarginBottom, cfg.Position, cfg.Direction, cfg.Wrap, cfg.Justify, cfg.AlignItems, cfg.AlignContent, cfg.Grow, cfg.Shrink))
+	sb.WriteString("\">\n")
+	for _, child := range cfg.children {
+		sb.WriteString(child.tree(indent + "  "))
+		sb.WriteString("\n")
+	}
+	sb.WriteString(fmt.Sprintf("%s</%s>", indent, cfg.TagName))
+	sb.WriteString("\n")
+	return sb.String()
 }
