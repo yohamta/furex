@@ -209,6 +209,9 @@ func (f *flexEmbed) layout(width, height int, container *containerEmbed) {
 	// Determine the flex base size and hypothetical main size of each item:
 	var children []element
 	for _, c := range container.children {
+		if c.item.Display == DisplayNone {
+			continue
+		}
 		if c.item.Position == PositionAbsolute {
 			c.bounds = image.Rect(
 				container.frame.Min.X+c.item.Left,
