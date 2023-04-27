@@ -15,6 +15,17 @@ const (
 	Column
 )
 
+func (d Direction) String() string {
+	switch d {
+	case Row:
+		return "row"
+	case Column:
+		return "column"
+	default:
+		return fmt.Sprintf("unknown direction: %d", d)
+	}
+}
+
 // Justify aligns items along the main axis.
 type Justify uint8
 
@@ -26,6 +37,23 @@ const (
 	JustifySpaceAround                 // even spacing, half-size on each end
 )
 
+func (f Justify) String() string {
+	switch f {
+	case JustifyStart:
+		return "flex-start"
+	case JustifyEnd:
+		return "flex-end"
+	case JustifyCenter:
+		return "center"
+	case JustifySpaceBetween:
+		return "space-between"
+	case JustifySpaceAround:
+		return "space-around"
+	default:
+		return fmt.Sprintf("unknown justify: %d", f)
+	}
+}
+
 // FlexAlign represents align of flex children
 type FlexAlign int
 
@@ -35,6 +63,21 @@ const (
 	FlexEnd
 	FlexSpaceBetween
 )
+
+func (f FlexAlign) String() string {
+	switch f {
+	case FlexCenter:
+		return "center"
+	case FlexStart:
+		return "flex-start"
+	case FlexEnd:
+		return "flex-end"
+	case FlexSpaceBetween:
+		return "space-between"
+	default:
+		return fmt.Sprintf("unknown flex-align: %d", f)
+	}
+}
 
 // AlignItem aligns items along the cross axis.
 type AlignItem uint8
@@ -46,6 +89,21 @@ const (
 	AlignItemCenter
 )
 
+func (f AlignItem) String() string {
+	switch f {
+	case AlignItemStretch:
+		return "stretch"
+	case AlignItemStart:
+		return "flex-start"
+	case AlignItemEnd:
+		return "flex-end"
+	case AlignItemCenter:
+		return "center"
+	default:
+		return fmt.Sprintf("unknown align-item: %d", f)
+	}
+}
+
 // FlexWrap controls whether the container is single- or multi-line,
 // and the direction in which the lines are laid out.
 type FlexWrap uint8
@@ -55,6 +113,19 @@ const (
 	Wrap
 	WrapReverse
 )
+
+func (f FlexWrap) String() string {
+	switch f {
+	case NoWrap:
+		return "nowrap"
+	case Wrap:
+		return "wrap"
+	case WrapReverse:
+		return "wrap-reverse"
+	default:
+		return fmt.Sprintf("unknown flex-wrap: %d", f)
+	}
+}
 
 // AlignContent is the 'align-content' property.
 // It aligns container lines when there is extra space on the cross-axis.
@@ -69,6 +140,24 @@ const (
 	AlignContentStretch
 )
 
+func (f AlignContent) String() string {
+	switch f {
+	case AlignContentStart:
+		return "start"
+	case AlignContentEnd:
+		return "end"
+	case AlignContentCenter:
+		return "center"
+	case AlignContentSpaceBetween:
+		return "space-between"
+	case AlignContentSpaceAround:
+		return "space-around"
+	case AlignContentStretch:
+		return "stretch"
+	}
+	return fmt.Sprintf("unknown align-content: %d", f)
+}
+
 // Position is the 'position' property
 type Position uint8
 
@@ -77,6 +166,16 @@ const (
 	PositionAbsolute
 )
 
+func (p Position) String() string {
+	switch p {
+	case PositionStatic:
+		return "static"
+	case PositionAbsolute:
+		return "absolute"
+	}
+	return fmt.Sprintf("unknown position: %d", p)
+}
+
 // Display is the 'display' property
 type Display uint8
 
@@ -84,6 +183,16 @@ const (
 	DisplayFlex Display = iota
 	DisplayNone
 )
+
+func (d Display) String() string {
+	switch d {
+	case DisplayFlex:
+		return "flex"
+	case DisplayNone:
+		return "none"
+	}
+	return fmt.Sprintf("unknown display: %d", d)
+}
 
 type flexEmbed struct {
 	*View
@@ -100,6 +209,9 @@ func (f *flexEmbed) layout(width, height int, container *containerEmbed) {
 	// Determine the flex base size and hypothetical main size of each item:
 	var children []element
 	for _, c := range container.children {
+		if c.item.Display == DisplayNone {
+			continue
+		}
 		if c.item.Position == PositionAbsolute {
 			c.bounds = image.Rect(
 				container.frame.Min.X+c.item.Left,
@@ -113,9 +225,34 @@ func (f *flexEmbed) layout(width, height int, container *containerEmbed) {
 		}
 		c.absolute = false
 		children = append(children, element{
+			widthInRatio: c.item.WidthInPct,
 			flexBaseSize: float64(f.flexBaseSize(c)),
 			node:         c,
 		})
+	}
+
+	switch f.Direction {
+	case Row:
+		totalWidthInRatio := 0.0
+		remWidth := width
+		for _, c := range children {
+			totalWidthInRatio += c.node.item.WidthInPct
+			remWidth -= c.node.item.Width
+		}
+		if remWidth > 0 && totalWidthInRatio > 0 {
+			for _, c := range children {
+				w := c.widthInRatio / totalWidthInRatio * float64(remWidth)
+				c.node.item.calculatedWidth = int(w)
+				c.flexBaseSize = float64(f.flexBaseSize(c.node))
+			}
+		}
+	case Column:
+		for _, c := range children {
+			c.node.item.calculatedWidth = width
+			c.flexBaseSize = float64(f.flexBaseSize(c.node))
+		}
+	default:
+		panic(fmt.Sprint("flex: bad direction ", f.Direction))
 	}
 
 	// §9.3. Main Size Determination
@@ -533,6 +670,7 @@ type element struct {
 	crossMargin            []float64
 	frozen                 bool
 	maxContentFlexFraction float64
+	widthInRatio           float64
 }
 
 type flexLine struct {

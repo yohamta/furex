@@ -48,7 +48,7 @@ func (ct *containerEmbed) Draw(screen *ebiten.Image) {
 		}
 		c.item.Draw(screen)
 		if Debug {
-			pos := fmt.Sprintf("(%d, %d)-(%d, %d)", b.Min.X, b.Min.Y, b.Max.X, b.Max.Y)
+			pos := fmt.Sprintf("(%d, %d)-(%d, %d):%s:%s", b.Min.X, b.Min.Y, b.Max.X, b.Max.Y, c.item.TagName, c.item.ID)
 			graphic.FillRect(screen, &graphic.FillRectOpts{
 				Color: color.RGBA{0, 0, 0, 200},
 				Rect:  image.Rect(b.Min.X, b.Min.Y, b.Min.X+len(pos)*6, b.Min.Y+12),

@@ -159,6 +159,7 @@ func processTag(z *html.Tokenizer, tagName string, opts *ParseOptions, depth int
 
 	parseStyle(view, attrs.style, opts.Components)
 	view.ID = attrs.id
+	view.TagName = tagName
 	view.Raw = string(z.Raw())
 	view.Attrs = attrs.miscs
 	view.Hidden = attrs.hidden
@@ -216,8 +217,15 @@ var styleMapper = map[string]mapper[View]{
 		setFunc:   setFunc(func(v *View, val int) { v.Top = val }),
 	},
 	"width": {
-		parseFunc: parseNumber,
-		setFunc:   setFunc(func(v *View, val int) { v.Width = val }),
+		parseFunc: parseLength,
+		setFunc: setFunc(func(v *View, val cssLength) {
+			switch val.unit {
+			case cssUnitPx:
+				v.Width = int(val.val)
+			case cssUnitPct:
+				v.WidthInPct = val.val
+			}
+		}),
 	},
 	"height": {
 		parseFunc: parseNumber,
@@ -449,6 +457,30 @@ func parseDisplay(val string) (any, error) {
 	return DisplayFlex, fmt.Errorf("unknown display: %s", val)
 }
 
+type cssLength struct {
+	unit cssUnit
+	val  float64
+}
+
+func parseLength(val string) (any, error) {
+	switch {
+	case strings.HasSuffix(val, "%"):
+		val = strings.TrimSuffix(val, "%")
+		v, err := parseFloat(val)
+		if err != nil || v.(float64) <= 0 {
+			return cssLength{}, nil
+		}
+		return cssLength{unit: cssUnitPct, val: v.(float64) / 100}, nil
+	default:
+		val = strings.TrimSuffix(val, "px")
+		v, err := parseFloat(val)
+		if err != nil {
+			return cssLength{}, nil
+		}
+		return cssLength{unit: cssUnitPx, val: v.(float64)}, nil
+	}
+}
+
 type attrs struct {
 	id     string
 	style  string
@@ -486,3 +518,10 @@ func readAttrs(z *html.Tokenizer) attrs {
 func parseBool(val string) bool {
 	return val == "true"
 }
+
+type cssUnit int
+
+const (
+	cssUnitPx cssUnit = iota
+	cssUnitPct
+)

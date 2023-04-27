@@ -1,7 +1,9 @@
 package furex
 
 import (
+	"fmt"
 	"image"
+	"strings"
 	"sync"
 
 	"github.com/hajimehoshi/ebiten/v2"
@@ -15,6 +17,7 @@ type View struct {
 	Left         int
 	Top          int
 	Width        int
+	WidthInPct   float64
 	Height       int
 	MarginLeft   int
 	MarginTop    int
@@ -30,18 +33,20 @@ type View struct {
 	Shrink       float64
 	Display      Display
 
-	ID     string
-	Raw    string
-	Text   string
-	Attrs  map[string]string
-	Hidden bool
+	ID      string
+	Raw     string
+	TagName string
+	Text    string
+	Attrs   map[string]string
+	Hidden  bool
 
 	Handler Handler
 
 	containerEmbed
 	flexEmbed
-	hasParent bool
 	lock      sync.Mutex
+	hasParent bool
+	parent    *View
 }
 
 // Update updates the view
@@ -96,6 +101,9 @@ func (v *View) UpdateWithSize(width, height int) {
 // Layout marks the view as dirty
 func (v *View) Layout() {
 	v.isDirty = true
+	if v.hasParent {
+		v.parent.isDirty = true
+	}
 }
 
 // Draw draws the view
@@ -106,7 +114,7 @@ func (v *View) Draw(screen *ebiten.Image) {
 	if !v.Hidden && v.Display != DisplayNone {
 		v.containerEmbed.Draw(screen)
 	}
-	if Debug && !v.hasParent {
+	if Debug && !v.hasParent && v.Display != DisplayNone {
 		debugBorders(screen, v.containerEmbed)
 	}
 }
@@ -135,6 +143,7 @@ func (v *View) RemoveChild(cv *View) bool {
 			v.children = append(v.children[:i], v.children[i+1:]...)
 			v.isDirty = true
 			cv.hasParent = false
+			cv.parent = nil
 			return true
 		}
 	}
@@ -146,6 +155,7 @@ func (v *View) RemoveAll() {
 	v.isDirty = true
 	for _, child := range v.children {
 		child.item.hasParent = false
+		child.item.parent = nil
 	}
 	v.children = []*child{}
 }
@@ -159,6 +169,7 @@ func (v *View) PopChild() *View {
 	v.children = v.children[:len(v.children)-1]
 	v.isDirty = true
 	c.item.hasParent = false
+	c.item.parent = nil
 	return c.item
 }
 
@@ -167,6 +178,7 @@ func (v *View) addChild(cv *View) *View {
 	v.children = append(v.children, child)
 	v.isDirty = true
 	cv.hasParent = true
+	cv.parent = v
 	return v
 }
 
@@ -219,29 +231,118 @@ func (v *View) MustGetByID(id string) *View {
 	return vv
 }
 
-// This is for debugging and testing.
-type ViewConfig struct {
-	Left         int
-	Top          int
-	Width        int
-	Height       int
-	MarginLeft   int
-	MarginTop    int
-	MarginRight  int
-	MarginBottom int
-	Position     Position
-	Direction    Direction
-	Wrap         FlexWrap
-	Justify      Justify
-	AlignItems   AlignItem
-	AlignContent AlignContent
-	Grow         float64
-	Shrink       float64
-	children     []*ViewConfig
+// SetLeft sets the left position of the view.
+func (v *View) SetLeft(left int) {
+	v.Left = left
+	v.Layout()
 }
 
-func (v *View) Config() *ViewConfig {
-	cfg := &ViewConfig{
+// SetTop sets the top position of the view.
+func (v *View) SetTop(top int) {
+	v.Top = top
+	v.Layout()
+}
+
+// SetWidth sets the width of the view.
+func (v *View) SetWidth(width int) {
+	v.Width = width
+	v.Layout()
+}
+
+// SetHeight sets the height of the view.
+func (v *View) SetHeight(height int) {
+	v.Height = height
+	v.Layout()
+}
+
+// SetMarginLeft sets the left margin of the view.
+func (v *View) SetMarginLeft(marginLeft int) {
+	v.MarginLeft = marginLeft
+	v.Layout()
+}
+
+// SetMarginTop sets the top margin of the view.
+func (v *View) SetMarginTop(marginTop int) {
+	v.MarginTop = marginTop
+	v.Layout()
+}
+
+// SetMarginRight sets the right margin of the view.
+func (v *View) SetMarginRight(marginRight int) {
+	v.MarginRight = marginRight
+	v.Layout()
+}
+
+// SetMarginBottom sets the bottom margin of the view.
+func (v *View) SetMarginBottom(marginBottom int) {
+	v.MarginBottom = marginBottom
+	v.Layout()
+}
+
+// SetPosition sets the position of the view.
+func (v *View) SetPosition(position Position) {
+	v.Position = position
+	v.Layout()
+}
+
+// SetDirection sets the direction of the view.
+func (v *View) SetDirection(direction Direction) {
+	v.Direction = direction
+	v.Layout()
+}
+
+// SetWrap sets the wrap property of the view.
+func (v *View) SetWrap(wrap FlexWrap) {
+	v.Wrap = wrap
+	v.Layout()
+}
+
+// SetJustify sets the justify property of the view.
+func (v *View) SetJustify(justify Justify) {
+	v.Justify = justify
+	v.Layout()
+}
+
+// SetAlignItems sets the align items property of the view.
+func (v *View) SetAlignItems(alignItems AlignItem) {
+	v.AlignItems = alignItems
+	v.Layout()
+}
+
+// SetAlignContent sets the align content property of the view.
+func (v *View) SetAlignContent(alignContent AlignContent) {
+	v.AlignContent = alignContent
+	v.Layout()
+}
+
+// SetGrow sets the grow property of the view.
+func (v *View) SetGrow(grow float64) {
+	v.Grow = grow
+	v.Layout()
+}
+
+// SetShrink sets the shrink property of the view.
+func (v *View) SetShrink(shrink float64) {
+	v.Shrink = shrink
+	v.Layout()
+}
+
+// SetDisplay sets the display property of the view.
+func (v *View) SetDisplay(display Display) {
+	v.Display = display
+	v.Layout()
+}
+
+// SetHidden sets the hidden property of the view.
+func (v *View) SetHidden(hidden bool) {
+	v.Hidden = hidden
+	v.Layout()
+}
+
+func (v *View) Config() ViewConfig {
+	cfg := ViewConfig{
+		TagName:      v.TagName,
+		ID:           v.ID,
 		Left:         v.Left,
 		Top:          v.Top,
 		Width:        v.Width,
@@ -258,10 +359,57 @@ func (v *View) Config() *ViewConfig {
 		AlignContent: v.AlignContent,
 		Grow:         v.Grow,
 		Shrink:       v.Shrink,
-		children:     []*ViewConfig{},
+		children:     []ViewConfig{},
 	}
 	for _, child := range v.getChildren() {
 		cfg.children = append(cfg.children, child.Config())
 	}
 	return cfg
+}
+
+// This is for debugging and testing.
+type ViewConfig struct {
+	TagName      string
+	ID           string
+	Left         int
+	Top          int
+	Width        int
+	Height       int
+	MarginLeft   int
+	MarginTop    int
+	MarginRight  int
+	MarginBottom int
+	Position     Position
+	Direction    Direction
+	Wrap         FlexWrap
+	Justify      Justify
+	AlignItems   AlignItem
+	AlignContent AlignContent
+	Grow         float64
+	Shrink       float64
+	children     []ViewConfig
+}
+
+func (cfg ViewConfig) Tree() string {
+	return cfg.tree("")
+}
+
+func (cfg ViewConfig) tree(indent string) string {
+	sb := &strings.Builder{}
+	sb.WriteString(fmt.Sprintf("%s<%s ", indent, cfg.TagName))
+	if cfg.ID != "" {
+		sb.WriteString(fmt.Sprintf("id=\"%s\" ", cfg.ID))
+	}
+	sb.WriteString("style=\"")
+	sb.WriteString(
+		fmt.Sprintf("left: %d, top: %d, width: %d, height: %d, marginLeft: %d, marginTop: %d, marginRight: %d, marginBottom: %d, position: %s, direction: %s, wrap: %s, justify: %s, alignItems: %s, alignContent: %s, grow: %f, shrink: %f",
+			cfg.Left, cfg.Top, cfg.Width, cfg.Height, cfg.MarginLeft, cfg.MarginTop, cfg.MarginRight, cfg.MarginBottom, cfg.Position, cfg.Direction, cfg.Wrap, cfg.Justify, cfg.AlignItems, cfg.AlignContent, cfg.Grow, cfg.Shrink))
+	sb.WriteString("\">\n")
+	for _, child := range cfg.children {
+		sb.WriteString(child.tree(indent + "  "))
+		sb.WriteString("\n")
+	}
+	sb.WriteString(fmt.Sprintf("%s</%s>", indent, cfg.TagName))
+	sb.WriteString("\n")
+	return sb.String()
 }

@@ -872,6 +872,64 @@ func TestAutoHeightCalculation(t *testing.T) {
 	assert.Equal(t, image.Rect(0, 100, 200, 300), mock2.Frame)
 }
 
+func TestWidthInRatioRow(t *testing.T) {
+	flex := &View{
+		Width:      500,
+		Height:     500,
+		Direction:  Row,
+		Justify:    JustifyEnd,
+		AlignItems: AlignItemEnd,
+	}
+
+	mock := mockHandler{}
+
+	flex.AddChild(
+		&View{
+			WidthInPct: 1,
+			Height:     100,
+			Handler:    &mock,
+		},
+		&View{
+			Width:  50,
+			Height: 100,
+		},
+	)
+
+	flex.Update()
+	flex.Draw(nil)
+
+	assert.Equal(t, image.Rect(0, 400, 450, 500), mock.Frame)
+}
+
+func TestWidthInRatioCol(t *testing.T) {
+	flex := &View{
+		Width:      500,
+		Height:     500,
+		Direction:  Column,
+		Justify:    JustifyEnd,
+		AlignItems: AlignItemEnd,
+	}
+
+	mock := mockHandler{}
+
+	flex.AddChild(
+		&View{
+			Width:  50,
+			Height: 100,
+		},
+		&View{
+			WidthInPct: 1,
+			Height:     100,
+			Handler:    &mock,
+		},
+	)
+
+	flex.Update()
+	flex.Draw(nil)
+
+	assert.Equal(t, image.Rect(0, 400, 500, 500), mock.Frame)
+}
+
 func flexItemBounds(parent *View, child *View) image.Rectangle {
 	mock := &mockHandler{}
 	child.Handler = mock
