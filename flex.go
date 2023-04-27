@@ -225,9 +225,34 @@ func (f *flexEmbed) layout(width, height int, container *containerEmbed) {
 		}
 		c.absolute = false
 		children = append(children, element{
+			widthInRatio: c.item.WidthInPct,
 			flexBaseSize: float64(f.flexBaseSize(c)),
 			node:         c,
 		})
+	}
+
+	switch f.Direction {
+	case Row:
+		totalWidthInRatio := 0.0
+		remWidth := width
+		for _, c := range children {
+			totalWidthInRatio += c.node.item.WidthInPct
+			remWidth -= c.node.item.Width
+		}
+		if remWidth > 0 && totalWidthInRatio > 0 {
+			for _, c := range children {
+				w := c.widthInRatio / totalWidthInRatio * float64(remWidth)
+				c.node.item.calculatedWidth = int(w)
+				c.flexBaseSize = float64(f.flexBaseSize(c.node))
+			}
+		}
+	case Column:
+		for _, c := range children {
+			c.node.item.calculatedWidth = width
+			c.flexBaseSize = float64(f.flexBaseSize(c.node))
+		}
+	default:
+		panic(fmt.Sprint("flex: bad direction ", f.Direction))
 	}
 
 	// §9.3. Main Size Determination
@@ -645,6 +670,7 @@ type element struct {
 	crossMargin            []float64
 	frozen                 bool
 	maxContentFlexFraction float64
+	widthInRatio           float64
 }
 
 type flexLine struct {
