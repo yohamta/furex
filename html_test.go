@@ -441,6 +441,65 @@ func TestParseHTML(t *testing.T) {
 					),
 				),
 			)},
+		{
+			name: "style in header",
+			html: `
+				<!DOCTYPE html>
+				<head>
+				    <style>
+				        .container {
+				            flex-direction: column;
+				            justify-content: center;
+				            flex-grow: 1;
+				        }
+
+				        menu-container {
+				            display: flex;
+				            flex-direction: column;
+				            justify-content: center;
+				            flex-grow: 1;
+				        }
+
+				        menu-inner-container {
+				            width: 30;
+				            height: 800;
+				        }
+				    </style>
+				</head>
+
+				<body>
+				    <div class="container">
+				        <menu-container id="menu-container">
+				            <menu-inner-container>
+				            </menu-inner-container>
+				        </menu-container>
+				    </div>
+				</body>
+
+				</html>
+			`,
+			opts: &ParseOptions{
+				Width:  640,
+				Height: 800,
+			},
+			expected: (&View{
+				Width:     640,
+				Height:    800,
+				Direction: Column,
+				Justify:   JustifyCenter,
+				Grow:      1,
+			}).AddChild(
+				(&View{
+					Direction: Column,
+					Justify:   JustifyCenter,
+					Grow:      1,
+				}).AddChild(
+					&View{
+						Width:  30,
+						Height: 800,
+					},
+				),
+			)},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -452,5 +511,14 @@ func TestParseHTML(t *testing.T) {
 
 func testViewStyle(t *testing.T, v *View, expected *View) {
 	t.Helper()
-	require.Equal(t, expected.Config(), v.Config())
+	require.Equal(t, styleConfig(expected.Config()), styleConfig(v.Config()))
+}
+
+func styleConfig(cfg ViewConfig) ViewConfig {
+	cfg.TagName = ""
+	cfg.ID = ""
+	for i, v := range cfg.children {
+		cfg.children[i] = styleConfig(v)
+	}
+	return cfg
 }
