@@ -183,11 +183,19 @@ func (v *View) addChild(cv *View) *View {
 	return v
 }
 
+func (v *View) isWidthFixed() bool {
+	return v.Width != 0 || v.WidthInPct != 0
+}
+
 func (v *View) width() int {
 	if v.Width == 0 {
 		return v.calculatedWidth
 	}
 	return v.Width
+}
+
+func (v *View) isHeightFixed() bool {
+	return v.Height != 0 || v.HeightInPct != 0
 }
 
 func (v *View) height() int {
