@@ -8,6 +8,8 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
+// TODO: refactor these tests to make them more readable.
+
 func TestFlexAlignments(t *testing.T) {
 	w, h := 100, 100
 	child := &View{
@@ -872,7 +874,7 @@ func TestAutoHeightCalculation(t *testing.T) {
 	assert.Equal(t, image.Rect(0, 100, 200, 300), mock2.Frame)
 }
 
-func TestWidthInRatioRow(t *testing.T) {
+func TestWidthInPctRow(t *testing.T) {
 	flex := &View{
 		Width:      500,
 		Height:     500,
@@ -901,7 +903,7 @@ func TestWidthInRatioRow(t *testing.T) {
 	assert.Equal(t, image.Rect(0, 400, 450, 500), mock.Frame)
 }
 
-func TestWidthInRatioCol(t *testing.T) {
+func TestWidthInPctCol(t *testing.T) {
 	flex := &View{
 		Width:      500,
 		Height:     500,
@@ -928,6 +930,64 @@ func TestWidthInRatioCol(t *testing.T) {
 	flex.Draw(nil)
 
 	assert.Equal(t, image.Rect(0, 400, 500, 500), mock.Frame)
+}
+
+func TestHeightInPctRow(t *testing.T) {
+	flex := &View{
+		Width:      500,
+		Height:     500,
+		Direction:  Row,
+		Justify:    JustifyEnd,
+		AlignItems: AlignItemEnd,
+	}
+
+	mock := mockHandler{}
+
+	flex.AddChild(
+		&View{
+			Width:       100,
+			HeightInPct: 100,
+			Handler:     &mock,
+		},
+		&View{
+			Width:  50,
+			Height: 100,
+		},
+	)
+
+	flex.Update()
+	flex.Draw(nil)
+
+	assert.Equal(t, image.Rect(350, 0, 450, 500), mock.Frame)
+}
+
+func TestHeightInPctCol(t *testing.T) {
+	flex := &View{
+		Width:      500,
+		Height:     500,
+		Direction:  Column,
+		Justify:    JustifyEnd,
+		AlignItems: AlignItemEnd,
+	}
+
+	mock := mockHandler{}
+
+	flex.AddChild(
+		&View{
+			Width:  50,
+			Height: 100,
+		},
+		&View{
+			Width:       100,
+			HeightInPct: 100,
+			Handler:     &mock,
+		},
+	)
+
+	flex.Update()
+	flex.Draw(nil)
+
+	assert.Equal(t, image.Rect(400, 100, 500, 500), mock.Frame)
 }
 
 func flexItemBounds(parent *View, child *View) image.Rectangle {
