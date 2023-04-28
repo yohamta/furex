@@ -485,7 +485,7 @@ func (f *flexEmbed) layout(width, height int, container *containerEmbed) {
 		line := &lines[l]
 		for _, child := range line.child {
 			if f.AlignItems == AlignItemStretch &&
-				f.crossSize(child.node.item.Width, child.node.item.Height) == 0 &&
+				!f.isCrossSizeFixed(child.node.item) &&
 				child.crossSize < line.crossSize {
 				crossMargin := child.crossMargin[0] + child.crossMargin[1]
 				child.crossSize = line.crossSize - crossMargin
@@ -738,6 +738,17 @@ func (f *flexEmbed) setMainSize(v int) {
 		f.calculatedWidth = v
 	case Column:
 		f.calculatedHeight = v
+	default:
+		panic(fmt.Sprint("flex: bad direction ", f.Direction))
+	}
+}
+
+func (f *flexEmbed) isCrossSizeFixed(v *View) bool {
+	switch f.Direction {
+	case Row:
+		return v.isHeightFixed()
+	case Column:
+		return v.isWidthFixed()
 	default:
 		panic(fmt.Sprint("flex: bad direction ", f.Direction))
 	}
