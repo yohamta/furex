@@ -228,8 +228,15 @@ var styleMapper = map[string]mapper[View]{
 		}),
 	},
 	"height": {
-		parseFunc: parseNumber,
-		setFunc:   setFunc(func(v *View, val int) { v.Height = val }),
+		parseFunc: parseLength,
+		setFunc: setFunc(func(v *View, val cssLength) {
+			switch val.unit {
+			case cssUnitPx:
+				v.Height = int(val.val)
+			case cssUnitPct:
+				v.HeightInPct = val.val
+			}
+		}),
 	},
 	"margin-left": {
 		parseFunc: parseNumber,
