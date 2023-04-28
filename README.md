@@ -197,7 +197,7 @@ The following table lists the available CSS properties:
 | `left`         | int          | Any integer value         |
 | `top`          | int          | Any integer value         |
 | `width`        | int          | Any integer value or percentage |
-| `height`       | int          | Any integer value         |
+| `height`       | int          | Any integer value or percentage |
 | `margin-left`  | int          | Any integer value         |
 | `margin-top`   | int          | Any integer value         |
 | `margin-right` | int          | Any integer value         |

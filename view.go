@@ -19,6 +19,7 @@ type View struct {
 	Width        int
 	WidthInPct   float64
 	Height       int
+	HeightInPct  float64
 	MarginLeft   int
 	MarginTop    int
 	MarginRight  int

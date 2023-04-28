@@ -225,32 +225,59 @@ func (f *flexEmbed) layout(width, height int, container *containerEmbed) {
 		}
 		c.absolute = false
 		children = append(children, element{
-			widthInRatio: c.item.WidthInPct,
+			widthInPct:   c.item.WidthInPct,
+			heightInPct:  c.item.HeightInPct,
 			flexBaseSize: float64(f.flexBaseSize(c)),
 			node:         c,
 		})
 	}
 
+	// Depending on the flex container direction, apply calculation for width and height in percent.
 	switch f.Direction {
 	case Row:
-		remWidth := width
+		// Calculate the remaining width after taking out the fixed width items.
+		remFree := width
 		for _, c := range children {
-			remWidth -= c.node.item.Width
+			remFree -= c.node.item.Width
 		}
-		if remWidth > 0 {
+		// If there is remaining space, distribute it among the flexible items.
+		if remFree > 0 {
 			for _, c := range children {
-				if c.widthInRatio > 0 {
-					w := c.widthInRatio * float64(remWidth) / 100
-					c.node.item.calculatedWidth = int(w)
+				if c.widthInPct > 0 {
+					v := float64(width) * c.widthInPct / 100.
+					c.node.item.calculatedWidth = int(math.Min(v, float64(remFree)))
 					c.flexBaseSize = float64(f.flexBaseSize(c.node))
 				}
 			}
 		}
-	case Column:
+		// If the container is a row, calculate the height of each item.
 		for _, c := range children {
-			if c.widthInRatio > 0 {
+			if c.heightInPct > 0 {
+				// Calculate the new width based on the item's width percentage.
+				c.node.item.calculatedHeight = int(float64(height) * c.node.item.HeightInPct / 100)
+			}
+		}
+	case Column:
+		// Calculate the remaining height after taking out the fixed width items.
+		remFree := height
+		for _, c := range children {
+			remFree -= c.node.item.Height
+		}
+		// If there is remaining space, distribute it among the flexible items.
+		if remFree > 0 {
+			for _, c := range children {
+				if c.heightInPct > 0 {
+					v := float64(height) * c.heightInPct / 100.
+					c.node.item.calculatedHeight = int(math.Min(v, float64(remFree)))
+					c.flexBaseSize = float64(f.flexBaseSize(c.node))
+				}
+			}
+		}
+		// If the container is a column, calculate the width of each item.
+		for _, c := range children {
+			if c.widthInPct > 0 {
+				// Calculate the new width based on the item's width percentage.
 				c.node.item.calculatedWidth = int(float64(width) * c.node.item.WidthInPct / 100)
-				c.flexBaseSize = float64(f.flexBaseSize(c.node))
 			}
 		}
 	default:
@@ -672,7 +699,8 @@ type element struct {
 	crossMargin            []float64
 	frozen                 bool
 	maxContentFlexFraction float64
-	widthInRatio           float64
+	widthInPct             float64
+	heightInPct            float64
 }
 
 type flexLine struct {
