@@ -157,6 +157,19 @@ func TestAbsolutePos(t *testing.T) {
 	require.Equal(t, image.Rect(x, y, x+w, y+h), mock.Frame)
 }
 
+func TestAbsolutePosRightBottom(t *testing.T) {
+	mock := mockHandler{}
+
+	f1 := (&View{Width: 100, Height: 100}).addChild(
+		&View{Position: PositionAbsolute, Width: 10, Height: 10, Right: 40, Bottom: 50, Handler: &mock},
+	)
+
+	f1.Update()
+	f1.Draw(nil)
+
+	assert.Equal(t, image.Rect(50, 40, 60, 50), mock.Frame)
+}
+
 func TestAbsolutePosNested(t *testing.T) {
 	f1 := &View{
 		Width:      150,
