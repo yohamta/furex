@@ -238,7 +238,7 @@ func (f *flexEmbed) layout(width, height int, container *containerEmbed) {
 		// Calculate the remaining width after taking out the fixed width items.
 		remFree := width
 		for _, c := range children {
-			remFree -= c.node.item.Width
+			remFree -= (c.node.item.Width + c.node.item.MarginLeft + c.node.item.MarginRight)
 		}
 		// If there is remaining space, distribute it among the flexible items.
 		if remFree > 0 {
@@ -261,7 +261,7 @@ func (f *flexEmbed) layout(width, height int, container *containerEmbed) {
 		// Calculate the remaining height after taking out the fixed width items.
 		remFree := height
 		for _, c := range children {
-			remFree -= c.node.item.Height
+			remFree -= (c.node.item.Height + c.node.item.MarginTop + c.node.item.MarginBottom)
 		}
 		// If there is remaining space, distribute it among the flexible items.
 		if remFree > 0 {
