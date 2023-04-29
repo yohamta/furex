@@ -212,9 +212,17 @@ var styleMapper = map[string]mapper[View]{
 		parseFunc: parseNumber,
 		setFunc:   setFunc(func(v *View, val int) { v.Left = val }),
 	},
+	"right": {
+		parseFunc: parseNumber,
+		setFunc:   setFunc(func(v *View, val int) { v.Right = val }),
+	},
 	"top": {
 		parseFunc: parseNumber,
 		setFunc:   setFunc(func(v *View, val int) { v.Top = val }),
+	},
+	"bottom": {
+		parseFunc: parseNumber,
+		setFunc:   setFunc(func(v *View, val int) { v.Bottom = val }),
 	},
 	"width": {
 		parseFunc: parseLength,
