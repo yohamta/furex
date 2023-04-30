@@ -183,17 +183,11 @@ func processTag(z *html.Tokenizer, tagName string, opts *ParseOptions, depth int
 
 func component(name string, m ComponentsMap) (Component, bool) {
 	c, ok := m[name]
-	if !ok {
+	if c == nil {
 		return nil, ok
 	}
-	if c == nil {
-		return nil, true
-	}
-	if reflect.TypeOf(c).Kind() == reflect.Func {
-		if c, ok := c.(func() Handler); ok {
-			return c, ok
-		}
-		panic(fmt.Sprintf("invalid component: %s", name))
+	if c, ok := c.(func() Handler); ok {
+		return c(), ok
 	}
 	return c, ok
 }
