@@ -231,7 +231,7 @@ There are three types of components you can create in Furex:
 
 - **Handler Instance**: A `furex.Handler` instance, such as `DrawHandler`.
 - **Factory Function**: A function that returns a `furex.Handler` instance. This is useful when you want to create separate handler instances for each HTML tag.
-- **Function Component**: A function that returns a `*furex.View instance`. This is an alternative way to create components that encapsulate their own behavior and styles.
+- **Function Component**: A function that returns a `*furex.View` instance. This is an alternative way to create components that encapsulate their own behavior and styles.
 
 ### Global Components
 
