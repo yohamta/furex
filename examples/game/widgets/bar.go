@@ -15,10 +15,10 @@ type Bar struct {
 }
 
 var (
-	_ furex.DrawHandlerWithView = (*Bar)(nil)
+	_ furex.Drawer = (*Bar)(nil)
 )
 
-func (b *Bar) HandleDraw(screen *ebiten.Image, frame image.Rectangle, view *furex.View) {
+func (b *Bar) Draw(screen *ebiten.Image, frame image.Rectangle, view *furex.View) {
 	b.drawBlackBar(screen, frame)
 	b.drawBar(screen, frame, view)
 }

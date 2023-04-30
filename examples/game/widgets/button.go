@@ -22,7 +22,7 @@ type Button struct {
 
 var (
 	_ furex.ButtonHandler          = (*Button)(nil)
-	_ furex.DrawHandlerWithView    = (*Button)(nil)
+	_ furex.Drawer                 = (*Button)(nil)
 	_ furex.MouseEnterLeaveHandler = (*Button)(nil)
 )
 
@@ -39,7 +39,7 @@ func (b *Button) HandleRelease(x, y int, isCancel bool) {
 	}
 }
 
-func (b *Button) HandleDraw(screen *ebiten.Image, frame image.Rectangle, view *furex.View) {
+func (b *Button) Draw(screen *ebiten.Image, frame image.Rectangle, view *furex.View) {
 	x, y := float64(frame.Min.X+frame.Dx()/2), float64(frame.Min.Y+frame.Dy()/2)
 
 	sprite := view.Attrs["sprite"]
