@@ -158,21 +158,21 @@ func TestParseHTML(t *testing.T) {
 			html: `
 		<head>
 		    <style>
-		        game-ui {
+		        .game-ui {
 		            flex-direction: column;
 		            justify-content: space-between;
 		            align-items: stretch;
 		            align-content: stretch;
 		        }
 
-		        container {
+		        .container {
 		            justify-content: center;
 		            align-items: center;
 		            margin-top: 50px;
 		            flex-grow: 1;
 		        }
 
-		        panel {
+		        .panel {
 		            width: 300px;
 		            height: 300px;
 		            margin-top: 120px;
@@ -182,7 +182,7 @@ func TestParseHTML(t *testing.T) {
 		            justify-content: center;
 		        }
 
-		        panel-inner {
+		        .panel-inner {
 		            flex-direction: column;
 		            align-items: center;
 		            justify-content: center;
@@ -191,7 +191,7 @@ func TestParseHTML(t *testing.T) {
 		            height: 200px;
 		        }
 
-		        gauge-container {
+		        .gauge-container {
 		            width: 180px;
 		            height: 38px;
 		            align-items: flex-start;
@@ -199,7 +199,7 @@ func TestParseHTML(t *testing.T) {
 		            flex-direction: column;
 		        }
 
-		        gauge-container2 {
+		        .gauge-container2 {
 		            width: 180px;
 		            height: 38px;
 		            align-items: flex-start;
@@ -219,7 +219,7 @@ func TestParseHTML(t *testing.T) {
 		            height: 18px;
 		        }
 
-		        buttons {
+		        .buttons {
 		            flex-direction: row;
 		            align-items: center;
 		            justify-content: center;
@@ -228,18 +228,18 @@ func TestParseHTML(t *testing.T) {
 		            flex-grow: 1;
 		        }
 
-		        button-inventory {
+		        .button-inventory {
 		            width: 190px;
 		            height: 49px;
 		        }
 
-		        button-ok {
+		        .button-ok {
 		            width: 45px;
 		            height: 49px;
 		            margin-left: 10;
 		        }
 
-		        bottom-buttons {
+		        .bottom-buttons {
 		            justify-content: center;
 		            align-items: flex-end;
 		            margin-bottom: 20px;
@@ -254,13 +254,13 @@ func TestParseHTML(t *testing.T) {
 		            margin-right: 20px;
 		        }
 
-		        play-game-container {
+		        .play-game-container {
 		            position: absolute;
 		            left: 20;
 		            top: 52;
 		        }
 
-		        play-game-inner-panel {
+		        .play-game-inner-panel {
 		            width: 260px;
 		            height: 140px;
 		            flex-direction: column;
@@ -268,7 +268,7 @@ func TestParseHTML(t *testing.T) {
 		            justify-content: center;
 		        }
 
-		        play-game-text {
+		        .play-game-text {
 		            width: 100px;
 		            height: 8px;
 		            margin-bottom: 20px;
@@ -277,7 +277,7 @@ func TestParseHTML(t *testing.T) {
 		            justify-content: center;
 		        }
 
-		        play-game-buttons {
+		        .play-game-buttons {
 		            width: 100;
 		            height: 50;
 		            flex-direction: row;
@@ -291,7 +291,7 @@ func TestParseHTML(t *testing.T) {
 		            margin-left: 20px;
 		        }
 
-		        close-button {
+		        .close-button {
 		            position: absolute;
 		            left: 283px;
 		            top: -15;
@@ -299,7 +299,7 @@ func TestParseHTML(t *testing.T) {
 		            height: 38px
 		        }
 
-		        close-button-sprite {
+		        .close-button-sprite {
 		            position: absolute;
 		            left: 18;
 		            top: 17
@@ -308,29 +308,29 @@ func TestParseHTML(t *testing.T) {
 		</head>
 
 		<body>
-		    <game-ui>
-		        <container>
-		            <panel>
-		                <panel-inner>
-		                    <gauge-container>
-		                        <health-text class="gauge-text"></health-text>
-		                        <health-gauge class="gauge"></health-gauge>
-		                    </gauge-container>
-		                    <gauge-container2>
-		                        <mana-text class="gauge-text"></mana-text>
-		                        <mana-gauge class="gauge"></mana-gauge>
-		                    </gauge-container2>
-		                </panel-inner>
-		                <buttons>
-		                    <button-inventory></button-inventory>
-		                    <button-ok></button-ok>
-		                </buttons>
-		                <close-button>
-		                    <close-button-sprite></close-button-sprite>
-		                </close-button>
-		            </panel>
-		        </container>
-		    </game-ui>
+		    <div class="game-ui">
+		        <div class="container">
+		            <div class="panel">
+		                <div class="panel-inner">
+		                    <div class="gauge-container">
+		                        <div class="gauge-text health-text"></div>
+		                        <div class="gauge health-gauge"></div>
+		                    </div>
+		                    <div class="gauge-container2">
+		                        <div class="gauge-text mana-text"></div>
+		                        <div class="gauge mana-gauge"></div>
+		                    </div>
+		                </div>
+		                <div class="buttons">
+		                    <div class="button-inventory"></div>
+		                    <div class="button-ok"></div>
+		                </div>
+		                <div class="close-button">
+		                    <div class="close-button-sprite"></div>
+		                </div>
+		            </div>
+		        </div>
+		    </div>
 		</body>
 
 		</html>
@@ -453,14 +453,14 @@ func TestParseHTML(t *testing.T) {
 				            flex-grow: 1;
 				        }
 
-				        menu-container {
+				        .menu-container {
 				            display: flex;
 				            flex-direction: column;
 				            justify-content: center;
 				            flex-grow: 1;
 				        }
 
-				        menu-inner-container {
+				        .menu-inner-container {
 				            width: 30;
 				            height: 800;
 				        }
@@ -469,10 +469,10 @@ func TestParseHTML(t *testing.T) {
 
 				<body>
 				    <div class="container">
-				        <menu-container id="menu-container">
-				            <menu-inner-container>
-				            </menu-inner-container>
-				        </menu-container>
+				        <div class="menu-container" id="menu-container">
+				            <div class="menu-inner-container">
+				            </div>
+				        </div>
 				    </div>
 				</body>
 

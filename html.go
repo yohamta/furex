@@ -54,6 +54,7 @@ func Parse(input string, opts *ParseOptions) *View {
 	stack := &stack{stack: []*View{dummy}}
 	depth := 0
 	inBody := false
+	cms := []ComponentsMap{opts.Components, registerdComponents}
 Loop:
 	for {
 		tt := z.Next()
@@ -72,7 +73,7 @@ Loop:
 			if !inBody {
 				continue
 			}
-			view := processTag(z, string(tn), opts, depth)
+			view := processTag(z, string(tn), opts, depth, cms)
 			if view == nil {
 				continue
 			}
@@ -81,7 +82,7 @@ Loop:
 
 			depth++
 		case html.SelfClosingTagToken:
-			view := processTag(z, string(tn), opts, depth)
+			view := processTag(z, string(tn), opts, depth, cms)
 			if view == nil {
 				continue
 			}
@@ -144,7 +145,13 @@ func (s *stack) pop() *View {
 	return v
 }
 
-func processTag(z *html.Tokenizer, tagName string, opts *ParseOptions, depth int) *View {
+var registerdComponents = ComponentsMap{"div": nil, "view": nil}
+
+func RegisterComponent(name string, c Component) { registerdComponents[name] = c }
+
+type cms []ComponentsMap
+
+func processTag(z *html.Tokenizer, tagName string, opts *ParseOptions, depth int, cms cms) *View {
 	attrs := readAttrs(z)
 	view := &View{}
 
@@ -164,19 +171,31 @@ func processTag(z *html.Tokenizer, tagName string, opts *ParseOptions, depth int
 	view.Attrs = attrs.miscs
 	view.Hidden = attrs.hidden
 
-	if c, ok := opts.Components[tagName]; ok {
-		if reflect.TypeOf(c).Kind() == reflect.Func {
-			if c, ok := c.(func() Handler); ok {
-				view.Handler = c()
-			} else {
-				panic(fmt.Sprintf("invalid component: %s", tagName))
-			}
-		} else {
+	for _, cm := range cms {
+		if c, ok := component(tagName, cm); ok {
 			view.Handler = c
+			return view
 		}
 	}
 
-	return view
+	panic(fmt.Sprintf("unknown component: %s", tagName))
+}
+
+func component(name string, m ComponentsMap) (Component, bool) {
+	c, ok := m[name]
+	if !ok {
+		return nil, ok
+	}
+	if c == nil {
+		return nil, true
+	}
+	if reflect.TypeOf(c).Kind() == reflect.Func {
+		if c, ok := c.(func() Handler); ok {
+			return c, ok
+		}
+		panic(fmt.Sprintf("invalid component: %s", name))
+	}
+	return c, ok
 }
 
 func parseStyle(view *View, style string, handlers ComponentsMap) {
