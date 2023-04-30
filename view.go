@@ -57,19 +57,24 @@ func (v *View) Update() {
 	if v.isDirty {
 		v.startLayout()
 	}
+	v.processHandler()
 	for _, v := range v.children {
 		v.item.Update()
-		if u, ok := v.item.Handler.(UpdateHandler); ok {
-			u.HandleUpdate()
-			continue
-		}
-		if u, ok := v.item.Handler.(UpdateHandlerWithView); ok {
-			u.HandleUpdate(v.item)
-			continue
-		}
+		v.item.processHandler()
 	}
 	if !v.hasParent {
 		v.processEvent()
+	}
+}
+
+func (v *View) processHandler() {
+	if u, ok := v.Handler.(UpdateHandler); ok {
+		u.HandleUpdate()
+		return
+	}
+	if u, ok := v.Handler.(UpdateHandlerWithView); ok {
+		u.HandleUpdate(v)
+		return
 	}
 }
 
