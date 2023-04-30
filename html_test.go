@@ -504,7 +504,7 @@ func TestParseHTML(t *testing.T) {
 		{
 			name: "functional component",
 			before: func(t *testing.T) {
-				Register("test-comp", func() *View {
+				register("test-comp", func() *View {
 					return &View{Width: 100, Height: 100}
 				})
 			},

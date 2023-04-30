@@ -151,7 +151,13 @@ var (
 	registerdComponents = defaultComponents
 )
 
-func Register(name string, c Component) { registerdComponents[name] = c }
+func RegisterComponents(cs ComponentsMap) {
+	for k, v := range cs {
+		register(k, v)
+	}
+}
+
+func register(name string, c Component) { registerdComponents[name] = c }
 func resetComponents()                  { registerdComponents = defaultComponents }
 
 type cms []ComponentsMap
