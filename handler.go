@@ -22,7 +22,7 @@ type Updater interface {
 }
 
 // DrawHandler represents a component that can be added to a container.
-// deprectead: use Drawer instead
+// Deprectead: use Drawer instead
 type DrawHandler interface {
 	// HandleDraw function draws the content of the component inside the frame.
 	// The frame parameter represents the location (x,y) and size (width,height) relative to the window (0,0).
@@ -30,7 +30,7 @@ type DrawHandler interface {
 }
 
 // UpdateHandler represents a component that updates by one tick.
-// deprectead: use Updater instead
+// Deprectead: use Updater instead
 type UpdateHandler interface {
 	// Updater updates the state of the component by one tick.
 	HandleUpdate()
