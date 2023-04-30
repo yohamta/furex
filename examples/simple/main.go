@@ -76,9 +76,9 @@ type Box struct {
 	Color color.Color
 }
 
-var _ furex.DrawHandler = (*Box)(nil)
+var _ furex.Drawer = (*Box)(nil)
 
-func (b *Box) HandleDraw(screen *ebiten.Image, frame image.Rectangle) {
+func (b *Box) Draw(screen *ebiten.Image, frame image.Rectangle, view *furex.View) {
 	ebitenutil.DrawRect(
 		screen,
 		float64(frame.Min.X),

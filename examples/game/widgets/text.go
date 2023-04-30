@@ -19,10 +19,10 @@ type Text struct {
 }
 
 var (
-	_ furex.DrawHandlerWithView = (*Text)(nil)
+	_ furex.Drawer = (*Text)(nil)
 )
 
-func (t *Text) HandleDraw(screen *ebiten.Image, frame image.Rectangle, view *furex.View) {
+func (t *Text) Draw(screen *ebiten.Image, frame image.Rectangle, view *furex.View) {
 	if t.Shadow {
 		ebitenutil.DrawRect(
 			screen, float64(frame.Min.X), float64(frame.Min.Y), float64(len(view.Text)*6+4), float64(frame.Dy()), color.RGBA{0, 0, 0, 50})

@@ -13,10 +13,10 @@ type Sprite struct {
 }
 
 var (
-	_ furex.DrawHandlerWithView = (*Sprite)(nil)
+	_ furex.Drawer = (*Sprite)(nil)
 )
 
-func (t *Sprite) HandleDraw(screen *ebiten.Image, frame image.Rectangle, view *furex.View) {
+func (t *Sprite) Draw(screen *ebiten.Image, frame image.Rectangle, view *furex.View) {
 	sprite := view.Attrs["sprite"]
 	spr := sprites.Get(sprite)
 	x, y := float64(frame.Min.X)+float64(frame.Dx())/2, float64(frame.Min.Y)+float64(frame.Dy())/2

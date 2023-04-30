@@ -37,7 +37,7 @@ Here are some of the key features of Furex:
 
 - Flexbox layout: The UI layout can be configured using the properties of [View](https://pkg.go.dev/github.com/yohamta/furex/v2#View) instances, which can be thought of as equivalent to `DIV` elements in HTML. These views can be stacked or nested to create complex layouts.
 
-- Custom widgets: `View` instances can receive a `Handler` which is responsible for drawing and updating the view. This allows users to create any type of UI component by implementing the appropriate handler interfaces, such as [DrawHandler](https://pkg.go.dev/github.com/yohamta/furex/v2#DrawHandler), [UpdateHandler](https://pkg.go.dev/github.com/yohamta/furex/v2#UpdateHandler), and more.
+- Custom widgets: `View` instances can receive a `Handler` which is responsible for drawing and updating the view. This allows users to create any type of UI component by implementing the appropriate handler interfaces, such as [Drawer](https://pkg.go.dev/github.com/yohamta/furex/v2#Drawer), [Updater](https://pkg.go.dev/github.com/yohamta/furex/v2#Updater), and more.
 
 - Button support: To create a button, users can implement the [ButtonHandler](https://pkg.go.dev/github.com/yohamta/furex/v2#ButtonHandler) interface. This supports both touch and mouse input for button actions. See the [Example Button](./examples/game/widgets/button.go) for more details.
 
@@ -112,9 +112,9 @@ type Box struct {
   Color color.Color
 }
 
-var _ furex.DrawHandler = (*Box)(nil)
+var _ furex.Drawer = (*Box)(nil)
 
-func (b *Box) HandleDraw(screen *ebiten.Image, frame image.Rectangle) {
+func (b *Box) Draw(screen *ebiten.Image, frame image.Rectangle, view *furex.View) {
   graphic.FillRect(screen, &graphic.FillRectOpts{
     Rect: frame, Color: b.Color,
   })
@@ -229,7 +229,7 @@ The following table lists the available HTML attributes:
 
 There are three types of components you can create in Furex:
 
-- **Handler Instance**: A `furex.Handler` instance, such as `DrawHandler`.
+- **Handler Instance**: A `furex.Handler` instance, such as `Drawer` or `Updater`.
 - **Factory Function**: A function that returns a `furex.Handler` instance. This is useful when you want to create separate handler instances for each HTML tag.
 - **Function Component**: A function that returns a `*furex.View` instance. This is an alternative way to create components that encapsulate their own behavior and styles.
 

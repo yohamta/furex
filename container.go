@@ -39,8 +39,8 @@ func (ct *containerEmbed) Draw(screen *ebiten.Image) {
 					h.HandleDraw(screen, b)
 					break
 				}
-				if h, ok := c.item.Handler.(DrawHandlerWithView); ok {
-					h.HandleDraw(screen, b, c.item)
+				if h, ok := c.item.Handler.(Drawer); ok {
+					h.Draw(screen, b, c.item)
 					break
 				}
 				break

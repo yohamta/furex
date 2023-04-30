@@ -72,8 +72,8 @@ func (v *View) processHandler() {
 		u.HandleUpdate()
 		return
 	}
-	if u, ok := v.Handler.(UpdateHandlerWithView); ok {
-		u.HandleUpdate(v)
+	if u, ok := v.Handler.(Updater); ok {
+		u.Update(v)
 		return
 	}
 }

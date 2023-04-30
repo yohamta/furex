@@ -24,11 +24,11 @@ type Panel struct {
 var (
 	_ furex.ButtonHandler          = (*Panel)(nil)
 	_ furex.NotButton              = (*Panel)(nil)
-	_ furex.DrawHandlerWithView    = (*Panel)(nil)
+	_ furex.Drawer                 = (*Panel)(nil)
 	_ furex.MouseEnterLeaveHandler = (*Panel)(nil)
 )
 
-func (p *Panel) HandleDraw(screen *ebiten.Image, frame image.Rectangle, view *furex.View) {
+func (p *Panel) Draw(screen *ebiten.Image, frame image.Rectangle, view *furex.View) {
 	// This code is just for demo.
 	// It's dirty and not optimized.
 
