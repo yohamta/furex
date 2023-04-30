@@ -207,6 +207,8 @@ func parseStyle(view *View, style string, handlers ComponentsMap) {
 	}
 }
 
+func Int(i int) *int { return &i }
+
 var styleMapper = map[string]mapper[View]{
 	"left": {
 		parseFunc: parseNumber,
@@ -214,7 +216,7 @@ var styleMapper = map[string]mapper[View]{
 	},
 	"right": {
 		parseFunc: parseNumber,
-		setFunc:   setFunc(func(v *View, val int) { v.Right = val }),
+		setFunc:   setFunc(func(v *View, val int) { v.Right = Int(val) }),
 	},
 	"top": {
 		parseFunc: parseNumber,
@@ -222,7 +224,7 @@ var styleMapper = map[string]mapper[View]{
 	},
 	"bottom": {
 		parseFunc: parseNumber,
-		setFunc:   setFunc(func(v *View, val int) { v.Bottom = val }),
+		setFunc:   setFunc(func(v *View, val int) { v.Bottom = Int(val) }),
 	},
 	"width": {
 		parseFunc: parseLength,

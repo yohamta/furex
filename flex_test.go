@@ -161,7 +161,7 @@ func TestAbsolutePosRightBottom(t *testing.T) {
 	mock := mockHandler{}
 
 	f1 := (&View{Width: 100, Height: 100}).addChild(
-		&View{Position: PositionAbsolute, Width: 10, Height: 10, Right: 40, Bottom: 50, Handler: &mock},
+		&View{Position: PositionAbsolute, Width: 10, Height: 10, Right: Int(40), Bottom: Int(50), Handler: &mock},
 	)
 
 	f1.Update()

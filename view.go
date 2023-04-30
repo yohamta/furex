@@ -15,9 +15,9 @@ import (
 type View struct {
 	// TODO: Remove these fields in the future.
 	Left         int
-	Right        int
+	Right        *int
 	Top          int
-	Bottom       int
+	Bottom       *int
 	Width        int
 	WidthInPct   float64
 	Height       int

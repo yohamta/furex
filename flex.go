@@ -216,14 +216,14 @@ func (f *flexEmbed) layout(width, height int, container *containerEmbed) {
 			x := container.frame.Min.X
 			if c.item.Left != 0 {
 				x = container.frame.Min.X + c.item.Left
-			} else if c.item.Right != 0 {
-				x = container.frame.Max.X - c.item.Right - c.item.Width
+			} else if c.item.Right != nil {
+				x = container.frame.Max.X - *c.item.Right - c.item.Width
 			}
 			y := container.frame.Min.Y
 			if c.item.Top != 0 {
 				y = container.frame.Min.Y + c.item.Top
-			} else if c.item.Bottom != 0 {
-				y = container.frame.Max.Y - c.item.Bottom - c.item.Height
+			} else if c.item.Bottom != nil {
+				y = container.frame.Max.Y - *c.item.Bottom - c.item.Height
 			}
 			c.bounds = image.Rect(x, y, x+c.item.Width, y+c.item.Height)
 			c.item.frame = c.bounds
