@@ -13,6 +13,7 @@ func TestParseHTML(t *testing.T) {
 		expected *View
 		opts     *ParseOptions
 		after    func(t *testing.T, v *View)
+		before   func(t *testing.T)
 	}{
 		{
 			name: "simple",
@@ -500,11 +501,37 @@ func TestParseHTML(t *testing.T) {
 					},
 				),
 			)},
+		{
+			name: "functional component",
+			before: func(t *testing.T) {
+				Register("test-comp", func() *View {
+					return &View{Width: 100, Height: 100}
+				})
+			},
+			html: `
+				<view>
+					<test-comp style="position: absolute"></test-comp>
+				</view>`,
+			opts: &ParseOptions{
+				Width:  200,
+				Height: 300,
+			},
+			expected: (&View{Width: 200, Height: 300}).AddChild((&View{
+				Position: PositionAbsolute, Width: 100, Height: 100,
+			})),
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			resetComponents()
+			if tt.before != nil {
+				tt.before(t)
+			}
 			v := Parse(tt.html, tt.opts)
 			testViewStyle(t, v, tt.expected)
+			if tt.after != nil {
+				tt.after(t, v)
+			}
 		})
 	}
 }

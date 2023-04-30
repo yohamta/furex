@@ -11,8 +11,9 @@ import (
 	"golang.org/x/net/html"
 )
 
-// The Component can be either a handler instance (e.g., DrawHandler) or
-// a factory function func() furex.Handler. This allows flexibility in usage:
+// The Component can be either a handler instance (e.g., DrawHandler), a factory function
+// func() furex.Handler, or a functional component func() *furex.View.
+// This allows flexibility in usage:
 // If you want to reuse the same handler instance for multiple HTML tags, pass the instance;
 // otherwise, pass the factory function to create separate handler instances for each tag.
 type Component interface{}
@@ -145,54 +146,76 @@ func (s *stack) pop() *View {
 	return v
 }
 
-var registerdComponents = ComponentsMap{"div": nil, "view": nil}
+var (
+	defaultComponents   = ComponentsMap{"div": nil, "view": nil}
+	registerdComponents = defaultComponents
+)
 
-func RegisterComponent(name string, c Component) { registerdComponents[name] = c }
+func Register(name string, c Component) { registerdComponents[name] = c }
+func resetComponents()                  { registerdComponents = defaultComponents }
 
 type cms []ComponentsMap
 
 func processTag(z *html.Tokenizer, tagName string, opts *ParseOptions, depth int, cms cms) *View {
-	attrs := readAttrs(z)
-	view := &View{}
+	view := createView(tagName, cms)
 
 	if depth == 0 {
-		if opts.Width != 0 {
-			view.Width = opts.Width
-		}
-		if opts.Height != 0 {
-			view.Height = opts.Height
-		}
+		processRootView(view, opts)
 	}
 
-	parseStyle(view, attrs.style, opts.Components)
-	view.ID = attrs.id
 	view.TagName = tagName
 	view.Raw = string(z.Raw())
+
+	setStyleProps(view, readAttrs(z))
+
+	return view
+}
+
+func setStyleProps(view *View, attrs attrs) {
+	parseStyle(view, attrs.style)
+
+	view.ID = attrs.id
 	view.Attrs = attrs.miscs
 	view.Hidden = attrs.hidden
+}
 
+func processRootView(view *View, opts *ParseOptions) {
+	if opts.Width != 0 {
+		view.Width = opts.Width
+	}
+	if opts.Height != 0 {
+		view.Height = opts.Height
+	}
+}
+
+func createView(name string, cms cms) *View {
+	view := &View{}
 	for _, cm := range cms {
-		if c, ok := component(tagName, cm); ok {
-			view.Handler = c
+		if ok := component(name, cm, view); ok {
 			return view
 		}
 	}
-
-	panic(fmt.Sprintf("unknown component: %s", tagName))
+	panic(fmt.Sprintf("unknown component: %s", name))
 }
 
-func component(name string, m ComponentsMap) (Component, bool) {
+func component(name string, m ComponentsMap, v *View) bool {
 	c, ok := m[name]
 	if c == nil {
-		return nil, ok
+		return ok
 	}
 	if c, ok := c.(func() Handler); ok {
-		return c(), ok
+		v.Handler = c()
+		return true
 	}
-	return c, ok
+	if c, ok := c.(func() *View); ok {
+		*v = *c()
+		return true
+	}
+	v.Handler = c
+	return true
 }
 
-func parseStyle(view *View, style string, handlers ComponentsMap) {
+func parseStyle(view *View, style string) {
 	pairs := strings.Split(style, ";")
 	errs := &ErrorList{}
 	for _, pair := range pairs {
