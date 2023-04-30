@@ -12,7 +12,7 @@ import (
 )
 
 // The Component can be either a handler instance (e.g., DrawHandler), a factory function
-// func() furex.Handler, or a functional component func() *furex.View.
+// func() furex.Handler, or a function component func() *furex.View.
 // This allows flexibility in usage:
 // If you want to reuse the same handler instance for multiple HTML tags, pass the instance;
 // otherwise, pass the factory function to create separate handler instances for each tag.
