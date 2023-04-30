@@ -11,8 +11,9 @@ import (
 	"golang.org/x/net/html"
 )
 
-// The Component can be either a handler instance (e.g., DrawHandler) or
-// a factory function func() furex.Handler. This allows flexibility in usage:
+// The Component can be either a handler instance (e.g., DrawHandler), a factory function
+// func() furex.Handler, or a function component func() *furex.View.
+// This allows flexibility in usage:
 // If you want to reuse the same handler instance for multiple HTML tags, pass the instance;
 // otherwise, pass the factory function to create separate handler instances for each tag.
 type Component interface{}
@@ -54,6 +55,7 @@ func Parse(input string, opts *ParseOptions) *View {
 	stack := &stack{stack: []*View{dummy}}
 	depth := 0
 	inBody := false
+	cms := []ComponentsMap{opts.Components, registerdComponents}
 Loop:
 	for {
 		tt := z.Next()
@@ -72,7 +74,7 @@ Loop:
 			if !inBody {
 				continue
 			}
-			view := processTag(z, string(tn), opts, depth)
+			view := processTag(z, string(tn), opts, depth, cms)
 			if view == nil {
 				continue
 			}
@@ -81,7 +83,7 @@ Loop:
 
 			depth++
 		case html.SelfClosingTagToken:
-			view := processTag(z, string(tn), opts, depth)
+			view := processTag(z, string(tn), opts, depth, cms)
 			if view == nil {
 				continue
 			}
@@ -144,42 +146,82 @@ func (s *stack) pop() *View {
 	return v
 }
 
-func processTag(z *html.Tokenizer, tagName string, opts *ParseOptions, depth int) *View {
-	attrs := readAttrs(z)
-	view := &View{}
+var (
+	defaultComponents   = ComponentsMap{"div": nil, "view": nil}
+	registerdComponents = defaultComponents
+)
+
+func RegisterComponents(cs ComponentsMap) {
+	for k, v := range cs {
+		register(k, v)
+	}
+}
+
+func register(name string, c Component) { registerdComponents[name] = c }
+func resetComponents()                  { registerdComponents = defaultComponents }
+
+type cms []ComponentsMap
+
+func processTag(z *html.Tokenizer, tagName string, opts *ParseOptions, depth int, cms cms) *View {
+	view := createView(tagName, cms)
 
 	if depth == 0 {
-		if opts.Width != 0 {
-			view.Width = opts.Width
-		}
-		if opts.Height != 0 {
-			view.Height = opts.Height
-		}
+		processRootView(view, opts)
 	}
 
-	parseStyle(view, attrs.style, opts.Components)
-	view.ID = attrs.id
 	view.TagName = tagName
 	view.Raw = string(z.Raw())
-	view.Attrs = attrs.miscs
-	view.Hidden = attrs.hidden
 
-	if c, ok := opts.Components[tagName]; ok {
-		if reflect.TypeOf(c).Kind() == reflect.Func {
-			if c, ok := c.(func() Handler); ok {
-				view.Handler = c()
-			} else {
-				panic(fmt.Sprintf("invalid component: %s", tagName))
-			}
-		} else {
-			view.Handler = c
-		}
-	}
+	setStyleProps(view, readAttrs(z))
 
 	return view
 }
 
-func parseStyle(view *View, style string, handlers ComponentsMap) {
+func setStyleProps(view *View, attrs attrs) {
+	parseStyle(view, attrs.style)
+
+	view.ID = attrs.id
+	view.Attrs = attrs.miscs
+	view.Hidden = attrs.hidden
+}
+
+func processRootView(view *View, opts *ParseOptions) {
+	if opts.Width != 0 {
+		view.Width = opts.Width
+	}
+	if opts.Height != 0 {
+		view.Height = opts.Height
+	}
+}
+
+func createView(name string, cms cms) *View {
+	view := &View{}
+	for _, cm := range cms {
+		if ok := component(name, cm, view); ok {
+			return view
+		}
+	}
+	panic(fmt.Sprintf("unknown component: %s", name))
+}
+
+func component(name string, m ComponentsMap, v *View) bool {
+	c, ok := m[name]
+	if c == nil {
+		return ok
+	}
+	if c, ok := c.(func() Handler); ok {
+		v.Handler = c()
+		return true
+	}
+	if c, ok := c.(func() *View); ok {
+		*v = *c()
+		return true
+	}
+	v.Handler = c
+	return true
+}
+
+func parseStyle(view *View, style string) {
 	pairs := strings.Split(style, ";")
 	errs := &ErrorList{}
 	for _, pair := range pairs {
@@ -207,6 +249,8 @@ func parseStyle(view *View, style string, handlers ComponentsMap) {
 	}
 }
 
+func Int(i int) *int { return &i }
+
 var styleMapper = map[string]mapper[View]{
 	"left": {
 		parseFunc: parseNumber,
@@ -214,7 +258,7 @@ var styleMapper = map[string]mapper[View]{
 	},
 	"right": {
 		parseFunc: parseNumber,
-		setFunc:   setFunc(func(v *View, val int) { v.Right = val }),
+		setFunc:   setFunc(func(v *View, val int) { v.Right = Int(val) }),
 	},
 	"top": {
 		parseFunc: parseNumber,
@@ -222,7 +266,7 @@ var styleMapper = map[string]mapper[View]{
 	},
 	"bottom": {
 		parseFunc: parseNumber,
-		setFunc:   setFunc(func(v *View, val int) { v.Bottom = val }),
+		setFunc:   setFunc(func(v *View, val int) { v.Bottom = Int(val) }),
 	},
 	"width": {
 		parseFunc: parseLength,

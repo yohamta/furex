@@ -26,9 +26,7 @@ type screen struct {
 }
 
 func (g *Game) Update() error {
-	g.initOnce.Do(func() {
-		g.setupUI()
-	})
+	g.initOnce.Do(func() { g.setupUI() })
 	g.gameUI.Update()
 	return nil
 }
@@ -83,31 +81,59 @@ func NewGame() (*Game, error) {
 //go:embed assets/html/main.html
 var mainHTML string
 
+func init() {
+	furex.RegisterComponents(furex.ComponentsMap{
+		"panel":  &widgets.Panel{},
+		"sprite": &widgets.Sprite{},
+	})
+}
+
 func (g *Game) setupUI() {
 	g.gameUI = furex.Parse(mainHTML, &furex.ParseOptions{
 		Width:  g.screen.Width,
 		Height: g.screen.Height,
-		Components: map[string]furex.Component{
-			"panel":      &widgets.Panel{},
-			"gauge-text": &widgets.Text{Color: color.RGBA{50, 48, 41, 255}},
-			"gauge":      func() furex.Handler { return &widgets.Bar{Value: .8} },
+		Components: furex.ComponentsMap{
+			"panel": &widgets.Panel{},
+			"gauge-text": func() *furex.View {
+				return &furex.View{
+					Width:   180,
+					Height:  20,
+					Handler: &widgets.Text{Color: color.RGBA{50, 48, 41, 255}},
+				}
+			},
+			"gauge": func() furex.Handler { return &widgets.Bar{Value: .8} },
 			"button": func() furex.Handler {
 				return &widgets.Button{OnClick: func() { println("button clicked") }}
 			},
-			"sprite": &widgets.Sprite{},
-			"bottom-button": func() furex.Handler {
-				return &widgets.Button{
-					Color:   color.RGBA{210, 178, 144, 255},
-					OnClick: func() { println("button clicked") },
+			"bottom-button": func() *furex.View {
+				return &furex.View{
+					Width:  45,
+					Height: 49,
+					Handler: &widgets.Button{
+						Color:   color.RGBA{210, 178, 144, 255},
+						OnClick: func() { println("button clicked") },
+					}}
+			},
+			"panel-button": func() *furex.View {
+				return &furex.View{
+					Width:   100,
+					Height:  50,
+					Handler: &widgets.Panel{OnClick: func() { println("button clicked") }},
 				}
 			},
-			"panel-button": func() furex.Handler {
-				return &widgets.Panel{OnClick: func() { println("button clicked") }}
-			},
-			"play-game-text": &widgets.Text{
-				Color:     color.RGBA{45, 73, 94, 255},
-				HorzAlign: etxt.XCenter,
-				VertAlign: etxt.YCenter,
+			"play-game-text": func() *furex.View {
+				return &furex.View{
+					Width:      100,
+					Height:     8,
+					Direction:  furex.Row,
+					AlignItems: furex.AlignItemCenter,
+					Justify:    furex.JustifyCenter,
+					Handler: &widgets.Text{
+						Color:     color.RGBA{45, 73, 94, 255},
+						HorzAlign: etxt.XCenter,
+						VertAlign: etxt.YCenter,
+					},
+				}
 			},
 		},
 	})

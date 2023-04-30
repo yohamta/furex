@@ -2,14 +2,14 @@
 
 <head>
     <style>
-        game-ui {
+        .game-ui {
             flex-direction: column;
             justify-content: space-between;
             align-items: stretch;
             align-content: stretch;
         }
 
-        container {
+        .container {
             justify-content: center;
             align-items: center;
             margin-top: 50px;
@@ -35,7 +35,7 @@
             height: 200px;
         }
 
-        gauge-container {
+        .gauge-container {
             width: 180px;
             height: 38px;
             align-items: flex-start;
@@ -43,7 +43,7 @@
             flex-direction: column;
         }
 
-        gauge-container2 {
+        .gauge-container2 {
             width: 180px;
             height: 38px;
             align-items: flex-start;
@@ -52,18 +52,12 @@
             margin-top: 30px;
         }
 
-        gauge-text {
-            width: 180px;
-            height: 20px;
-            margin-bottom: 2px;
-        }
-
         .gauge {
             width: 180px;
             height: 18px;
         }
 
-        buttons {
+        .buttons {
             flex-direction: row;
             align-items: center;
             justify-content: center;
@@ -83,7 +77,7 @@
             margin-left: 10;
         }
 
-        bottom-buttons {
+        .bottom-buttons {
             height: 140px;
             width: 480px;
             justify-content: center;
@@ -91,9 +85,11 @@
             margin-bottom: 20px;
         }
 
-        bottom-button {
-            width: 45px;
-            height: 49px;
+        .gauge-text {
+            margin-bottom: 2px;
+        }
+
+        .bottom-button {
             margin-top: 5px;
             margin-bottom: 10px;
             margin-left: 20px;
@@ -114,7 +110,7 @@
             top: 17
         }
 
-        play-game-container {
+        .play-game-container {
             position: absolute;
             left: 20;
             top: 52;
@@ -128,72 +124,58 @@
             justify-content: center;
         }
 
-        play-game-text {
-            width: 100px;
-            height: 8px;
-            margin-bottom: 20px;
-            flex-direction: row;
-            align-items: center;
-            justify-content: center;
-        }
-
-        play-game-buttons {
+        .play-game-buttons {
             width: 100;
             height: 50;
             flex-direction: row;
             align-items: center;
             justify-content: center;
-        }
-
-        panel-button {
-            width: 100;
-            height: 50;
         }
 
     </style>
 </head>
 
 <body>
-    <game-ui>
-        <container>
+    <div class="game-ui">
+        <div class="container">
             <panel class="panel-outer" sprite="panel_brown.png">
                 <panel class="panel-inner" sprite="panelInset_beige.png">
-                    <gauge-container>
+                    <div class="gauge-container">
                         <gauge-text class="gauge-text">Health</gauge-text>
                         <gauge class="gauge" color="Green"></gauge>
-                    </gauge-container>
-                    <gauge-container2>
+                    </div>
+                    <div class="gauge-container2">
                         <gauge-text class="gauge-text">Mana</gauge-text>
                         <gauge class="gauge" color="Blue"></gauge>
-                    </gauge-container2>
+                    </div>
                 </panel>
-                <buttons>
+                <div class="buttons">
                     <button sprite="buttonLong_blue.png" sprite_pressed="buttonLong_blue_pressed.png" class="button-inventory">Inventory</button>
                     <button sprite="buttonSquare_blue.png" sprite_pressed="buttonSquare_blue_pressed.png" class="button-ok">OK</button>
-                </buttons>
+                </div>
                 <button class="close-button" sprite="buttonRound_blue.png">
                     <sprite sprite="iconCross_beige.png" class="close-button-sprite"></sprite>
                 </button>
             </panel>
-        </container>
+        </div>
 
-        <bottom-buttons>
-            <bottom-button sprite="buttonSquare_brown.png" sprite_pressed="buttonSquare_brown_pressed.png">A</bottom-button>
-            <bottom-button sprite="buttonSquare_brown.png" sprite_pressed="buttonSquare_brown_pressed.png">B</bottom-button>
-            <bottom-button sprite="buttonSquare_brown.png" sprite_pressed="buttonSquare_brown_pressed.png">C</bottom-button>
-            <bottom-button sprite="buttonSquare_brown.png" sprite_pressed="buttonSquare_brown_pressed.png">D</bottom-button>
-        </bottom-buttons>
+        <div class="bottom-buttons">
+            <bottom-button class="bottom-button" sprite="buttonSquare_brown.png" sprite_pressed="buttonSquare_brown_pressed.png">A</bottom-button>
+            <bottom-button class="bottom-button" sprite="buttonSquare_brown.png" sprite_pressed="buttonSquare_brown_pressed.png">B</bottom-button>
+            <bottom-button class="bottom-button" sprite="buttonSquare_brown.png" sprite_pressed="buttonSquare_brown_pressed.png">C</bottom-button>
+            <bottom-button class="bottom-button" sprite="buttonSquare_brown.png" sprite_pressed="buttonSquare_brown_pressed.png">D</bottom-button>
+        </div>
 
-        <play-game-container>
+        <div class="play-game-container">
             <panel class="play-game-panel" sprite="glassPanel_corners.png">
-                <play-game-text>PLAY THE GAME?</play-game-text>
-                <play-game-buttons>
+                <play-game-text style="margin-bottom: 20px;">PLAY THE GAME?</play-game-text>
+                <div class="play-game-buttons">
                     <panel-button sprite="glassPanel_projection.png">YES</panel-button>
                     <panel-button sprite="glassPanel_projection.png" style="margin-left: 20px;">NO</panel-button>
-                </play-game-buttons>
+                </div>
             </panel>
-        </play-game-container>
-    </game-ui>
+        </div>
+    </div>
 </body>
 
 </html>

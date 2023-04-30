@@ -16,10 +16,12 @@ Full source code of the example is [here](examples/game/main.go).
 - [Motivation](#motivation)
 - [Features](#features)
 - [Getting Started](#getting-started)
-- [Usage](#usage)
+- [Basic Usage](#basic-usage)
 - [Building UI with HTML](#building-ui-with-html)
   - [CSS Properties](#css-properties)
   - [HTML Attributes](#html-attributes)
+  - [Component Types](#component-types)
+  - [Global Components](#global-components)
 - [Debugging](#debugging)
 - [Contributions](#contributions)
 
@@ -53,7 +55,7 @@ To get started with Furex, install Furex using the following command:
 go get github.com/yohamta/furex/v2
 ```
 
-## Usage
+## Basic Usage
 
 Here's a simple example of how to use Furex to create an UI in your game:
 
@@ -223,6 +225,26 @@ The following table lists the available HTML attributes:
 | `id`           | string             | Any string value          |
 | `hidden`       | bool               | `true`, `false`           |
 
+### Component Types
+
+There are three types of components you can create in Furex:
+
+- **Handler Instance**: A `furex.Handler` instance, such as `DrawHandler`.
+- **Factory Function**: A function that returns a `furex.Handler` instance. This is useful when you want to create separate handler instances for each HTML tag.
+- **Function Component**: A function that returns a `*furex.View instance`. This is an alternative way to create components that encapsulate their own behavior and styles.
+
+### Global Components
+
+To register a custom component globally, use the furex.RegisterComponents function. This should be called during the package initialization. In the given example, the following components are registered globally:
+
+```go
+  func init() {
+  	furex.RegisterComponents(furex.ComponentsMap{
+  		"button":  &widgets.Button{},
+  		"sprite": &widgets.Sprite{},
+  	})
+  }
+```
 ## Debugging
 
 You can enable Debug Mode by setting the variable below.

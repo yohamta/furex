@@ -15,9 +15,9 @@ import (
 type View struct {
 	// TODO: Remove these fields in the future.
 	Left         int
-	Right        int
+	Right        *int
 	Top          int
-	Bottom       int
+	Bottom       *int
 	Width        int
 	WidthInPct   float64
 	Height       int
@@ -57,19 +57,24 @@ func (v *View) Update() {
 	if v.isDirty {
 		v.startLayout()
 	}
+	v.processHandler()
 	for _, v := range v.children {
 		v.item.Update()
-		if u, ok := v.item.Handler.(UpdateHandler); ok {
-			u.HandleUpdate()
-			continue
-		}
-		if u, ok := v.item.Handler.(UpdateHandlerWithView); ok {
-			u.HandleUpdate(v.item)
-			continue
-		}
+		v.item.processHandler()
 	}
 	if !v.hasParent {
 		v.processEvent()
+	}
+}
+
+func (v *View) processHandler() {
+	if u, ok := v.Handler.(UpdateHandler); ok {
+		u.HandleUpdate()
+		return
+	}
+	if u, ok := v.Handler.(UpdateHandlerWithView); ok {
+		u.HandleUpdate(v)
+		return
 	}
 }
 
@@ -248,9 +253,21 @@ func (v *View) SetLeft(left int) {
 	v.Layout()
 }
 
+// SetRight sets the right position of the view.
+func (v *View) SetRight(right int) {
+	v.Right = Int(right)
+	v.Layout()
+}
+
 // SetTop sets the top position of the view.
 func (v *View) SetTop(top int) {
 	v.Top = top
+	v.Layout()
+}
+
+// SetBottom sets the bottom position of the view.
+func (v *View) SetBottom(bottom int) {
+	v.Bottom = Int(bottom)
 	v.Layout()
 }
 
@@ -355,7 +372,9 @@ func (v *View) Config() ViewConfig {
 		TagName:      v.TagName,
 		ID:           v.ID,
 		Left:         v.Left,
+		Right:        v.Right,
 		Top:          v.Top,
+		Bottom:       v.Bottom,
 		Width:        v.Width,
 		Height:       v.Height,
 		MarginLeft:   v.MarginLeft,
@@ -383,7 +402,9 @@ type ViewConfig struct {
 	TagName      string
 	ID           string
 	Left         int
+	Right        *int
 	Top          int
+	Bottom       *int
 	Width        int
 	Height       int
 	MarginLeft   int
@@ -405,6 +426,7 @@ func (cfg ViewConfig) Tree() string {
 	return cfg.tree("")
 }
 
+// TODO: This is a bit of a mess. Clean it up.
 func (cfg ViewConfig) tree(indent string) string {
 	sb := &strings.Builder{}
 	sb.WriteString(fmt.Sprintf("%s<%s ", indent, cfg.TagName))
@@ -413,8 +435,8 @@ func (cfg ViewConfig) tree(indent string) string {
 	}
 	sb.WriteString("style=\"")
 	sb.WriteString(
-		fmt.Sprintf("left: %d, top: %d, width: %d, height: %d, marginLeft: %d, marginTop: %d, marginRight: %d, marginBottom: %d, position: %s, direction: %s, wrap: %s, justify: %s, alignItems: %s, alignContent: %s, grow: %f, shrink: %f",
-			cfg.Left, cfg.Top, cfg.Width, cfg.Height, cfg.MarginLeft, cfg.MarginTop, cfg.MarginRight, cfg.MarginBottom, cfg.Position, cfg.Direction, cfg.Wrap, cfg.Justify, cfg.AlignItems, cfg.AlignContent, cfg.Grow, cfg.Shrink))
+		fmt.Sprintf("left: %d, right: %d, top: %d, bottom: %d, width: %d, height: %d, marginLeft: %d, marginTop: %d, marginRight: %d, marginBottom: %d, position: %s, direction: %s, wrap: %s, justify: %s, alignItems: %s, alignContent: %s, grow: %f, shrink: %f",
+			cfg.Left, *cfg.Right, cfg.Top, *cfg.Bottom, cfg.Width, cfg.Height, cfg.MarginLeft, cfg.MarginTop, cfg.MarginRight, cfg.MarginBottom, cfg.Position, cfg.Direction, cfg.Wrap, cfg.Justify, cfg.AlignItems, cfg.AlignContent, cfg.Grow, cfg.Shrink))
 	sb.WriteString("\">\n")
 	for _, child := range cfg.children {
 		sb.WriteString(child.tree(indent + "  "))
