@@ -188,7 +188,7 @@ view := (&furex.View{
 )
 ```
 
-For a more extensive example, check out the [example here](examples/game/main.go).
+For a more extensive example, check out the [example here](examples/game/main.go) and the embedded [HTML file](examples/game/assets/html/main.html).
 
 ### CSS Properties
 
