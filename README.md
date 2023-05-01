@@ -235,7 +235,7 @@ There are three types of components you can create in Furex:
 
 ### Global Components
 
-To register a custom component globally, use the furex.RegisterComponents function. This should be called during the package initialization. In the given example, the following components are registered globally:
+To register a custom component globally, use the furex.RegisterComponents function. For example:
 
 ```go
   func init() {
