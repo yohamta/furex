@@ -6,10 +6,10 @@ import (
 
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/tinne26/etxt"
+	"github.com/yohamta/furex/examples/game/sprites"
+	"github.com/yohamta/furex/examples/game/text"
+	"github.com/yohamta/furex/examples/game/widgets"
 	"github.com/yohamta/furex/v2"
-	"github.com/yohamta/furex/v2/examples/game/sprites"
-	"github.com/yohamta/furex/v2/examples/game/text"
-	"github.com/yohamta/furex/v2/examples/game/widgets"
 
 	_ "embed"
 )
