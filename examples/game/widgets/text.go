@@ -7,8 +7,8 @@ import (
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
 	"github.com/tinne26/etxt"
+	"github.com/yohamta/furex/examples/game/text"
 	"github.com/yohamta/furex/v2"
-	"github.com/yohamta/furex/v2/examples/game/text"
 )
 
 type Text struct {

@@ -4,8 +4,8 @@ import (
 	"image"
 
 	"github.com/hajimehoshi/ebiten/v2"
+	"github.com/yohamta/furex/examples/game/sprites"
 	"github.com/yohamta/furex/v2"
-	"github.com/yohamta/furex/v2/examples/game/sprites"
 	"github.com/yohamta/ganim8/v2"
 )
 
