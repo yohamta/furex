@@ -3,6 +3,7 @@ package main
 import (
 	"image/color"
 	"sync"
+	"time"
 
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/tinne26/etxt"
@@ -88,10 +89,24 @@ func init() {
 	})
 }
 
+const playGameText = "Do you play game?"
+
 func (g *Game) setupUI() {
+	// These variables are used for text typing animation.
+	d := time.Duration(0)
+	c := 0
+
+	// Setup the UI parsed from HTML.
 	g.gameUI = furex.Parse(mainHTML, &furex.ParseOptions{
-		Width:  g.screen.Width,
+		// Width is size of the root view.
+		Width: g.screen.Width,
+		// Height is size of the root view.
 		Height: g.screen.Height,
+		// Components are custom components that can be used in HTML.
+		// The key is the tag name in HTML. There are three types of components:
+		// - Handler Instance: A `furex.Handler` instance, such as `Drawer` or `Updater`.
+		// - Factory Function: A function that returns a `furex.Handler` instance.
+		// - Function Component: A function that returns a `*furex.View` instance.
 		Components: furex.ComponentsMap{
 			"panel": &widgets.Panel{},
 			"gauge-text": func() *furex.View {
@@ -123,19 +138,35 @@ func (g *Game) setupUI() {
 			},
 			"play-game-text": func() *furex.View {
 				return &furex.View{
-					Width:      100,
 					Height:     8,
 					Direction:  furex.Row,
 					AlignItems: furex.AlignItemCenter,
-					Justify:    furex.JustifyCenter,
+					Justify:    furex.JustifyStart,
 					Handler: &widgets.Text{
 						Color:     color.RGBA{45, 73, 94, 255},
-						HorzAlign: etxt.XCenter,
+						HorzAlign: etxt.Left,
 						VertAlign: etxt.YCenter,
 					},
 				}
 			},
 		},
+		// Handler is called every frame for the root view.
+		Handler: furex.NewHandler(furex.HandlerOpts{
+			Update: func(v *furex.View) {
+				d += time.Second / 60
+				switch {
+				case c < len(playGameText) && d > time.Millisecond*100:
+					c = c + 1
+					d = 0
+				case d > time.Millisecond*1000:
+					c = 0
+					d = 0
+				}
+				// GetByID returns the view with the given ID.
+				// This is a equivalent of document.getElementById in HTML.
+				v.MustGetByID("play-game-text").Handler.(*widgets.Text).Text = playGameText[:c]
+			},
+		}),
 	})
 
 	// panels that draws mouse cursor

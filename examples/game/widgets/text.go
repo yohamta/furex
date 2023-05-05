@@ -16,6 +16,7 @@ type Text struct {
 	Shadow    bool
 	HorzAlign etxt.HorzAlign
 	VertAlign etxt.VertAlign
+	Text      string
 }
 
 var (
@@ -41,5 +42,9 @@ func (t *Text) Draw(screen *ebiten.Image, frame image.Rectangle, view *furex.Vie
 	}
 	text.R.SetAlign(t.VertAlign, t.HorzAlign)
 	text.R.SetTarget(screen)
-	text.R.Draw(view.Text, x, y)
+	if t.Text == "" {
+		text.R.Draw(view.Text, x, y)
+	} else {
+		text.R.Draw(t.Text, x, y)
+	}
 }
