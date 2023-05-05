@@ -42,6 +42,9 @@ type ParseOptions struct {
 	// outside of the HTML.
 	Width  int
 	Height int
+
+	// Handler is the handler for the root view.
+	Handler Handler
 }
 
 func Parse(input string, opts *ParseOptions) *View {
@@ -107,7 +110,9 @@ Loop:
 	if len(dummy.children) != 1 {
 		panic(fmt.Sprintf("invalid html: %s", input))
 	}
-	return dummy.PopChild()
+	view := dummy.PopChild()
+	view.Handler = opts.Handler
+	return view
 }
 
 func inlineCSS(doc string) string {

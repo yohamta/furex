@@ -107,3 +107,44 @@ type SwipeHandler interface {
 	// HandleSwipe handles swipes.
 	HandleSwipe(dir SwipeDirection)
 }
+
+type handler struct {
+	opts HandlerOpts
+}
+
+// HandlerOpts represents the options for a handler.
+type HandlerOpts struct {
+	Update        func(v *View)
+	Draw          func(screen *ebiten.Image, frame image.Rectangle, v *View)
+	HandlePress   func(x, y int, t ebiten.TouchID)
+	HandleRelease func(x, y int, isCancel bool)
+}
+
+// NewHandler creates a new handler.
+func NewHandler(opts HandlerOpts) Handler {
+	return &handler{opts: opts}
+}
+
+func (h *handler) Update(v *View) {
+	if h.opts.Update != nil {
+		h.opts.Update(v)
+	}
+}
+
+func (h *handler) Draw(screen *ebiten.Image, frame image.Rectangle, v *View) {
+	if h.opts.Draw != nil {
+		h.opts.Draw(screen, frame, v)
+	}
+}
+
+func (h *handler) HandlePress(x, y int, t ebiten.TouchID) {
+	if h.opts.HandlePress != nil {
+		h.opts.HandlePress(x, y, t)
+	}
+}
+
+func (h *handler) HandleRelease(x, y int, isCancel bool) {
+	if h.opts.HandleRelease != nil {
+		h.opts.HandleRelease(x, y, isCancel)
+	}
+}
