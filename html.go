@@ -111,7 +111,9 @@ Loop:
 		panic(fmt.Sprintf("invalid html: %s", input))
 	}
 	view := dummy.PopChild()
-	view.Handler = opts.Handler
+	if opts.Handler != nil {
+		view.Handler = opts.Handler
+	}
 	return view
 }
 
