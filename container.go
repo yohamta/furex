@@ -29,32 +29,48 @@ func (ct *containerEmbed) processEvent() {
 // Draw draws it's children
 func (ct *containerEmbed) Draw(screen *ebiten.Image) {
 	for _, c := range ct.children {
-		b := c.bounds
-		if !c.absolute {
-			b = c.bounds.Add(ct.frame.Min)
-		}
-		if !c.item.Hidden && c.item.Display != DisplayNone && c.item.Handler != nil {
-			for {
-				if h, ok := c.item.Handler.(DrawHandler); ok {
-					h.HandleDraw(screen, b)
-					break
-				}
-				if h, ok := c.item.Handler.(Drawer); ok {
-					h.Draw(screen, b, c.item)
-					break
-				}
-				break
-			}
-		}
-		c.item.Draw(screen)
-		if Debug {
-			pos := fmt.Sprintf("(%d, %d)-(%d, %d):%s:%s", b.Min.X, b.Min.Y, b.Max.X, b.Max.Y, c.item.TagName, c.item.ID)
-			graphic.FillRect(screen, &graphic.FillRectOpts{
-				Color: color.RGBA{0, 0, 0, 200},
-				Rect:  image.Rect(b.Min.X, b.Min.Y, b.Min.X+len(pos)*6, b.Min.Y+12),
-			})
-			ebitenutil.DebugPrintAt(screen, pos, b.Min.X, b.Min.Y)
-		}
+		ct.drawChild(screen, c)
+	}
+}
+
+func (ct *containerEmbed) drawChild(screen *ebiten.Image, child *child) {
+	b := ct.computeBounds(child)
+	if ct.shouldDrawChild(child) {
+		ct.handleDraw(screen, b, child)
+	}
+	child.item.Draw(screen)
+	ct.debugDraw(screen, b, child)
+}
+
+func (ct *containerEmbed) computeBounds(child *child) image.Rectangle {
+	if child.absolute {
+		return child.bounds
+	}
+	return child.bounds.Add(ct.frame.Min)
+}
+
+func (ct *containerEmbed) handleDraw(screen *ebiten.Image, b image.Rectangle, child *child) {
+	if h, ok := child.item.Handler.(DrawHandler); ok {
+		h.HandleDraw(screen, b)
+		return
+	}
+	if h, ok := child.item.Handler.(Drawer); ok {
+		h.Draw(screen, b, child.item)
+	}
+}
+
+func (ct *containerEmbed) shouldDrawChild(child *child) bool {
+	return !child.item.Hidden && child.item.Display != DisplayNone && child.item.Handler != nil
+}
+
+func (ct *containerEmbed) debugDraw(screen *ebiten.Image, b image.Rectangle, child *child) {
+	if Debug {
+		pos := fmt.Sprintf("(%d, %d)-(%d, %d):%s:%s", b.Min.X, b.Min.Y, b.Max.X, b.Max.Y, child.item.TagName, child.item.ID)
+		graphic.FillRect(screen, &graphic.FillRectOpts{
+			Color: color.RGBA{0, 0, 0, 200},
+			Rect:  image.Rect(b.Min.X, b.Min.Y, b.Min.X+len(pos)*6, b.Min.Y+12),
+		})
+		ebitenutil.DebugPrintAt(screen, pos, b.Min.X, b.Min.Y)
 	}
 }
 

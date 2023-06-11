@@ -341,6 +341,7 @@ type mockFlags struct {
 	IsReleased   bool
 	IsCancel     bool
 	IsUpdated    bool
+	IsDrawn      bool
 	IsMouseMoved bool
 	IsSwiped     bool
 }
@@ -362,6 +363,7 @@ func (h *mockHandler) HandleUpdate() {
 
 func (h *mockHandler) HandleDraw(screen *ebiten.Image, frame image.Rectangle) {
 	h.Frame = frame
+	h.IsDrawn = true
 }
 
 func (h *mockHandler) HandlePress(x, y int, t ebiten.TouchID) {
