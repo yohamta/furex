@@ -119,6 +119,9 @@ func (v *View) Draw(screen *ebiten.Image) {
 	if v.isDirty {
 		v.startLayout()
 	}
+	if !v.hasParent {
+		v.handleDrawRoot(screen, v.frame)
+	}
 	if !v.Hidden && v.Display != DisplayNone {
 		v.containerEmbed.Draw(screen)
 	}
@@ -395,6 +398,16 @@ func (v *View) Config() ViewConfig {
 		cfg.children = append(cfg.children, child.Config())
 	}
 	return cfg
+}
+
+func (v *View) handleDrawRoot(screen *ebiten.Image, b image.Rectangle) {
+	if h, ok := v.Handler.(DrawHandler); ok {
+		h.HandleDraw(screen, b)
+		return
+	}
+	if h, ok := v.Handler.(Drawer); ok {
+		h.Draw(screen, b, v)
+	}
 }
 
 // This is for debugging and testing.

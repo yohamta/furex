@@ -111,6 +111,9 @@ Loop:
 		panic(fmt.Sprintf("invalid html: %s", input))
 	}
 	view := dummy.PopChild()
+	// the root view should be dirty for the first time
+	// even if the view does not have any children
+	view.isDirty = true
 	if opts.Handler != nil {
 		view.Handler = opts.Handler
 	}

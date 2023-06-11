@@ -133,6 +133,37 @@ func TestParseHTML(t *testing.T) {
 			},
 		},
 		{
+			name: "root handler",
+			html: `
+						<body>
+							<mock-handler></mock-handler>
+						</body>`,
+			opts: &ParseOptions{
+				Components: map[string]Component{
+					"mock-handler": func() Handler {
+						return &mockHandler{}
+					},
+				},
+				Width:  100,
+				Height: 200,
+			},
+			expected: (&View{
+				Width:  100,
+				Height: 200,
+			}),
+			after: func(t *testing.T, v *View) {
+				v.Update()
+				v.Draw(nil)
+				h := v.Handler.(*mockHandler)
+				require.True(t, h.IsUpdated)
+				require.True(t, h.IsDrawn)
+				require.Equal(t, 0, h.Frame.Min.X)
+				require.Equal(t, 100, h.Frame.Max.X)
+				require.Equal(t, 0, h.Frame.Min.Y)
+				require.Equal(t, 200, h.Frame.Max.Y)
+			},
+		},
+		{
 			name: "hidden attribute",
 			html: `
 				<view>
