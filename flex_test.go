@@ -1003,6 +1003,42 @@ func TestHeightInPctCol(t *testing.T) {
 	assert.Equal(t, image.Rect(400, 100, 500, 500), mock.Frame)
 }
 
+func TestShrink(t *testing.T) {
+	flex := &View{
+		Width:      1000,
+		Height:     1000,
+		Direction:  Row,
+		Justify:    JustifyStart,
+		AlignItems: AlignItemStart,
+	}
+
+	mock1 := mockHandler{}
+	mock2 := mockHandler{}
+
+	flex.AddChild(
+		(&View{
+			Width:      500,
+			Direction:  Column,
+			Justify:    JustifyCenter,
+			Shrink:     1,
+			AlignItems: AlignItemEnd,
+			Handler:    &mock1,
+		}).AddChild(
+			&View{
+				Width:   500,
+				Height:  100,
+				Handler: &mock2,
+			},
+		),
+	)
+
+	flex.Update()
+	flex.Draw(nil)
+
+	assert.Equal(t, image.Rect(0, 0, 500, 100), mock1.Frame)
+	assert.Equal(t, image.Rect(0, 0, 500, 100), mock2.Frame)
+}
+
 func flexItemBounds(parent *View, child *View) image.Rectangle {
 	mock := &mockHandler{}
 	child.Handler = mock
