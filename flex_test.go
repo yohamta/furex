@@ -8,7 +8,8 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-// TODO: refactor these tests to make them more readable.
+// You can use this tool to draw layouts:
+// https://asciiflow.com
 
 func TestFlexAlignments(t *testing.T) {
 	w, h := 100, 100
@@ -1004,39 +1005,35 @@ func TestHeightInPctCol(t *testing.T) {
 }
 
 func TestShrink(t *testing.T) {
-	flex := &View{
-		Width:      1000,
-		Height:     1000,
+	w, h, items := 128, 64, 5
+	mock := mockHandler{}
+
+	root := &View{
 		Direction:  Row,
-		Justify:    JustifyStart,
-		AlignItems: AlignItemStart,
+		AlignItems: AlignItemCenter,
 	}
 
-	mock1 := mockHandler{}
-	mock2 := mockHandler{}
+	palette := &View{
+		Width:     w,
+		Shrink:    1,
+		Direction: Column,
+		Justify:   JustifyCenter,
+		Handler:   &mock,
+	}
+	palette.AddTo(root)
 
-	flex.AddChild(
-		(&View{
-			Width:      500,
-			Direction:  Column,
-			Justify:    JustifyCenter,
-			Shrink:     1,
-			AlignItems: AlignItemEnd,
-			Handler:    &mock1,
-		}).AddChild(
-			&View{
-				Width:   500,
-				Height:  100,
-				Handler: &mock2,
-			},
-		),
-	)
+	for i := 0; i < items; i++ {
+		bar := &View{
+			Width:  w,
+			Height: h,
+		}
+		bar.AddTo(palette)
+	}
 
-	flex.Update()
-	flex.Draw(nil)
+	root.UpdateWithSize(1000, 1000)
+	root.Draw(nil)
 
-	assert.Equal(t, image.Rect(0, 0, 500, 100), mock1.Frame)
-	assert.Equal(t, image.Rect(0, 0, 500, 100), mock2.Frame)
+	assert.Equal(t, image.Pt(w, h*items), mock.Frame.Size())
 }
 
 func flexItemBounds(parent *View, child *View) image.Rectangle {

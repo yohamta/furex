@@ -249,11 +249,11 @@ func (f *flexEmbed) layout(width, height int, container *containerEmbed) {
 		}
 		// If there is remaining space, distribute it among the flexible items.
 		if remFree > 0 {
-			for _, c := range children {
+			for i, c := range children {
 				if c.widthInPct > 0 {
 					v := float64(width) * c.widthInPct / 100.
-					c.node.item.calculatedWidth = int(math.Min(v, float64(remFree)))
-					c.flexBaseSize = float64(f.flexBaseSize(c.node))
+					children[i].node.item.calculatedWidth = int(math.Min(v, float64(remFree)))
+					children[i].flexBaseSize = float64(f.flexBaseSize(children[i].node))
 				}
 			}
 		}
@@ -272,11 +272,11 @@ func (f *flexEmbed) layout(width, height int, container *containerEmbed) {
 		}
 		// If there is remaining space, distribute it among the flexible items.
 		if remFree > 0 {
-			for _, c := range children {
+			for i, c := range children {
 				if c.heightInPct > 0 {
 					v := float64(height) * c.heightInPct / 100.
-					c.node.item.calculatedHeight = int(math.Min(v, float64(remFree)))
-					c.flexBaseSize = float64(f.flexBaseSize(c.node))
+					children[i].node.item.calculatedHeight = int(math.Min(v, float64(remFree)))
+					children[i].flexBaseSize = float64(f.flexBaseSize(children[i].node))
 				}
 			}
 		}
@@ -587,50 +587,47 @@ func (f *flexEmbed) layout(width, height int, container *containerEmbed) {
 	// §9.9.1. Flex Container Intrinsic Main Sizes
 	intrinsicMainSize := 0.0
 	for _, line := range lines {
+
+		largestMaxContentFlexFraction := -math.MaxFloat64
 		for _, child := range line.child {
-			// 1. For each flex item, subtract its outer flex base size from its max-content
-			//    contribution size. If that result is positive, divide by its flex grow factor
-			//    floored at 1; if negative, divide by its scaled flex shrink factor having floored
-			//    the flex shrink factor at 1. This is the item’s max-content flex fraction.
-			maxContentFlexFraction := 0.0
-			maxContentDiff := child.mainSize - child.flexBaseSize
-
-			if maxContentDiff > 0 {
-				maxContentFlexFraction = maxContentDiff / math.Max(1, child.node.item.Grow)
+			// 1. Calculate the max-content flex fraction for each item.
+			flexBaseSize := child.flexBaseSize
+			maxContentSize := child.mainSize
+			var maxContentFlexFraction float64
+			if maxContentSize > flexBaseSize {
+				// Positive free space, divide by flex grow factor (floored at 1).
+				flexGrowFactor := math.Max(1, child.node.item.Grow)
+				maxContentFlexFraction = (maxContentSize - flexBaseSize) / flexGrowFactor
 			} else {
-				maxContentFlexFraction = maxContentDiff / math.Max(1, child.node.item.Shrink*child.mainSize)
+				// Negative free space, divide by scaled flex shrink factor (floored at 1).
+				flexShrinkFactor := math.Max(1, child.node.item.Shrink)
+				maxContentFlexFraction = (flexBaseSize - maxContentSize) / (flexBaseSize * flexShrinkFactor)
 			}
-
 			child.maxContentFlexFraction = maxContentFlexFraction
-		}
-
-		// 2. Place all flex items into lines of infinite length.
-		maxContentFlexFraction := 0.0
-		for _, child := range line.child {
-			if child.maxContentFlexFraction > maxContentFlexFraction {
-				maxContentFlexFraction = child.maxContentFlexFraction
+			if maxContentFlexFraction > largestMaxContentFlexFraction {
+				largestMaxContentFlexFraction = maxContentFlexFraction
 			}
 		}
 
-		// 3. Within each line, find the largest max-content flex fraction among
-		//    all the flex items. Add each item’s flex base size to the product of
-		//    its flex grow factor (or scaled flex shrink factor,
-		//    if the chosen max-content flex fraction was negative) and the
-		//    chosen max-content flex fraction, then clamp that result by
-		//    the max main size floored by the min main size.
-		maxMainSize := 0.0
+		// 2. Add each item’s flex base size to the product of its flex grow/shrink factor and the largest max-content flex fraction.
 		for _, child := range line.child {
-			mainSize := 0.0
-			if maxContentFlexFraction > 0 {
-				mainSize = child.flexBaseSize + child.node.item.Grow*maxContentFlexFraction
+			var newMainSize float64
+			if largestMaxContentFlexFraction > 0 {
+				newMainSize = child.flexBaseSize + (child.node.item.Grow * largestMaxContentFlexFraction)
 			} else {
-				mainSize = child.flexBaseSize - child.node.item.Shrink*child.mainSize*maxContentFlexFraction
+				newMainSize = child.flexBaseSize - (child.node.item.Shrink * child.flexBaseSize * largestMaxContentFlexFraction)
 			}
-			if mainSize > maxMainSize {
-				maxMainSize = mainSize
-			}
+			child.mainSize = newMainSize
 		}
-		intrinsicMainSize += maxMainSize
+
+		// 3. Determine line size and update intrinsicMainSize.
+		lineSize := 0.0
+		for _, child := range line.child {
+			lineSize += child.mainSize
+		}
+		if lineSize > intrinsicMainSize {
+			intrinsicMainSize = lineSize
+		}
 	}
 	f.setMainSize(int(intrinsicMainSize))
 
