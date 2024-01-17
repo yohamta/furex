@@ -2,6 +2,8 @@
 
 Furex is a minimal GUI framework built on top of [Ebitengine](https://ebiten.org/), a 2D game engine for Go. It provides support for the [Flex Layout Algorithm](https://www.w3.org/TR/css-flexbox-1/#layout-algorithm), a powerful tool for laying out items of different sizes and dimensions. Furex is not a component library, but rather a framework for positioning and stacking virtual widgets, handling button and touch events for mobile, and more. How these widgets are rendered is up to the user.
 
+[![Go Reference](https://pkg.go.dev/badge/github.com/yohamta/furex.svg)](https://pkg.go.dev/github.com/yohamta/furex)
+
 <p align="center">
   <img width="480" src="./assets/example.gif">
 </p>
