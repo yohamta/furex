@@ -57,7 +57,9 @@ func (v *View) Update() {
 	if v.isDirty {
 		v.startLayout()
 	}
-	v.processHandler()
+	if !v.hasParent {
+		v.processHandler()
+	}
 	for _, v := range v.children {
 		v.item.Update()
 		v.item.processHandler()

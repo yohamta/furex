@@ -118,3 +118,32 @@ func TestAddChild(t *testing.T) {
 	view.RemoveAll()
 	require.Equal(t, 0, len(view.children))
 }
+
+type CountingHandler struct {
+	Times int
+}
+
+func (t *CountingHandler) Update(v *View) {
+	t.Times++
+}
+
+func TestUpdateOnlyOnce(t *testing.T) {
+	rootHandler := &CountingHandler{}
+	nestedHandler := &CountingHandler{}
+
+	// given
+	rootView := &View{
+		Handler: rootHandler,
+	}
+	nestedView := &View{
+		Handler: nestedHandler,
+	}
+	rootView.addChild(nestedView)
+
+	// when
+	rootView.Update()
+
+	// then
+	require.True(t, rootHandler.Times == 1)
+	require.True(t, nestedHandler.Times == 1)
+}
